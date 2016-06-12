@@ -1,0 +1,44 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
+    packagingOptions {
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+
+        //!!! andoird buildToolsVersion 19.0.3 does not support exclude with wildcards yet :-(
+        exclude('org/apache/commons/codec/language/bm/*.txt')
+        //  124 files (uncompressed 215kb) with unused language specific rules
+    }
+
+    defaultConfig {
+        applicationId "com.mts.athanasiosmoutsioulis.edaattendancesystem"
+        minSdkVersion 18
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:23.4.0'
+    compile 'com.android.support:design:23.4.0'
+    compile 'com.android.support:recyclerview-v7:23.4.0'
+    compile 'com.android.support:cardview-v7:23.4.0'
+    compile 'com.facebook.android:facebook-android-sdk:[4,5)'
+    compile 'com.estimote:sdk:0.10.4@aar'
+    compile 'com.mcxiaoke.volley:library:1.0.19'
+    compile 'org.mnode.ical4j:ical4j:1.0.5'
+    compile 'backport-util-concurrent:backport-util-concurrent:3.1'
+    compile 'commons-codec:commons-codec:1.8'
+    compile 'commons-lang:commons-lang:2.6'
+}
