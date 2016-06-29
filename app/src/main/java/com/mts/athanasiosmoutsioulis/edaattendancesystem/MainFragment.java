@@ -5,6 +5,7 @@ import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,6 +13,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
@@ -22,6 +24,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -33,9 +36,21 @@ import com.estimote.sdk.Region;
 import com.estimote.sdk.SystemRequirementsChecker;
 import com.facebook.Profile;
 
+import net.fortuna.ical4j.data.CalendarBuilder;
+import net.fortuna.ical4j.data.ParserException;
+import net.fortuna.ical4j.model.Component;
+import net.fortuna.ical4j.model.Property;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -46,27 +61,20 @@ import java.util.UUID;
  * {@link MainFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
  */
-public class MainFragment extends Fragment implements AttendanceModel.OnCheckBeaconListener {
+public class MainFragment extends Fragment {
     TextView id;
     TextView fbName;
     ImageView photo_profile;
     SharedPreferences sharedpreferences;
     public static final String MyPREFERENCES = "MyPrefs" ;
-    AttendanceModel model = AttendanceModel.getOurInstance();
+    public AttendanceModel model = AttendanceModel.getOurInstance();
     private OnFragmentInteractionListener mListener;
+    private OnLoadCalendarFeeds mCalendarListener;
     private BeaconManager beaconManager;
     private Region region;
-    private List<Beacon> tmpBeaconList;
-    private Lecture tmp_attendance_class;
-    public List<Beacon> getTmpBeaconList() {
-        return tmpBeaconList;
-    }
-
-    public void setTmpBeaconList(List<Beacon> tmpBeaconList) {
-        this.tmpBeaconList = tmpBeaconList;
-    }
 
 
+    ArrayList<com.mts.athanasiosmoutsioulis.edaattendancesystem.Beacon> tmpBeaconList = new ArrayList<com.mts.athanasiosmoutsioulis.edaattendancesystem.Beacon>();
 
     public MainFragment() {
         // Required empty public constructor
@@ -82,7 +90,13 @@ public class MainFragment extends Fragment implements AttendanceModel.OnCheckBea
         photo_profile = (ImageView)view.findViewById(R.id.img_fbPhoto);
         id = (TextView)view.findViewById(R.id.tv_id);
         fbName = (TextView)view.findViewById(R.id.tv_fbName);
+
+
+
+
+
         //read lectures for today
+        System.out.println("the size of today lectures is : " + model.getLectures_list_today().size());
         try {
             model.opendb_read();
             model.read_db_today();
@@ -91,7 +105,7 @@ public class MainFragment extends Fragment implements AttendanceModel.OnCheckBea
         }
         model.close();
         System.out.println("todays count" + model.getLectures_list_today().size());
-        model.setCheckBeaconUpdateListener(this);
+
         LinearLayout lectures = (LinearLayout)view.findViewById(R.id.ll_lectures);
         lectures.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,92 +121,21 @@ public class MainFragment extends Fragment implements AttendanceModel.OnCheckBea
                 System.out.println(model.getLectures_list().size());
                 Intent schedule = new Intent(getActivity(), ScheduleActivity.class);
                 startActivity(schedule);
-                /*for (Lecture tmp : model.getLectures_list()){
-                    System.out.println("START EVENT");
-                    System.out.println(tmp.getTitle());
-                    System.out.println(tmp.getModule());
-                    System.out.println(tmp.getType());
-                    System.out.println(tmp.getLocation());
-                    System.out.println(tmp.getStart());
-                    System.out.println(tmp.getEnd());
-                    System.out.println(tmp.getDescription());
-
-                }*/
             }
         });
         update_FBlogin();
-//        beaconManager = new BeaconManager(getActivity());
-//
-//        region = new Region("ranged region",
-//                UUID.fromString("B9407F30-F5F8-466E-AFF9-25556B57FE6D"), null, null);
-//        beaconManager.setRangingListener(new BeaconManager.RangingListener() {
-//            @Override
-//            public void onBeaconsDiscovered(Region region, List<Beacon> list) {
-//                if (!list.isEmpty()) {
-//                    System.out.println(list);
-//                    //  Beacon nearestBeacon = list.get(0);
-//
-//                    // List<String> places = placesNearBeacon(nearestBeacon);
-//                    // TODO: update the UI here
-//                    //Log.d("Airport", "Nearest places: " + places);
-//                    beaconManager.stopRanging(region);
-//                    String location = checkLecturesTime();
-//                    System.out.println(location);
-//                    if (location.equals("noLocation"))
-//                        beaconManager.startRanging(region);
-//                    else {
-//                        setTmpBeaconList(list);
-//                        model.checkBeacon(location);
-//
-//                    }
-//
-//
-//                }
-//            }
-//        });
 
+        Boolean calendar_feeds=sharedpreferences.getBoolean("Calendar", false);
+        if(calendar_feeds==false)
+        showDialog_ImportCalendar();
 
-        scheduleAlarm();
-        Intent msgIntent = new Intent(getActivity(), MyServiceTest.class);
-        msgIntent.putExtra("list", model.getLectures_list_today());
-        msgIntent.putExtra("test","test");
+        Intent msgIntent = new Intent(getActivity(), DownloadBeaconIdsService.class);
         getActivity().startService(msgIntent);
         //
         return view;
     }
 
-    public String checkLecturesTime(){
-        Calendar c = Calendar.getInstance();
-        int c_day = c.get(Calendar.DAY_OF_MONTH);
-        int c_month = c.get(Calendar.MONTH)+1;
-        int c_year = c.get(Calendar.YEAR);
-        int c_hour = c.get(Calendar.HOUR_OF_DAY);
-        int c_seconds = c.get(Calendar.SECOND);
 
-        Calendar c1 = Calendar.getInstance();
-        Calendar c2 = Calendar.getInstance();
-        for (Lecture tmp: model.getLectures_list_today()){
-            c1.setTime(tmp.getStart());
-            c2.setTime(tmp.getEnd());
-            int day = c1.get(Calendar.DAY_OF_MONTH);
-            int month = c1.get(Calendar.MONTH)+1;
-            int year = c1.get(Calendar.YEAR);
-
-            if (day==c_day && month==c_month && year==c_year) {
-                int c_hour1 = c1.get(Calendar.HOUR_OF_DAY);
-
-                int c_hour2 = c2.get(Calendar.HOUR_OF_DAY);
-
-                if (c_hour>=c1.get(Calendar.HOUR_OF_DAY) && c_hour< c2.get(Calendar.HOUR_OF_DAY)){
-                    System.out.println("Day :"+c_day+ " - " +day+", Month :"+c_month+ " - " +month+", Hour :"+c_hour+" - "+c1.get(Calendar.HOUR_OF_DAY));
-                    tmp_attendance_class=tmp;
-                    return tmp.getLocation();
-                }
-            }
-        }
-        return "noLocation";
-
-    }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -206,6 +149,7 @@ public class MainFragment extends Fragment implements AttendanceModel.OnCheckBea
         super.onAttach(activity);
         try {
             mListener = (OnFragmentInteractionListener) activity;
+            mCalendarListener = (OnLoadCalendarFeeds) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -216,13 +160,7 @@ public class MainFragment extends Fragment implements AttendanceModel.OnCheckBea
     @Override
     public void onResume() {
         super.onResume();
-        SystemRequirementsChecker.checkWithDefaultDialogs(getActivity());
-//        beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
-//            @Override
-//            public void onServiceReady() {
-//                beaconManager.startRanging(region);
-//            }
-//        });
+
 
     }
 
@@ -236,31 +174,11 @@ public class MainFragment extends Fragment implements AttendanceModel.OnCheckBea
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        mCalendarListener=null;
 
     }
 
-    @Override
-    public void oncheckBeaconListener(String UUID, String major, String minor, String location) {
-        Boolean found_flag=false;
-        System.out.println(UUID.toLowerCase() + " " + major + " " + minor + " " + location);
-        System.out.println(tmpBeaconList);
 
-        for (Beacon tmp : tmpBeaconList){
-            String beaconUUID= UUID.toLowerCase();
-            if (beaconUUID.equals(tmp.getProximityUUID().toString()) && major.equals(Integer.toString(tmp.getMajor())) && minor.equals(Integer.toString(tmp.getMinor()))){
-                System.out.println("Verified");
-                showAlertDialog();
-                //showNotification(
-//                        "Attendance!",
-//                        "Please sign in for the lesson in the lecture hall "
-//                                + location);
-                found_flag=true;
-
-            }
-        }
-        if (!found_flag)
-            beaconManager.startRanging(region);
-    }
 
     public void showNotification(String title, String message) {
         Intent notifyIntent = new Intent(getActivity(), MainActivity.class);
@@ -280,31 +198,6 @@ public class MainFragment extends Fragment implements AttendanceModel.OnCheckBea
         notificationManager.notify(1, notification);
     }
 
-    public void showAlertDialog(){
-
-        // 1. Instantiate an AlertDialog.Builder with its constructor
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-// 2. Chain together various setter methods to set the dialog characteristics
-        builder.setMessage("Do you want to sign in for the "+tmp_attendance_class.getType()+" "+tmp_attendance_class.getModule()+"which is taking place in "+tmp_attendance_class.getLocation()+"?")
-                .setTitle("Attendance for the "+tmp_attendance_class.getModule());
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // User clicked OK button
-            }
-        });
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // User cancelled the dialog
-            }
-        });
-
-// 3. Get the AlertDialog from create()
-        AlertDialog dialog = builder.create();
-        dialog.show();
-
-
-    }
 
 
     /**
@@ -320,6 +213,11 @@ public class MainFragment extends Fragment implements AttendanceModel.OnCheckBea
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
+    }
+
+    public interface OnLoadCalendarFeeds {
+        // TODO: Update argument type and name
+        public void onLoadCalendarFeeds();
     }
 
     public void update_login(){
@@ -365,33 +263,16 @@ public class MainFragment extends Fragment implements AttendanceModel.OnCheckBea
     }
 
 
-    public void scheduleAlarm()
-    {
 
-        // Set the alarm to start at approximately 8:00 p.m.
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, 8);
-        calendar.set(Calendar.MINUTE, 01);
 
-       // Intent intentAlarm = new Intent(getActivity(), AlarmReciever.class);
+    public void showDialog_ImportCalendar(){
+        if (mCalendarListener!=null)
+            mCalendarListener.onLoadCalendarFeeds();
 
-        // create the object
-      //  AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
-        AlarmManager alarmManager = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(getActivity(), AlarmReciever.class);
-        PendingIntent alarmIntent = PendingIntent.getBroadcast(getActivity(), 0, intent, 0);
-        // constants--in this case, AlarmManager.INTERVAL_DAY.
-        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-                AlarmManager.INTERVAL_DAY, alarmIntent);
-
-        //set the alarm for particular time
-//        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-//                AlarmManager.INTERVAL_DAY, PendingIntent.getBroadcast(getActivity(),1,  intentAlarm, PendingIntent.FLAG_UPDATE_CURRENT));
-//
-        Toast.makeText(getActivity(), "Alarm Scheduled for Tommrrow", Toast.LENGTH_SHORT).show();
 
     }
+
+
 }
 
 

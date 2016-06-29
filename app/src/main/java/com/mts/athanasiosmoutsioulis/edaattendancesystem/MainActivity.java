@@ -1,8 +1,10 @@
 package com.mts.athanasiosmoutsioulis.edaattendancesystem;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -34,6 +36,7 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.estimote.sdk.SystemRequirementsChecker;
 import com.facebook.FacebookSdk;
@@ -63,8 +66,9 @@ import java.util.Date;
 import java.util.Iterator;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, MainFragment.OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener, MainFragment.OnFragmentInteractionListener, MainFragment.OnLoadCalendarFeeds {
     AttendanceModel model = new AttendanceModel(this);
+
     public static final String MyPREFERENCES = "MyPrefs" ;
     SharedPreferences sharedpreferences;
     static final int LOGIN_REQUEST = 1;  // The request code
@@ -156,30 +160,8 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            showDialog_CalendarImport();
 
-            AlertDialog.Builder builder_calendar = new AlertDialog.Builder(MainActivity.this);
-            LayoutInflater inflater = this.getLayoutInflater();
-            View dialog_view=inflater.inflate(R.layout.import_calendar_dialog, null);
-            builder_calendar.setView(dialog_view);
-            final EditText feed_url= (EditText)dialog_view.findViewById(R.id.edt_calendar_url);
-
-            builder_calendar.setMessage("Paste the url for the caledanr feed")
-                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            // FIRE ZE MISSILES!
-                            String calendar_url= feed_url.getText().toString();
-                            calendar_url=calendar_url.replace("webcal","http");
-                            Log.i("calendar",calendar_url);
-                            new DownloadFileFromURL().execute(calendar_url);
-                        }
-                    })
-                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            // User cancelled the dialog
-                        }
-                    });
-
-            builder_calendar.create().show();
             return true;
         }
 
@@ -358,6 +340,12 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    @Override
+    public void onLoadCalendarFeeds() {
+        showDialog_CalendarImport();
+
+    }
+
     /**
      * Background Async Task to download file
      * */
@@ -402,6 +390,7 @@ public class MainActivity extends AppCompatActivity
                 } catch (ParserException e) {
                     e.printStackTrace();
                 }
+                System.out.println(calendar);
                 SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'");
                 try {
                     model.open();
@@ -458,48 +447,7 @@ public class MainActivity extends AppCompatActivity
 
                 }
                 model.close();
-               /* for (Lecture tmp : model.getLectures_list()){
-                    System.out.println("START EVENT");
-                    System.out.println(tmp.getTitle());
-                    System.out.println(tmp.getModule());
-                    System.out.println(tmp.getType());
-                    System.out.println(tmp.getLocation());
-                    System.out.println(tmp.getStart());
-                    System.out.println(tmp.getEnd());
-                    System.out.println(tmp.getDescription());
 
-                }*/
-                //if we want to save the file to local memory
-                // getting file length
-               /* int lenghtOfFile = conection.getContentLength();
-
-                // Output stream to write file
-                File testDirectory = new File(Environment.getExternalStorageDirectory() + "/Download");
-                if (!testDirectory.exists())
-                {
-                    testDirectory.mkdir();
-                }
-
-                FileOutputStream output = new FileOutputStream(testDirectory + "/calendar.txt");
-
-                byte data[] = new byte[1024];
-
-                long total = 0;
-
-                while ((count = input.read(data)) != -1) {
-                    total += count;
-                    // publishing the progress....
-                    // After this onProgressUpdate will be called
-                    publishProgress(""+(int)((total*100)/lenghtOfFile));
-
-                    // writing data to file
-                    output.write(data, 0, count);
-                }
-
-                output.flush();;
-                String result=readStringFromFile(testDirectory);
-                // closing streams
-                output.close();*/
                 input.close();
 
 
@@ -529,6 +477,11 @@ public class MainActivity extends AppCompatActivity
             if (dialog.isShowing()) {
                 dialog.dismiss();
             }
+            SharedPreferences.Editor editor = sharedpreferences.edit();
+            editor.putBoolean("Calendar",true);
+            editor.commit();
+            model.load_today_lectures();
+            scheduleAlarm();
 
         }
 
@@ -558,5 +511,63 @@ public class MainActivity extends AppCompatActivity
             e.printStackTrace();
         }
         return response;
+    }
+
+    public void showDialog_CalendarImport(){
+        AlertDialog.Builder builder_calendar = new AlertDialog.Builder(MainActivity.this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialog_view=inflater.inflate(R.layout.import_calendar_dialog, null);
+        builder_calendar.setView(dialog_view);
+        final EditText feed_url= (EditText)dialog_view.findViewById(R.id.edt_calendar_url);
+
+        builder_calendar.setMessage("Paste the url for the caledanr feed")
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // FIRE ZE MISSILES!
+                        String calendar_url= feed_url.getText().toString();
+                        calendar_url=calendar_url.replace("webcal","http");
+                        Log.i("calendar",calendar_url);
+                        new DownloadFileFromURL().execute(calendar_url);
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User cancelled the dialog
+                    }
+                });
+
+        builder_calendar.create().show();
+
+    }
+
+    public void scheduleAlarm()
+    {
+
+        // Set the alarm to start at approximately 8:00 p.m.
+        java.util.Calendar calendar = java.util.Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(java.util.Calendar.HOUR_OF_DAY, 8);
+        calendar.set(java.util.Calendar.MINUTE, 01);
+
+        // Intent intentAlarm = new Intent(getActivity(), AlarmReciever.class);
+
+        // create the object
+        //  AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+        AlarmManager alarmManager = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, AlarmReciever.class);
+        PendingIntent alarmIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
+        // constants--in this case, AlarmManager.INTERVAL_DAY.
+
+        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                AlarmManager.INTERVAL_DAY, alarmIntent);
+
+
+
+        //set the alarm for particular time
+//        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+//                AlarmManager.INTERVAL_DAY, PendingIntent.getBroadcast(getActivity(),1,  intentAlarm, PendingIntent.FLAG_UPDATE_CURRENT));
+//
+        Toast.makeText(this, "Alarm Scheduled for 08:01", Toast.LENGTH_SHORT).show();
+
     }
 }

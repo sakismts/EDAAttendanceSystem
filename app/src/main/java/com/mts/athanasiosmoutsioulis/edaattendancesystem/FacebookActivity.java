@@ -61,6 +61,7 @@ public class FacebookActivity extends AppCompatActivity {
                 if(newProfile != null){
                     info.setText(newProfile.getName());
                     Uri imageUrl= newProfile.getProfilePictureUri(300,300);
+                    Log.i("Facebook",imageUrl.toString());
                     new DownloadImage((ImageView)findViewById(R.id.imageView)).execute(imageUrl.toString());
                     model.setFbName(newProfile.getName());
                 }else{
@@ -80,7 +81,7 @@ public class FacebookActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         loginButton = (LoginButton)findViewById(R.id.login_button);
         info = (TextView)findViewById(R.id.info);
-        Button cancel = (Button)findViewById(R.id.btn_cancel);
+       // Button cancel = (Button)findViewById(R.id.btn_cancel);
         //Load the profile photo from shared preferences
         Profile profile = Profile.getCurrentProfile();
         if (profile != null) {
@@ -94,16 +95,16 @@ public class FacebookActivity extends AppCompatActivity {
             info.setText("Youu are logged as : "+profile.getName().toString());
         }
 
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent returnIntent = new Intent();
-                returnIntent.putExtra("result", true);
-                setResult(Activity.RESULT_OK, returnIntent);
-                finish();
-
-            }
-        });
+//        cancel.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent returnIntent = new Intent();
+//                returnIntent.putExtra("result", true);
+//                setResult(Activity.RESULT_OK, returnIntent);
+//                finish();
+//
+//            }
+//        });
 
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
@@ -189,6 +190,7 @@ public class FacebookActivity extends AppCompatActivity {
 
         protected void onPostExecute(Bitmap result) {
             //saving image to shared preferences
+            Log.i("Facebook","Finished image downloading ");
             Bitmap tmp=result;
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             tmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);

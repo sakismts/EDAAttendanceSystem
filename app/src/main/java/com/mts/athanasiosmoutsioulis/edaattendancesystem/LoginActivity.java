@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.estimote.sdk.SystemRequirementsChecker;
+
 public class LoginActivity extends AppCompatActivity implements LoginFragment.OnLoginListener, SignupFragment.OnFragmentInteractionListener{
     AttendanceModel model = AttendanceModel.getOurInstance();
     public static final String MyPREFERENCES = "MyPrefs" ;
@@ -74,6 +76,12 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.On
 
     @Override
     public void onFragmentInteraction(Uri uri) {
+
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        SystemRequirementsChecker.checkWithDefaultDialogs(this);
 
     }
 }

@@ -401,6 +401,7 @@ public class AttendanceModel {
     Response.ErrorListener checkBeaconErrorListener = new Response.ErrorListener() {
         @Override
         public void onErrorResponse(VolleyError error) {
+            Log.i("BeaconError",error.toString());
 
         }
     };
@@ -608,17 +609,19 @@ public class AttendanceModel {
         Calendar c1 = Calendar.getInstance();
 
         //Calendar c1 = new GregorianCalendar(TimeZone.getTimeZone("London"));
+        getLectures_list_today().clear();
 
         for (Lecture tmp : tmpList){
-            System.out.println(tmp.getStart());
+
 
 
             c1.setTime(tmp.getStart());
-            System.out.println(c1.get(Calendar.HOUR_OF_DAY));
+
             int day = c1.get(Calendar.DAY_OF_MONTH);
             int month = c1.get(Calendar.MONTH)+1;
             if (day==c_day && month==c_month) {
                 getLectures_list_today().add(tmp);
+                Log.i("Location", tmp.getLocation());
             }
         }
 
@@ -644,5 +647,15 @@ public class AttendanceModel {
     public void deleteAllFromDB(){
             database.delete(dbHelper.TABLE_NAME, null, null);
     }
+     public void load_today_lectures(){
+         try {
+             opendb_read();
+             read_db_today();
+         } catch (SQLException e) {
+             e.printStackTrace();
+         }
+         close();
+
+     }
 
 }

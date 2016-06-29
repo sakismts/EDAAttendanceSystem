@@ -3,6 +3,7 @@
     package="com.mts.athanasiosmoutsioulis.edaattendancesystem" >
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
 
     <application
@@ -53,7 +54,11 @@
             android:exported="false" >
         </service>
         <!-- Register the Alarm Receiver -->
-        <receiver android:name=".AlarmReciever" />
+        <receiver android:name=".AlarmReciever">
+        <intent-filter>
+            <action android:name="com.mts.athanasiosmoutsioulis.alarm.notifier" />//this should be unique string as action
+        </intent-filter>
+        </receiver>
 
         <service
             android:name=".DownloadBeaconIdsService"

@@ -16,6 +16,7 @@ public class MyApplication extends Application {
     static private MyApplication instance;
     private RequestQueue requestQueue;
 
+
     public RequestQueue getRequestQueue() {
         return requestQueue;
     }
