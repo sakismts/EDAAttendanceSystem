@@ -67,7 +67,7 @@ import java.util.Iterator;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, MainFragment.OnFragmentInteractionListener, MainFragment.OnLoadCalendarFeeds {
-    AttendanceModel model = new AttendanceModel(this);
+    AttendanceModel model;
 
     public static final String MyPREFERENCES = "MyPrefs" ;
     SharedPreferences sharedpreferences;
@@ -83,7 +83,9 @@ public class MainActivity extends AppCompatActivity
         AppEventsLogger.activateApp(this);
 
         setContentView(R.layout.activity_main);
-
+        model=AttendanceModel.getOurInstance();
+        if (model==null)
+        model= new AttendanceModel(this);
         builder = new CalendarBuilder();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -561,7 +563,9 @@ public class MainActivity extends AppCompatActivity
         alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                 AlarmManager.INTERVAL_DAY, alarmIntent);
 
-
+        SharedPreferences.Editor prefsEditor = sharedpreferences.edit();
+        prefsEditor.putString("BeaconList","empty");
+        prefsEditor.commit();
 
         //set the alarm for particular time
 //        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),

@@ -2,20 +2,25 @@ package com.mts.athanasiosmoutsioulis.edaattendancesystem;
 
 import android.app.Activity;
 import android.app.AlarmManager;
+import android.app.Dialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Handler;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AlertDialog;
@@ -24,6 +29,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -61,7 +70,7 @@ import java.util.UUID;
  * {@link MainFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
  */
-public class MainFragment extends Fragment {
+public class MainFragment extends Fragment implements AttendanceModel.OnSignAttendanceListener{
     TextView id;
     TextView fbName;
     ImageView photo_profile;
@@ -70,9 +79,9 @@ public class MainFragment extends Fragment {
     public AttendanceModel model = AttendanceModel.getOurInstance();
     private OnFragmentInteractionListener mListener;
     private OnLoadCalendarFeeds mCalendarListener;
-    private BeaconManager beaconManager;
-    private Region region;
-
+    MyReceiver myReceiver;
+    private ProgressDialog Attendanceprogressdialog;
+    private final static int FADE_DURATION = 800; // in milliseconds
 
     ArrayList<com.mts.athanasiosmoutsioulis.edaattendancesystem.Beacon> tmpBeaconList = new ArrayList<com.mts.athanasiosmoutsioulis.edaattendancesystem.Beacon>();
 
@@ -90,7 +99,9 @@ public class MainFragment extends Fragment {
         photo_profile = (ImageView)view.findViewById(R.id.img_fbPhoto);
         id = (TextView)view.findViewById(R.id.tv_id);
         fbName = (TextView)view.findViewById(R.id.tv_fbName);
-
+        Attendanceprogressdialog=new ProgressDialog(getActivity());
+        Attendanceprogressdialog.setMessage("Sign Attendance, please wait.");
+        model.setSignAttendanceListener(this);
 
 
 
@@ -123,11 +134,26 @@ public class MainFragment extends Fragment {
                 startActivity(schedule);
             }
         });
+        LinearLayout manualAttendance = (LinearLayout)view.findViewById(R.id.ll_search_beacon);
+        manualAttendance.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent manualAtt=new Intent(getActivity(),ManualAttendance.class);
+                startActivity(manualAtt);
+            }
+        });
         update_FBlogin();
 
         Boolean calendar_feeds=sharedpreferences.getBoolean("Calendar", false);
         if(calendar_feeds==false)
         showDialog_ImportCalendar();
+
+        //Register BroadcastReceiver
+        //to receive event from our service
+        myReceiver = new MyReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(DownloadBeaconIdsService.MY_ACTION);
+        getActivity().registerReceiver(myReceiver, intentFilter);
 
         Intent msgIntent = new Intent(getActivity(), DownloadBeaconIdsService.class);
         getActivity().startService(msgIntent);
@@ -175,28 +201,11 @@ public class MainFragment extends Fragment {
         super.onDetach();
         mListener = null;
         mCalendarListener=null;
+        getActivity().unregisterReceiver(myReceiver);
+
 
     }
 
-
-
-    public void showNotification(String title, String message) {
-        Intent notifyIntent = new Intent(getActivity(), MainActivity.class);
-        notifyIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivities(getActivity(), 0,
-                new Intent[] { notifyIntent }, PendingIntent.FLAG_UPDATE_CURRENT);
-        Notification notification = new Notification.Builder(getActivity())
-                .setSmallIcon(android.R.drawable.ic_dialog_info)
-                .setContentTitle(title)
-                .setContentText(message)
-                .setAutoCancel(true)
-                .setContentIntent(pendingIntent)
-                .build();
-        notification.defaults |= Notification.DEFAULT_SOUND;
-        NotificationManager notificationManager =
-                (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(1, notification);
-    }
 
 
 
@@ -220,7 +229,7 @@ public class MainFragment extends Fragment {
         public void onLoadCalendarFeeds();
     }
 
-    public void update_login(){
+    public void update_login() {
         id.setText(sharedpreferences.getString("id", "User"));
 
     }
@@ -270,6 +279,99 @@ public class MainFragment extends Fragment {
             mCalendarListener.onLoadCalendarFeeds();
 
 
+    }
+
+    private class MyReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context arg0, Intent arg1) {
+            // TODO Auto-generated method stub
+
+            String datapassed = arg1.getStringExtra("Lecture");
+            displayAttendanceDialog(datapassed);
+
+        }
+
+    }
+
+    private void displayAttendanceDialog(String data)
+    {
+        System.out.println("the current lecture is : "+model);
+
+        System.out.println("the current lecture is : "+model.getCurrentLecture());
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Attendance");
+        builder.setMessage(data).setCancelable(
+                false).setPositiveButton("Yes",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Attendanceprogressdialog.show();
+                        String user_id=sharedpreferences.getString("id", "User");
+                        String module_id=model.getCurrentLecture().getModule();
+                        String lecture_type=model.getCurrentLecture().getType();
+                        String location=model.getCurrentLecture().getLocation();
+                        Calendar c_start = Calendar.getInstance();
+                        c_start.setTime(model.getCurrentLecture().getStart());
+                        String startDate=c_start.get(Calendar.DAY_OF_MONTH)+"/"+String.valueOf(c_start.get(Calendar.MONTH)+1)+"/"+c_start.get(Calendar.YEAR)+"T"+c_start.get(Calendar.HOUR_OF_DAY)+":"+c_start.get(Calendar.MINUTE);
+
+                        Calendar c_end = Calendar.getInstance();
+                        c_end.setTime(model.getCurrentLecture().getEnd());
+                        String endDate=c_end.get(Calendar.DAY_OF_MONTH)+"/"+String.valueOf(c_end.get(Calendar.MONTH)+1)+"/"+c_end.get(Calendar.YEAR)+"T"+c_end.get(Calendar.HOUR_OF_DAY)+":"+c_end.get(Calendar.MINUTE);
+
+                        String uri = "http://greek-tour-guides.eu/ioannina/dissertation/insert_attendance.php?student_id="+user_id+"&module_id="+module_id+"&lectureType="+lecture_type+"&location="+location+"&startDate="+startDate+"&endDate="+endDate+"&valid=true";
+                        Log.i("URI",uri.toString());
+                        model.signAttendance(uri);
+                    }
+                }).setNegativeButton("No",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    @Override
+    public void onSignAttendanceListener(boolean signed) {
+        Attendanceprogressdialog.dismiss();
+        if(signed==true){
+
+        final Dialog okDialog = new Dialog(getActivity());
+        okDialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        View view = inflater.inflate(R.layout.image_layout, null);
+        okDialog.setContentView(view);
+        okDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+        okDialog.show();
+        setScaleAnimation(view);
+        final Handler handler  = new Handler();
+        final Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                if (okDialog.isShowing()) {
+                    okDialog.dismiss();
+                }
+            }
+        };
+
+        okDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                handler.removeCallbacks(runnable);
+            }
+        });
+
+        handler.postDelayed(runnable, 1000);
+        }
+
+    }
+    private void setScaleAnimation(View view) {
+        ScaleAnimation anim = new ScaleAnimation(0.0f, 1.0f, 0.0f, 1.0f, Animation.RELATIVE_TO_SELF, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f);
+        anim.setDuration(FADE_DURATION);
+        view.startAnimation(anim);
     }
 
 

@@ -54,10 +54,11 @@
             android:exported="false" >
         </service>
         <!-- Register the Alarm Receiver -->
-        <receiver android:name=".AlarmReciever">
-        <intent-filter>
-            <action android:name="com.mts.athanasiosmoutsioulis.alarm.notifier" />//this should be unique string as action
-        </intent-filter>
+        <receiver android:name=".AlarmReciever" >
+            <intent-filter>
+                <action android:name="com.mts.athanasiosmoutsioulis.alarm.notifier" />
+//this should be unique string as action
+            </intent-filter>
         </receiver>
 
         <service
@@ -65,6 +66,9 @@
             android:enabled="true"
             android:exported="true" >
         </service>
+
+        <activity android:name=".ManualAttendance" >
+        </activity>
     </application>
 
 </manifest>

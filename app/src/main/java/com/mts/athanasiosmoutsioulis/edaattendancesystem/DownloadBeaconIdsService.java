@@ -1,6 +1,8 @@
 package com.mts.athanasiosmoutsioulis.edaattendancesystem;
 
 import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -29,7 +31,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
 
-public class DownloadBeaconIdsService extends Service {
+public class DownloadBeaconIdsService extends Service implements AttendanceModel.OnCheckAttendanceListener {
     HandlerThread mythread;
     AttendanceModel  model;
     private BeaconManager beaconManager;
@@ -38,6 +40,11 @@ public class DownloadBeaconIdsService extends Service {
     SharedPreferences sharedpreferences;
     public static final String MyPREFERENCES = "MyPrefs" ;
     private Lecture tmp_attendance_class;
+    final static String MY_ACTION = "MY_ACTION";
+    private int lecture_hour;
+
+
+
 
     public DownloadBeaconIdsService() {
 
@@ -56,6 +63,9 @@ public class DownloadBeaconIdsService extends Service {
        model = new AttendanceModel(this);
         model.load_today_lectures();
 
+        //
+
+        model.setCheckAttendanceListener(this);
         region = new Region("ranged region",
                 UUID.fromString("B9407F30-F5F8-466E-AFF9-25556B57FE6D"), null, null);
         beaconManager.setRangingListener(new BeaconManager.RangingListener() {
@@ -78,9 +88,11 @@ public class DownloadBeaconIdsService extends Service {
                         }
 
                         String location= checkLecturesTime().toString().toLowerCase();
-                        Log.i("Service",location);
+                        Log.i("Service", location);
 
-                       if(!todayBeaconList.isEmpty()){
+
+
+                       if(!todayBeaconList.isEmpty() ){
                            for (com.mts.athanasiosmoutsioulis.edaattendancesystem.Beacon tmp_todayBeacon:todayBeaconList){
                                if (location.equals(tmp_todayBeacon.getLocation().toLowerCase())){
                                    for (Beacon tmp:list){
@@ -88,7 +100,34 @@ public class DownloadBeaconIdsService extends Service {
                                         String major = Integer.toString(tmp.getMajor());
                                         String minor = Integer.toString(tmp.getMinor());
                                        if (beaconUUID.equals(tmp_todayBeacon.getUUID().toString().toLowerCase()) && major.equals(tmp_todayBeacon.getMajor()) && minor.equals(tmp_todayBeacon.getMinor()) ){
-                                           Log.i("Beacon","Lecture detected at location :"+tmp_todayBeacon.getLocation());
+                                           Log.i("Beacon", "Lecture detected at location :" + tmp_todayBeacon.getLocation());
+
+                                           Calendar c = Calendar.getInstance();
+                                           c.setTime(tmp_attendance_class.getEnd());
+                                           lecture_hour = c.get(Calendar.HOUR_OF_DAY);
+
+                                            beaconManager.stopRanging(region);
+                                           waitToRestartBeaconSearch();
+
+                                            model.setCurrentLecture(tmp_attendance_class);
+                                           System.out.println(tmp_attendance_class);
+                                           //////check for attendance////
+                                           String user_id=sharedpreferences.getString("id", "User");
+                                           String module_id=model.getCurrentLecture().getModule();
+                                           String lecture_type=model.getCurrentLecture().getType();
+                                           String lect_location=model.getCurrentLecture().getLocation();
+                                           Calendar c_start = Calendar.getInstance();
+                                           c_start.setTime(model.getCurrentLecture().getStart());
+                                           String startDate=c_start.get(Calendar.DAY_OF_MONTH)+"/"+String.valueOf(c_start.get(Calendar.MONTH)+1)+"/"+c_start.get(Calendar.YEAR)+"T"+c_start.get(Calendar.HOUR_OF_DAY)+":"+c_start.get(Calendar.MINUTE);
+
+                                           Calendar c_end = Calendar.getInstance();
+                                           c_end.setTime(model.getCurrentLecture().getEnd());
+                                           String endDate=c_end.get(Calendar.DAY_OF_MONTH)+"/"+String.valueOf(c_end.get(Calendar.MONTH)+1)+"/"+c_end.get(Calendar.YEAR)+"T"+c_end.get(Calendar.HOUR_OF_DAY)+":"+c_end.get(Calendar.MINUTE);
+
+                                           String uri = "http://greek-tour-guides.eu/ioannina/dissertation/checkAttendance.php?student_id="+user_id+"&module_id="+module_id+"&lectureType="+lecture_type+"&location="+lect_location+"&startDate="+startDate+"&endDate="+endDate;
+                                           Log.i("URI",uri.toString());
+                                            model.CheckAttendance(uri);
+
                                        }
 
                                    }
@@ -96,64 +135,41 @@ public class DownloadBeaconIdsService extends Service {
                                }
 
                            }
-//                            for (Beacon tmp:list){
-//                                String beaconUUID= tmp.getProximityUUID().toString().toLowerCase();
-//                                String major = Integer.toString(tmp.getMajor());
-//                                String minor = Integer.toString(tmp.getMinor());
-//                               for (com.mts.athanasiosmoutsioulis.edaattendancesystem.Beacon tmp_todayBeacon:todayBeaconList){
-//                                   if (beaconUUID.equals(tmp_todayBeacon.getUUID().toString().toLowerCase()) && major.equals(tmp_todayBeacon.getMajor()) && minor.equals(tmp_todayBeacon.getMinor()) && location.toString().toLowerCase().equals(tmp_todayBeacon.getLocation().toLowerCase())){
-//                                       Log.i("Beacon","Lecture detected at location :"+tmp_todayBeacon.getLocation());
-//
-//                                   }
-//
-//                               }
-//
-//                            }
+
 
                         }
 
                     }
 
-
-
-//                    for (Beacon tmp : list){
-//                    String beaconUUID= tmp.getProximityUUID().toString().toLowerCase();
-//            if (beaconUUID.equals(tmp.getProximityUUID().toString()) && major.equals(Integer.toString(tmp.getMajor())) && minor.equals(Integer.toString(tmp.getMinor()))){
-//                System.out.println("Verified");
-//                showAlertDialog();
-//                //showNotification(
-////                        "Attendance!",
-////                        "Please sign in for the lesson in the lecture hall "
-////                                + location);
-//                found_flag=true;
-//
-//            }
-//        }
-
                    //String current_lect_location= checkLecturesTime();
 
                     Log.i("Json: ", sharedpreferences.getString("BeaconList", "empty"));
-                    //  Beacon nearestBeacon = list.get(0);
 
-                    // List<String> places = placesNearBeacon(nearestBeacon);
-                    // TODO: update the UI here
-                    //Log.d("Airport", "Nearest places: " + places);
-                    // beaconManager.stopRanging(region);
-                    // String location = checkLecturesTime();
-                    //System.out.println(location);
-//                            if (location.equals("noLocation"))
-//                                beaconManager.startRanging(region);
-//                            else {
-//                                setTmpBeaconList(list);
-//                                model.checkBeacon(location);
-//
-//                            }
 
 
                 }
             }
         });
     }
+
+    public void showNotification() {
+        Intent notifyIntent = new Intent(getApplicationContext(), MainActivity.class);
+        notifyIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivities(getApplicationContext(), 0,
+                new Intent[] { notifyIntent }, PendingIntent.FLAG_UPDATE_CURRENT);
+        Notification notification = new Notification.Builder(getApplicationContext())
+                .setSmallIcon(android.R.drawable.ic_dialog_info)
+                .setContentTitle("Attendance")
+                .setContentText("Please sign for "+tmp_attendance_class.getModule()+" at "+tmp_attendance_class.getLocation())
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent)
+                .build();
+        notification.defaults |= Notification.DEFAULT_SOUND;
+        NotificationManager notificationManager =
+                (NotificationManager)getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(1, notification);
+    }
+
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -164,35 +180,57 @@ public class DownloadBeaconIdsService extends Service {
         myHandler.post(new Runnable() {
             @Override
             public void run() {
-//                int delay = 5000; // delay for 5 sec.
-//                int period = 1000; // repeat every sec.
-//                Timer timer = new Timer();
-//                timer.scheduleAtFixedRate(new TimerTask() {
-//                    public void run() {
-//                        // Your code
-//
-//                        counter++;
-//                        Log.i("Counter: ", Integer.toString(counter));
-//
-//                       // Log.i("today ", "the size of today lectures is : " + Integer.toString(model.getLectures_list_today().size()));
-//
-//
-//                    }
-//                }, delay, period);
+
                 beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
                     @Override
                     public void onServiceReady() {
+
                         beaconManager.startRanging(region);
+
+
                     }
                 });
 
             }
         });
 
-//
-        return Service.START_STICKY;
+        return Service.START_REDELIVER_INTENT;
     }
 
+    public void waitToRestartBeaconSearch(){
+        int delay = 5000; // delay for 5 sec.
+                int period = 1000; // repeat every sec.
+        final Timer[] timer = {new Timer()};
+                timer[0].scheduleAtFixedRate(new TimerTask() {
+                    public void run() {
+                        // Your code
+
+                        counter++;
+                        Log.i("Counter: ", Integer.toString(counter));
+
+                        Calendar c = Calendar.getInstance();
+                        int cur_hour = c.get(Calendar.HOUR_OF_DAY);
+                        if (cur_hour == lecture_hour) {
+                            timer[0].cancel();
+                            timer[0] = null;
+                            beaconManager.startRanging(region);
+                            if (model.getCheckAttendanceListener()==null)
+                                setListener();
+
+
+                        }
+                        // Log.i("today ", "the size of today lectures is : " + Integer.toString(model.getLectures_list_today().size()));
+
+
+                    }
+                }, delay, period);
+
+
+    }
+
+    public void setListener(){
+        model.setCheckAttendanceListener(this);
+    }
     @Override
     public IBinder onBind(Intent intent) {
         // TODO: Return the communication channel to the service.
@@ -225,6 +263,7 @@ public class DownloadBeaconIdsService extends Service {
                     System.out.println("Day :"+c_day+ " - " +day+", Month :"+c_month+ " - " +month+", Hour :"+c_hour+" - "+c1.get(Calendar.HOUR_OF_DAY));
                     tmp_attendance_class=tmp;
                     Log.i("Lecture","Current lecture is at :"+tmp.getLocation());
+
                     return tmp.getLocation();
                 }
             }
@@ -254,6 +293,32 @@ public class DownloadBeaconIdsService extends Service {
     }
 
 
+    @Override
+    public void onCheckAttendanceListener(boolean signed) {
+
+        if(!signed){
+            Intent intent = new Intent();
+            intent.setAction(MY_ACTION);
+            intent.putExtra("Lecture", "Do you want to sign for the " + tmp_attendance_class.getType() + " of " + tmp_attendance_class.getModule() + " at " + tmp_attendance_class.getLocation());
+            sendBroadcast(intent);
+            showNotification();
+
+        }
+
+    }
+
+    private class MessageFromManualActivity extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context arg0, Intent arg1) {
+            // TODO Auto-generated method stub
+
+            String datapassed = arg1.getStringExtra("Lecture");
+
+
+        }
+
+    }
 }
 
 

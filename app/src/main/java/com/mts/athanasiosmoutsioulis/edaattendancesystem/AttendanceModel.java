@@ -53,6 +53,16 @@ public class AttendanceModel {
     String fbName;
     Bitmap photoProfile;
 
+    public Lecture getCurrentLecture() {
+        return CurrentLecture;
+    }
+
+    public void setCurrentLecture(Lecture currentLecture) {
+        CurrentLecture = currentLecture;
+    }
+
+    public Lecture CurrentLecture;
+
     public ArrayList<Lecture> getLectures_list() {
         return lectures_list;
     }
@@ -124,12 +134,21 @@ public class AttendanceModel {
 
 
 
+    private OnSignAttendanceListener signAttendanceListener; //define var of the interface
+
+
 
     private OnCheckBeaconListener checkBeaconUpdateListener; //define var of the interface
 
 
 
     private OnCourseListUpdateListener courseListUpdateListener; //define var of the interface
+
+    public OnCheckAttendanceListener getCheckAttendanceListener() {
+        return checkAttendanceListener;
+    }
+
+    private OnCheckAttendanceListener checkAttendanceListener;
 
     //constructor
     public AttendanceModel(Context context) {
@@ -205,7 +224,131 @@ public class AttendanceModel {
     }
     ///////////////////////////////////////////////////////
 
-    /////Sing in Section/////////////
+    ///////////Attendances Sign Section//////////////////
+
+    public void signAttendance(String uri){
+
+        Log.i("SignAttendance","Sending request");
+        //  String uri = "http://greek-tour-guides.eu/ioannina/dissertation/insert_user.php?id=2&role=student&pass=1&course=a";
+        JsonObjectRequest request = new JsonObjectRequest(uri, signAttListener,signAttendanceErrorListener);
+
+        MyApplication.getInstance().getRequestQueue().add(request);
+
+    }
+
+    Response.Listener<JSONObject> signAttListener = new Response.Listener<JSONObject>(){
+
+
+        @Override
+        public void onResponse(JSONObject response) {
+            System.out.println(response);
+            int result=-1;
+            try {
+                result= response.getInt("success");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            if (result==1)
+                notifyListenerAttendanceSign(true);
+            else
+                notifyListenerAttendanceSign(false);
+        }
+    };
+
+    Response.ErrorListener signAttendanceErrorListener = new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+
+        }
+    };
+
+    //INTERFACE for signup
+    public interface  OnSignAttendanceListener{
+        void onSignAttendanceListener(boolean signed);
+
+    }
+
+    public void setSignAttendanceListener(OnSignAttendanceListener signAttendanceListener) {
+        this.signAttendanceListener = signAttendanceListener;
+    }
+
+
+    private void notifyListenerAttendanceSign(boolean signed){
+
+
+        if (signAttendanceListener != null)
+
+            signAttendanceListener.onSignAttendanceListener(signed);
+
+    }
+
+
+    /////////////////////////////////////////////////////
+
+
+
+
+   ////////Sing in Section///////////////
+
+    public void CheckAttendance(String uri){
+
+        Log.i("Attendance","Check request");
+        //  String uri = "http://greek-tour-guides.eu/ioannina/dissertation/insert_user.php?id=2&role=student&pass=1&course=a";
+        JsonObjectRequest request = new JsonObjectRequest(uri, chAttendanceListener,CheckAttendanceErrorListener);
+
+        MyApplication.getInstance().getRequestQueue().add(request);
+
+    }
+
+    Response.Listener<JSONObject> chAttendanceListener = new Response.Listener<JSONObject>(){
+
+
+        @Override
+        public void onResponse(JSONObject response) {
+            System.out.println(response);
+            int result=-1;
+            try {
+                result= response.getInt("success");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            if (result==1)
+                notifyListenerCheckAttendance(true);
+            else
+                notifyListenerCheckAttendance(false);
+        }
+    };
+
+    Response.ErrorListener CheckAttendanceErrorListener = new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+
+        }
+    };
+
+    //INTERFACE for check Attendance
+    public interface  OnCheckAttendanceListener{
+        void onCheckAttendanceListener(boolean signed);
+
+    }
+
+    public void setCheckAttendanceListener(OnCheckAttendanceListener checkAttendanceListener) {
+        this.checkAttendanceListener = checkAttendanceListener;
+    }
+
+
+
+
+    private void notifyListenerCheckAttendance(boolean signed){
+
+        if (checkAttendanceListener != null)
+
+            checkAttendanceListener.onCheckAttendanceListener(signed);
+
+    }
+
+    ///////////////////////////////////////////////////////////////
+    /////////////check Attendance/////////////////////////////////
 
     public void signin(String uri){
 
@@ -262,7 +405,13 @@ public class AttendanceModel {
 
     }
 
-    ///////////////////////////////////////////////////////////////
+
+
+    ///////////////////////////////////////////////
+
+
+
+
     /////////////update course list////////////////////////////////
 
     public void updateCourseList(){
