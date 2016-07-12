@@ -7,11 +7,13 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Messenger;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +23,7 @@ import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.estimote.sdk.BeaconManager;
 import com.estimote.sdk.Region;
@@ -30,9 +33,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 
 public class ManualAttendance extends AppCompatActivity implements AttendanceModel.OnCheckAttendanceListener, AttendanceModel.OnSignAttendanceListener {
@@ -49,6 +56,10 @@ public class ManualAttendance extends AppCompatActivity implements AttendanceMod
     private final static int FADE_DURATION = 800; // in milliseconds
     private ProgressDialog Attendanceprogressdialog;
     final static String MY_ACTION = "MY_ACTION";
+    Boolean beaconvalidation =false;
+    TextView noLectures;
+    Boolean beaconDiscovered=false;
+    ProgressDialog progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +67,8 @@ public class ManualAttendance extends AppCompatActivity implements AttendanceMod
         setContentView(R.layout.activity_manual_attendance);
         beaconManager = new BeaconManager(this);
         model= AttendanceModel.getOurInstance();
+
+
 
         sharedpreferences = getApplicationContext().getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
          lecture = (CardView) findViewById(R.id.cv);
@@ -66,12 +79,20 @@ public class ManualAttendance extends AppCompatActivity implements AttendanceMod
         Attendanceprogressdialog.setMessage("Sign Attendance, please wait.");
         model.setSignAttendanceListener(this);
 
+        noLectures=(TextView)findViewById(R.id.tv_noLectures);
+        noLectures.setVisibility(View.GONE);
+        progress = ProgressDialog.show(this, "Searching for Lectures to Sign",
+                "Please wait", true);
+
 
 
         beaconManager.setRangingListener(new BeaconManager.RangingListener() {
             @Override
             public void onBeaconsDiscovered(Region region, List<com.estimote.sdk.Beacon> list) {
                 if (!list.isEmpty()) {
+
+                    noLectures.setVisibility(View.GONE);
+                    beaconDiscovered = true;
                     System.out.println(list);
                     // Deploy the Beacons that belongs to todays lectures
                     ArrayList<Beacon> todayBeaconList = new ArrayList<com.mts.athanasiosmoutsioulis.edaattendancesystem.Beacon>();
@@ -87,10 +108,12 @@ public class ManualAttendance extends AppCompatActivity implements AttendanceMod
                             e.printStackTrace();
                         }
 
+                        progress.dismiss();
                         String location = checkLecturesTime().toString().toLowerCase();
-                        Log.i("Service", location);
+                        if (location.equals("noLocation")) {
 
-
+                            noLectures.setVisibility(View.VISIBLE);
+                        }
                         if (!todayBeaconList.isEmpty()) {
                             for (com.mts.athanasiosmoutsioulis.edaattendancesystem.Beacon tmp_todayBeacon : todayBeaconList) {
                                 if (location.equals(tmp_todayBeacon.getLocation().toLowerCase())) {
@@ -101,8 +124,7 @@ public class ManualAttendance extends AppCompatActivity implements AttendanceMod
                                         if (beaconUUID.equals(tmp_todayBeacon.getUUID().toString().toLowerCase()) && major.equals(tmp_todayBeacon.getMajor()) && minor.equals(tmp_todayBeacon.getMinor())) {
                                             Log.i("Beacon", "Lecture detected at location :" + tmp_todayBeacon.getLocation());
 
-
-
+                                            beaconvalidation = true;
                                             beaconManager.stopRanging(region);
 
 
@@ -133,9 +155,17 @@ public class ManualAttendance extends AppCompatActivity implements AttendanceMod
                             }
 
 
+                        } else {
+                            if (checkLectures() != null) {
+                                noLectures.setVisibility(View.VISIBLE);
+
+                            }
+
+
                         }
 
                     }
+
 
                     //String current_lect_location= checkLecturesTime();
 
@@ -145,6 +175,49 @@ public class ManualAttendance extends AppCompatActivity implements AttendanceMod
                 }
             }
         });
+
+
+        new CountDownTimer(3000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+
+
+            }
+
+            public void onFinish() {
+                if (beaconDiscovered==false) {
+                    progress.dismiss();
+                    Log.i("Manual","timer");
+                    //////check for attendance////
+                    Lecture lecture = checkLectures();
+                    if (lecture != null) {
+                        noLectures.setVisibility(View.GONE);
+                        String user_id = sharedpreferences.getString("id", "User");
+                        String module_id = lecture.getModule();
+                        String lecture_type = lecture.getType();
+                        String lect_location = lecture.getLocation();
+                        Calendar c_start = Calendar.getInstance();
+                        c_start.setTime(lecture.getStart());
+                        String startDate = c_start.get(Calendar.DAY_OF_MONTH) + "/" + String.valueOf(c_start.get(Calendar.MONTH) + 1) + "/" + c_start.get(Calendar.YEAR) + "T" + c_start.get(Calendar.HOUR_OF_DAY) + ":" + c_start.get(Calendar.MINUTE);
+
+                        Calendar c_end = Calendar.getInstance();
+                        c_end.setTime(lecture.getEnd());
+                        String endDate = c_end.get(Calendar.DAY_OF_MONTH) + "/" + String.valueOf(c_end.get(Calendar.MONTH) + 1) + "/" + c_end.get(Calendar.YEAR) + "T" + c_end.get(Calendar.HOUR_OF_DAY) + ":" + c_end.get(Calendar.MINUTE);
+
+                        String uri = "http://greek-tour-guides.eu/ioannina/dissertation/checkAttendance.php?student_id=" + user_id + "&module_id=" + module_id + "&lectureType=" + lecture_type + "&location=" + lect_location + "&startDate=" + startDate + "&endDate=" + endDate;
+                        Log.i("URI", uri.toString());
+                        model.CheckAttendance(uri);
+                    }else{
+                        noLectures.setVisibility(View.VISIBLE);
+                    }
+
+
+                }
+            }
+        }.start();
+
+
+
 
     }
 
@@ -183,11 +256,45 @@ public class ManualAttendance extends AppCompatActivity implements AttendanceMod
 
     }
 
+    public Lecture checkLectures(){
+        Calendar c = Calendar.getInstance();
+        int c_day = c.get(Calendar.DAY_OF_MONTH);
+        int c_month = c.get(Calendar.MONTH)+1;
+        int c_year = c.get(Calendar.YEAR);
+        int c_hour = c.get(Calendar.HOUR_OF_DAY);
+        int c_seconds = c.get(Calendar.SECOND);
+
+        Calendar c1 = Calendar.getInstance();
+        Calendar c2 = Calendar.getInstance();
+        for (Lecture tmp: model.getLectures_list_today()){
+            c1.setTime(tmp.getStart());
+            c2.setTime(tmp.getEnd());
+            int day = c1.get(Calendar.DAY_OF_MONTH);
+            int month = c1.get(Calendar.MONTH)+1;
+            int year = c1.get(Calendar.YEAR);
+
+            if (day==c_day && month==c_month && year==c_year) {
+                int c_hour1 = c1.get(Calendar.HOUR_OF_DAY);
+
+                int c_hour2 = c2.get(Calendar.HOUR_OF_DAY);
+
+                if (c_hour>=c1.get(Calendar.HOUR_OF_DAY) && c_hour< c2.get(Calendar.HOUR_OF_DAY)){
+                    System.out.println("Day :"+c_day+ " - " +day+", Month :"+c_month+ " - " +month+", Hour :"+c_hour+" - "+c1.get(Calendar.HOUR_OF_DAY));
+                    tmp_attendance_class=tmp;
+                    Log.i("Lecture","Current lecture is at :"+tmp.getLocation());
+
+                    return tmp;
+                }
+            }
+        }
+        return null;
+
+    }
+
     @Override
     public void onCheckAttendanceListener(boolean attendace) {
 
-        if(!attendace){
-        Log.i("Lecture", "No attendance");
+        if(attendace==false){
             lecture.setVisibility(View.VISIBLE);
             txtHeader = (TextView)findViewById(R.id.tv_title);
             txtDate = (TextView)findViewById(R.id.tv_date);
@@ -195,6 +302,8 @@ public class ManualAttendance extends AppCompatActivity implements AttendanceMod
             txtLocation = (TextView)findViewById(R.id.tv_location);
             type = (ImageView)findViewById(R.id.lecture_icon);
             btn_attendance=(Button)findViewById(R.id.btn_attendance);
+                noLectures.setVisibility(View.GONE);
+
 
             btn_attendance.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -212,8 +321,9 @@ public class ManualAttendance extends AppCompatActivity implements AttendanceMod
                     c_end.setTime(tmp_attendance_class.getEnd());
                     String endDate=c_end.get(Calendar.DAY_OF_MONTH)+"/"+String.valueOf(c_end.get(Calendar.MONTH)+1)+"/"+c_end.get(Calendar.YEAR)+"T"+c_end.get(Calendar.HOUR_OF_DAY)+":"+c_end.get(Calendar.MINUTE);
 
-                    String uri = "http://greek-tour-guides.eu/ioannina/dissertation/insert_attendance.php?student_id="+user_id+"&module_id="+module_id+"&lectureType="+lecture_type+"&location="+location+"&startDate="+startDate+"&endDate="+endDate+"&valid=false";
+                    String uri = "http://greek-tour-guides.eu/ioannina/dissertation/insert_attendance.php?student_id="+user_id+"&module_id="+module_id+"&lectureType="+lecture_type+"&location="+location+"&startDate="+startDate+"&endDate="+endDate+"&valid="+ beaconvalidation.toString();
                     Log.i("URI",uri.toString());
+
                     model.signAttendance(uri);
                 }
             });
@@ -246,6 +356,8 @@ public class ManualAttendance extends AppCompatActivity implements AttendanceMod
             else
                 type.setImageResource(R.drawable.lecture_icon);
 
+        }else{
+            Toast.makeText(this,"You have already signed", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -262,7 +374,17 @@ public class ManualAttendance extends AppCompatActivity implements AttendanceMod
 
 
             }
+
         });
+
+//        Lecture tmp_lecture=checkLectures();
+//        if(tmp_lecture==null){
+//            signAttendance.setVisibility(View.GONE);
+//            noLectures.setVisibility(View.VISIBLE);
+//        }else{
+//            noLectures.setVisibility(View.GONE);
+//            signAttendance.setVisibility(View.VISIBLE);
+//        }
     }
 
     @Override
@@ -278,6 +400,16 @@ public class ManualAttendance extends AppCompatActivity implements AttendanceMod
         Log.i("Manual","Attendance");
         Attendanceprogressdialog.dismiss();
         if(signed==true){
+            String dateStart = DateFormat.format("yyyyMMdd'T'HHmmss'Z'", tmp_attendance_class.getStart()).toString();
+            String dateEnd = DateFormat.format("yyyyMMdd'T'HHmmss'Z'", tmp_attendance_class.getEnd()).toString();
+
+            try {
+                model.open();
+                model.updateAttendance(tmp_attendance_class.getTitle(),tmp_attendance_class.getModule(),tmp_attendance_class.getType(),dateStart,dateEnd,tmp_attendance_class.getLocation(),"true");
+                model.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
             btn_attendance.setEnabled(false);
             btn_attendance.setBackgroundColor(Color.GRAY);
             final Dialog okDialog = new Dialog(this);

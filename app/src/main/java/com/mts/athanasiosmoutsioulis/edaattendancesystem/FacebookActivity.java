@@ -60,8 +60,11 @@ public class FacebookActivity extends AppCompatActivity {
             protected void onCurrentProfileChanged(Profile oldProfile, Profile newProfile) {
                 if(newProfile != null){
                     info.setText(newProfile.getName());
-                    Uri imageUrl= newProfile.getProfilePictureUri(300,300);
-                    Log.i("Facebook",imageUrl.toString());
+                    Uri imageUrl= newProfile.getProfilePictureUri(300, 300);
+                    Log.i("Facebook", imageUrl.toString());
+                    Log.i("FacebbokId", newProfile.getId());
+                    String user_id=sharedpreferences.getString("id", "User");
+                    model.updateFBaccount("http://greek-tour-guides.eu/ioannina/dissertation/updateFBaccount.php?student_id="+user_id+"&fbID="+newProfile.getId()+"&fbName="+newProfile.getFirstName()+"_"+newProfile.getLastName());
                     new DownloadImage((ImageView)findViewById(R.id.imageView)).execute(imageUrl.toString());
                     model.setFbName(newProfile.getName());
                 }else{

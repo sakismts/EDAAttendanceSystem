@@ -14,6 +14,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
@@ -35,6 +36,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -83,6 +85,10 @@ public class MainActivity extends AppCompatActivity
         AppEventsLogger.activateApp(this);
 
         setContentView(R.layout.activity_main);
+
+
+
+
         model=AttendanceModel.getOurInstance();
         if (model==null)
         model= new AttendanceModel(this);
@@ -90,14 +96,7 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-       /* FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });*/
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -444,7 +443,7 @@ public class MainActivity extends AppCompatActivity
                     }
 
                     //model.getLectures_list().add(new Lecture(title, module, type, start, end, location, description));
-                    model.addLectureDBRecord(title, module, type, start, end, location, description);
+                    model.addLectureDBRecord(title, module, type, start, end, location, description, "false");
 
 
                 }

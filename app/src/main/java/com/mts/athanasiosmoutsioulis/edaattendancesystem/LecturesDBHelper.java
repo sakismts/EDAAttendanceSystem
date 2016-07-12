@@ -17,6 +17,8 @@ public class LecturesDBHelper extends SQLiteOpenHelper {
     public static final String COLUMN_START ="start";
     public static final String COLUMN_END ="end";
     public static final String COLUMN_DESCRIPTION ="description";
+    public static final String COLUMN_ATTENDANCE ="attendance";
+    public static final String COLUMN_FEEDBACK ="feedback";
 
 
 
@@ -32,7 +34,9 @@ public class LecturesDBHelper extends SQLiteOpenHelper {
             + COLUMN_LOCATION + " VARCHAR(200) NOT NULL, "
             + COLUMN_START+ " VARCHAR(80) NOT NULL, "
             + COLUMN_END+ " VARCHAR(80) NOT NULL, "
-            +COLUMN_DESCRIPTION + " VARCHAR(255) NOT NULL );";
+            + COLUMN_DESCRIPTION+ " VARCHAR(255) NOT NULL, "
+            +COLUMN_ATTENDANCE + " VARCHAR(10) NOT NULL, "
+            +COLUMN_FEEDBACK + " VARCHAR(10) NULL );";
 
 
     public LecturesDBHelper(Context context) {

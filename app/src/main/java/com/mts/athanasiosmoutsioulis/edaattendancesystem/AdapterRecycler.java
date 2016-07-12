@@ -62,7 +62,7 @@ public class AdapterRecycler extends RecyclerView.Adapter<AdapterRecycler.ViewHo
     public class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
         public TextView txtHeader, txtDate, txtTime, txtLocation;
-        public ImageView type;
+        public ImageView type, attendance;
 
 
         public ViewHolder(View v) {
@@ -72,6 +72,7 @@ public class AdapterRecycler extends RecyclerView.Adapter<AdapterRecycler.ViewHo
             txtTime = (TextView) v.findViewById(R.id.tv_time);
             txtLocation = (TextView) v.findViewById(R.id.tv_location);
             type = (ImageView) v.findViewById(R.id.lecture_icon);
+            attendance = (ImageView) v.findViewById(R.id.img_attendance);
 
         }
 
@@ -98,6 +99,11 @@ public class AdapterRecycler extends RecyclerView.Adapter<AdapterRecycler.ViewHo
             //String end_hour = (String) android.text.format.DateFormat.format("HH", Lectureitems.getEnd());
             String end_minutes = (String) android.text.format.DateFormat.format("mm", Lectureitems.getEnd());
             txtTime.setText(start_hour + ":" + start_minutes + " - " + end_hour + ":" + end_minutes);
+
+            if (Lectureitems.getAttendance().equals("true"))
+                attendance.setImageResource(R.drawable.attendance_check);
+            else
+                attendance.setImageResource(R.drawable.attendance_no);
 
             if (Lectureitems.getType().equals("WORKSHOP"))
                 type.setImageResource(R.drawable.computer_lab);

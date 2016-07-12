@@ -69,6 +69,10 @@
 
         <activity android:name=".ManualAttendance" >
         </activity>
+        <activity android:name=".FeedBackList" >
+        </activity>
+        <activity android:name=".FacebookList" >
+        </activity>
     </application>
 
 </manifest>

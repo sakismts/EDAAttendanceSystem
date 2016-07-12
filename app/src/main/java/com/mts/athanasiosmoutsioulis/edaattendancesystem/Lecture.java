@@ -18,6 +18,19 @@ public class Lecture implements Serializable, Comparable<Lecture>{
         this.end = end;
         this.location = location;
         this.description = description;
+
+    }
+
+    public Lecture(String title, String module, String type, Date start, Date end, String location, String description, String attendance) {
+        this.title = title;
+        this.module = module;
+        this.type = type;
+        this.start = start;
+        this.end = end;
+        this.location = location;
+        this.description = description;
+        this.attendance=attendance;
+
     }
 
 
@@ -85,6 +98,28 @@ public class Lecture implements Serializable, Comparable<Lecture>{
     private Date  end;
     private String location;
     private String description;
+    private String attendance;
+    private String feedback;
+
+    public String getFeedback() {
+        return feedback;
+    }
+
+    public void setFeedback(String feedback) {
+        this.feedback = feedback;
+    }
+
+
+
+    public String getAttendance() {
+        return attendance;
+    }
+
+    public void setAttendance(String attendance) {
+        this.attendance = attendance;
+    }
+
+
 
 
     @Override

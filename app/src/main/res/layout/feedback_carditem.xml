@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="wrap_content"
-    android:padding="5dp">
-
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -12,21 +11,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="5dp"
-            android:orientation="vertical">
+            android:orientation="horizontal"
+            android:weightSum="3">
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="5dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:weightSum="1"
+                android:layout_weight="3">
 
-
-                <ImageView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:id="@+id/lecture_icon"
-                    android:src="@drawable/lecture_icon"
-                    android:layout_gravity="center_vertical" />
 
                 <LinearLayout
                     android:orientation="vertical"
@@ -88,46 +83,28 @@
                             android:layout_gravity="center_vertical" />
 
                     </LinearLayout>
-                    <LinearLayout
-                        android:orientation="horizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Attendance"
-                            android:id="@+id/tv_attendance"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginRight="10dp"
-                            android:layout_marginLeft="10dp" />
-
-                        <ImageView
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
-                            android:id="@+id/img_attendance"
-                            android:src="@drawable/attendance_no" />
 
 
-
-                    </LinearLayout>
-                    <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Read more"
-                        android:textColor="@color/colorAccent"
-                        style="@style/Widget.AppCompat.Button.Borderless"
-                        android:layout_gravity="right" />
 
                 </LinearLayout>
 
 
             </LinearLayout>
+            <Button
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="Send Feedback"
+                android:textColor="@color/colorAccent"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_gravity="center|right"
+                android:layout_weight="2"
+                android:id="@+id/btn_feedback"
+                android:maxLines="2" />
 
 
         </LinearLayout>
 
     </android.support.v7.widget.CardView>
-
 
 
 </LinearLayout>

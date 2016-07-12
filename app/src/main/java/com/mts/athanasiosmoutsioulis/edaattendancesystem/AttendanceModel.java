@@ -74,6 +74,16 @@ public class AttendanceModel {
     //Lecture array
     ArrayList<Lecture> lectures_list= new ArrayList<Lecture>();
 
+    public ArrayList<Lecture> getAttendances_list() {
+        return attendances_list;
+    }
+
+    public void setAttendances_list(ArrayList<Lecture> attendances_list) {
+        this.attendances_list = attendances_list;
+    }
+
+    ArrayList<Lecture> attendances_list= new ArrayList<Lecture>();
+
     public ArrayList<Lecture> getLectures_list_today() {
         return lectures_list_today;
     }
@@ -139,6 +149,9 @@ public class AttendanceModel {
 
 
     private OnCheckBeaconListener checkBeaconUpdateListener; //define var of the interface
+
+
+    private OnSendFeedBack feedBackListener;
 
 
 
@@ -409,6 +422,65 @@ public class AttendanceModel {
 
     ///////////////////////////////////////////////
 
+    //////send feedback////////////////////////////
+    //INTERFACE for send feedback
+
+
+    public interface  OnSendFeedBack{
+        void onSendFeedBack();
+
+    }
+    public void setFeedBackListener(OnSendFeedBack feedBackListener) {
+        this.feedBackListener = feedBackListener;
+    }
+
+    public void sendFeedBack(String uri){
+
+        Log.i("FeedBack","Sending request");
+        //  String uri = "http://greek-tour-guides.eu/ioannina/dissertation/insert_user.php?id=2&role=student&pass=1&course=a";
+        JsonObjectRequest request = new JsonObjectRequest(uri, fdb_Listener,fdb_ErrorListener);
+
+        MyApplication.getInstance().getRequestQueue().add(request);
+
+    }
+
+    Response.Listener<JSONObject> fdb_Listener = new Response.Listener<JSONObject>(){
+
+
+        @Override
+        public void onResponse(JSONObject response) {
+            System.out.println(response);
+            int result=-1;
+            try {
+                result= response.getInt("success");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            if (result==1)
+                notifyListenerFeedBack(true);
+            else
+                notifyListenerFeedBack(false);
+        }
+    };
+
+    Response.ErrorListener fdb_ErrorListener = new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+
+        }
+    };
+
+    private void notifyListenerFeedBack(boolean submited){
+
+
+        if (feedBackListener != null)
+
+            feedBackListener.onSendFeedBack();
+
+    }
+
+    ////////////////////////////////////////////////
+
 
 
 
@@ -566,6 +638,51 @@ public class AttendanceModel {
 
 
     //////////////////////////////////////////////
+
+    ///////update facebook account on server///////
+
+    public void updateFBaccount(String URI){
+
+        JsonObjectRequest request = new JsonObjectRequest(URI, updateFBIDListener,updateFBIDErrorListener);
+
+        MyApplication.getInstance().getRequestQueue().add(request);
+
+    }
+
+    Response.Listener<JSONObject> updateFBIDListener = new Response.Listener<JSONObject>(){
+
+
+        @Override
+        public void onResponse(JSONObject response) {
+            System.out.println(response);
+            int result=-1;
+            try {
+                result= response.getInt("success");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            if (result==1){
+
+               Log.i("Facebook","Id updated on server");
+            }
+            else
+                Log.i("Facebook", "Id not updated on server");
+        }
+    };
+
+    Response.ErrorListener updateFBIDErrorListener = new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            Log.i("Facebook",error.toString());
+
+        }
+    };
+
+
+
+
+
+
     public void open() throws SQLException {
         database = dbHelper.getWritableDatabase();
 
@@ -581,7 +698,7 @@ public class AttendanceModel {
 
     }
 
-    public void addLectureDBRecord(String title,String module,String type,String start, String end,String location,String description ){
+    public void addLectureDBRecord(String title,String module,String type,String start, String end,String location,String description, String attendance ){
 
         ContentValues values = new ContentValues();
         values.put(LecturesDBHelper.COLUMN_TITLE, title);
@@ -591,6 +708,7 @@ public class AttendanceModel {
         values.put(LecturesDBHelper.COLUMN_START, start);
         values.put(LecturesDBHelper.COLUMN_END, end);
         values.put(LecturesDBHelper.COLUMN_DESCRIPTION, description);
+        values.put(LecturesDBHelper.COLUMN_ATTENDANCE, attendance);
 
 
             long insertId = database.insert(LecturesDBHelper.TABLE_NAME, null, values);
@@ -599,6 +717,55 @@ public class AttendanceModel {
 
 
     }
+
+    public void updateAttendance(String title,String module,String type,String start, String end,String location, String attendance ){
+
+        ContentValues values = new ContentValues();
+        values.put(LecturesDBHelper.COLUMN_TITLE, title);
+        values.put(LecturesDBHelper.COLUMN_MODULE, module);
+        values.put(LecturesDBHelper.COLUMN_TYPE, type);
+        values.put(LecturesDBHelper.COLUMN_LOCATION, location);
+        values.put(LecturesDBHelper.COLUMN_START, start);
+        values.put(LecturesDBHelper.COLUMN_END, end);
+        values.put(LecturesDBHelper.COLUMN_ATTENDANCE, attendance);
+        //String query= LecturesDBHelper.COLUMN_TITLE+" = ? AND "+LecturesDBHelper.COLUMN_MODULE+" = ? AND "+LecturesDBHelper.COLUMN_TYPE+" = ? AND "+LecturesDBHelper.COLUMN_LOCATION+" = ? AND "+LecturesDBHelper.COLUMN_START+" = ? AND "+LecturesDBHelper.COLUMN_END+" = ? AND "+LecturesDBHelper.COLUMN_ATTENDANCE+" = ?";
+
+        String query= LecturesDBHelper.COLUMN_TITLE+" = ? AND "+LecturesDBHelper.COLUMN_MODULE+" = ? AND "+LecturesDBHelper.COLUMN_TYPE+" = ? AND "+LecturesDBHelper.COLUMN_LOCATION+" = ? AND "+LecturesDBHelper.COLUMN_START+" = ? AND "+LecturesDBHelper.COLUMN_END+" = ? ";
+        String[] args = new String[]{title,module,type,location,start,end};
+        long insertId = database.update(LecturesDBHelper.TABLE_NAME, values, query, args);
+       // long insertId = database.insert(LecturesDBHelper.TABLE_NAME, null, values);
+        System.out.println(insertId);
+        if(insertId==1){
+            read_db_today();
+
+        }
+
+    }
+
+    public void updateFeedback(String title,String module,String type,String start, String end,String location, String feedback ){
+
+        ContentValues values = new ContentValues();
+        values.put(LecturesDBHelper.COLUMN_TITLE, title);
+        values.put(LecturesDBHelper.COLUMN_MODULE, module);
+        values.put(LecturesDBHelper.COLUMN_TYPE, type);
+        values.put(LecturesDBHelper.COLUMN_LOCATION, location);
+        values.put(LecturesDBHelper.COLUMN_START, start);
+        values.put(LecturesDBHelper.COLUMN_END, end);
+        values.put(LecturesDBHelper.COLUMN_FEEDBACK, feedback);
+        //String query= LecturesDBHelper.COLUMN_TITLE+" = ? AND "+LecturesDBHelper.COLUMN_MODULE+" = ? AND "+LecturesDBHelper.COLUMN_TYPE+" = ? AND "+LecturesDBHelper.COLUMN_LOCATION+" = ? AND "+LecturesDBHelper.COLUMN_START+" = ? AND "+LecturesDBHelper.COLUMN_END+" = ? AND "+LecturesDBHelper.COLUMN_ATTENDANCE+" = ?";
+
+        String query= LecturesDBHelper.COLUMN_TITLE+" = ? AND "+LecturesDBHelper.COLUMN_MODULE+" = ? AND "+LecturesDBHelper.COLUMN_TYPE+" = ? AND "+LecturesDBHelper.COLUMN_LOCATION+" = ? AND "+LecturesDBHelper.COLUMN_START+" = ? AND "+LecturesDBHelper.COLUMN_END+" = ? ";
+        String[] args = new String[]{title,module,type,location,start,end};
+        long insertId = database.update(LecturesDBHelper.TABLE_NAME, values, query, args);
+        // long insertId = database.insert(LecturesDBHelper.TABLE_NAME, null, values);
+        System.out.println(insertId);
+        if(insertId==1){
+            read_db_today();
+
+        }
+
+    }
+
     public void read_db(){
         ArrayList<Lecture>  tmpList = new ArrayList<Lecture>();
         String[] allColumns = {
@@ -608,7 +775,9 @@ public class AttendanceModel {
                 LecturesDBHelper.COLUMN_START,
                 LecturesDBHelper.COLUMN_END,
                 LecturesDBHelper.COLUMN_LOCATION,
-                LecturesDBHelper.COLUMN_DESCRIPTION
+                LecturesDBHelper.COLUMN_DESCRIPTION,
+                LecturesDBHelper.COLUMN_ATTENDANCE,
+                LecturesDBHelper.COLUMN_FEEDBACK
 
         };
 
@@ -625,6 +794,10 @@ public class AttendanceModel {
             String end = dbCursor.getString(dbCursor.getColumnIndexOrThrow(LecturesDBHelper.COLUMN_END));
             String location = dbCursor.getString(dbCursor.getColumnIndexOrThrow(LecturesDBHelper.COLUMN_LOCATION));
             String description = dbCursor.getString(dbCursor.getColumnIndexOrThrow(LecturesDBHelper.COLUMN_DESCRIPTION));
+            String attendance = dbCursor.getString(dbCursor.getColumnIndexOrThrow(LecturesDBHelper.COLUMN_ATTENDANCE));
+            String feedback = dbCursor.getString(dbCursor.getColumnIndexOrThrow(LecturesDBHelper.COLUMN_FEEDBACK));
+            if(feedback==null)
+                feedback="false";
 
             SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'");
             TimeZone timeZone = TimeZone.getTimeZone("GMT");
@@ -640,11 +813,12 @@ public class AttendanceModel {
             }
 
 
-            tmpList.add(new Lecture(title, module, type, tmpt_start, tmpt_end, location, description));
+            tmpList.add(new Lecture(title, module, type, tmpt_start, tmpt_end, location, description,attendance));
 
 
         }
         Collections.sort(tmpList);
+        getLectures_list().clear();
 
        setLectures_list(tmpList);
 
@@ -672,6 +846,7 @@ public class AttendanceModel {
 
 
         //month
+        getLectures_list_month().clear();
         Calendar c2 = Calendar.getInstance();
         for (Lecture tmp: tmpList){
             c2.setTime(tmp.getStart());
@@ -682,6 +857,7 @@ public class AttendanceModel {
             }
         }
 
+        getLectures_list_week().clear();
 
         //week
         Calendar c3 = Calendar.getInstance();
@@ -705,7 +881,9 @@ public class AttendanceModel {
                 LecturesDBHelper.COLUMN_START,
                 LecturesDBHelper.COLUMN_END,
                 LecturesDBHelper.COLUMN_LOCATION,
-                LecturesDBHelper.COLUMN_DESCRIPTION
+                LecturesDBHelper.COLUMN_DESCRIPTION,
+                LecturesDBHelper.COLUMN_ATTENDANCE,
+                LecturesDBHelper.COLUMN_FEEDBACK
 
         };
 
@@ -722,6 +900,11 @@ public class AttendanceModel {
             String end = dbCursor.getString(dbCursor.getColumnIndexOrThrow(LecturesDBHelper.COLUMN_END));
             String location = dbCursor.getString(dbCursor.getColumnIndexOrThrow(LecturesDBHelper.COLUMN_LOCATION));
             String description = dbCursor.getString(dbCursor.getColumnIndexOrThrow(LecturesDBHelper.COLUMN_DESCRIPTION));
+            String attendance = dbCursor.getString(dbCursor.getColumnIndexOrThrow(LecturesDBHelper.COLUMN_ATTENDANCE));
+            String feedback = dbCursor.getString(dbCursor.getColumnIndexOrThrow(LecturesDBHelper.COLUMN_FEEDBACK));
+            if(feedback==null)
+                feedback="false";
+            Log.i("Feedback",feedback);
 
             SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'");
             TimeZone timeZone = TimeZone.getTimeZone("GMT");
@@ -737,7 +920,7 @@ public class AttendanceModel {
             }
 
 
-            tmpList.add(new Lecture(title, module, type, tmpt_start, tmpt_end, location, description));
+            tmpList.add(new Lecture(title, module, type, tmpt_start, tmpt_end, location, description,attendance));
 
 
         }
@@ -773,6 +956,66 @@ public class AttendanceModel {
                 Log.i("Location", tmp.getLocation());
             }
         }
+
+    }
+
+    public void readAttendances(){
+
+        ArrayList<Lecture>  tmpList = new ArrayList<Lecture>();
+        String[] allColumns = {
+                LecturesDBHelper.COLUMN_TITLE,
+                LecturesDBHelper.COLUMN_MODULE,
+                LecturesDBHelper.COLUMN_TYPE,
+                LecturesDBHelper.COLUMN_START,
+                LecturesDBHelper.COLUMN_END,
+                LecturesDBHelper.COLUMN_LOCATION,
+                LecturesDBHelper.COLUMN_DESCRIPTION,
+                LecturesDBHelper.COLUMN_ATTENDANCE,
+                LecturesDBHelper.COLUMN_FEEDBACK
+
+        };
+
+        dbCursor = database.query(LecturesDBHelper.TABLE_NAME,allColumns,null,null,null,null,null,null);
+
+
+        //dbCursor.moveToFirst();
+        while (dbCursor.moveToNext()) {
+
+            String title = dbCursor.getString(dbCursor.getColumnIndexOrThrow(LecturesDBHelper.COLUMN_TITLE));
+            String module = dbCursor.getString(dbCursor.getColumnIndexOrThrow(LecturesDBHelper.COLUMN_MODULE));
+            String type = dbCursor.getString(dbCursor.getColumnIndexOrThrow(LecturesDBHelper.COLUMN_TYPE));
+            String start = dbCursor.getString(dbCursor.getColumnIndexOrThrow(LecturesDBHelper.COLUMN_START));
+            String end = dbCursor.getString(dbCursor.getColumnIndexOrThrow(LecturesDBHelper.COLUMN_END));
+            String location = dbCursor.getString(dbCursor.getColumnIndexOrThrow(LecturesDBHelper.COLUMN_LOCATION));
+            String description = dbCursor.getString(dbCursor.getColumnIndexOrThrow(LecturesDBHelper.COLUMN_DESCRIPTION));
+            String attendance = dbCursor.getString(dbCursor.getColumnIndexOrThrow(LecturesDBHelper.COLUMN_ATTENDANCE));
+            String feedback = dbCursor.getString(dbCursor.getColumnIndexOrThrow(LecturesDBHelper.COLUMN_FEEDBACK));
+            if(feedback==null)
+                feedback="false";
+            Log.i("Feedback",feedback);
+
+            SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'");
+            TimeZone timeZone = TimeZone.getTimeZone("GMT");
+            format.setTimeZone(timeZone);
+            Date tmpt_start=null;
+            Date tmpt_end=null;
+            try {
+                tmpt_start = format.parse(start);
+                tmpt_end = format.parse(end);
+            } catch (ParseException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+            if (attendance.equals("true") && feedback.equals("false"))
+            tmpList.add(new Lecture(title, module, type, tmpt_start, tmpt_end, location, description,attendance));
+
+
+        }
+        Collections.sort(tmpList, Collections.reverseOrder());
+        setAttendances_list(tmpList);
+
+
 
     }
 

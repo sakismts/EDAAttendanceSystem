@@ -2,7 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="wrap_content"
     android:padding="5dp"
+    android:orientation="vertical"
     >
+
+    <TextView android:id="@+id/tv_noLectures" android:layout_width="fill_parent"
+        android:text="You don't have any lectures, seminars or workshops!"
+        android:layout_height="wrap_content"
+        />
+
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"

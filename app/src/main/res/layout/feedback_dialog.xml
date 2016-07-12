@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Title"
+        android:id="@+id/tv_title"
+        android:gravity="center"
+        android:textSize="15sp" />
+
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Location"
+        android:id="@+id/tv_location"
+        android:gravity="center"
+        android:textSize="15sp" />
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Location"
+        android:id="@+id/tv_date"
+        android:gravity="center"
+        android:textSize="15sp" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Date"
+        android:id="@+id/tv_time"
+        android:gravity="center"
+        android:textSize="15sp" />
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textMultiLine"
+        android:ems="10"
+        android:clickable="true"
+        android:focusableInTouchMode="true"
+        android:id="@+id/et_feedback"
+        android:lines="5" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Share Student ID"
+        android:id="@+id/check_id" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Send"
+        android:id="@+id/btn_send"
+        style="@style/Widget.AppCompat.Button"
+        android:background="#80CBC4"
+        android:textAllCaps="false"
+        android:textColor="#fff"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="10dp" />
+</LinearLayout>

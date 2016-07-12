@@ -18,12 +18,15 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.os.Handler;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AlertDialog;
+import android.text.format.DateFormat;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -36,6 +39,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -103,6 +107,17 @@ public class MainFragment extends Fragment implements AttendanceModel.OnSignAtte
         Attendanceprogressdialog.setMessage("Sign Attendance, please wait.");
         model.setSignAttendanceListener(this);
 
+        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent feedback = new Intent(getActivity(), FeedBackList.class);
+                startActivity(feedback);
+            }
+        });
+
+
+
 
 
 
@@ -129,7 +144,6 @@ public class MainFragment extends Fragment implements AttendanceModel.OnSignAtte
                     e.printStackTrace();
                 }
                 model.close();
-                System.out.println(model.getLectures_list().size());
                 Intent schedule = new Intent(getActivity(), ScheduleActivity.class);
                 startActivity(schedule);
             }
@@ -337,6 +351,18 @@ public class MainFragment extends Fragment implements AttendanceModel.OnSignAtte
     public void onSignAttendanceListener(boolean signed) {
         Attendanceprogressdialog.dismiss();
         if(signed==true){
+            Lecture tmp_attendance_class=model.getCurrentLecture();
+            String dateStart = DateFormat.format("yyyyMMdd'T'HHmmss'Z'", tmp_attendance_class.getStart()).toString();
+            String dateEnd = DateFormat.format("yyyyMMdd'T'HHmmss'Z'", tmp_attendance_class.getEnd()).toString();
+
+            try {
+                model.open();
+                model.updateAttendance(tmp_attendance_class.getTitle(),tmp_attendance_class.getModule(),tmp_attendance_class.getType(),dateStart,dateEnd,tmp_attendance_class.getLocation(),"true");
+                model.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
 
         final Dialog okDialog = new Dialog(getActivity());
         okDialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
