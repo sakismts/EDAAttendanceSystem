@@ -240,6 +240,7 @@ public class MainActivity extends AppCompatActivity
             FragmentManager fragmentManager = getFragmentManager();
             MainFragment fragment = (MainFragment) fragmentManager.findFragmentById(R.id.main_fragment);
             fragment.update_login();
+            
 
         }
 
