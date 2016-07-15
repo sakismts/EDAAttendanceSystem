@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 public class SignupFragment extends Fragment implements AttendanceModel.OnSignUpUpdateListener, AttendanceModel.OnCourseListUpdateListener{
     EditText id,pass,confpass;
     AutoCompleteTextView course;
+    String role;
     AttendanceModel model = AttendanceModel.getOurInstance();
 
     ArrayAdapter<String> adapter;
@@ -50,7 +52,30 @@ public class SignupFragment extends Fragment implements AttendanceModel.OnSignUp
         pass = (EditText)view.findViewById(R.id.edt_signupPass);
         confpass = (EditText)view.findViewById(R.id.edt_signupConfPass);
         course = (AutoCompleteTextView)view.findViewById(R.id.autoCompleteTextView);
-
+        RadioGroup radioGroup = (RadioGroup)view.findViewById(R.id.radioGroup);
+        int checkedRadioButtonId = radioGroup.getCheckedRadioButtonId();
+        if (checkedRadioButtonId == -1) {
+            // No item selected
+        }
+        else{
+            if (checkedRadioButtonId == R.id.rb_student) {
+                role="Student";
+            }else if (checkedRadioButtonId == R.id.rb_teacher){
+                role="Teacher";
+            }
+        }
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if (checkedId == R.id.rb_student) {
+                    role="Student";
+                    course.setVisibility(View.VISIBLE);
+                }else if (checkedId == R.id.rb_teacher){
+                    role="Teacher";
+                    course.setVisibility(View.GONE);
+                }
+            }
+        });
         model.setSignupUpdateListener(this);
         model.setCourseListUpdateListener(this);
         model.updateCourseList();
@@ -69,13 +94,21 @@ public class SignupFragment extends Fragment implements AttendanceModel.OnSignUp
                     }else if(!confpass.getText().toString().equals(pass.getText().toString())){
                         Toast.makeText(getActivity(),"The confirm password doesn't match",Toast.LENGTH_SHORT).show();
 
-                    }else if(course.getText().toString().isEmpty()){
-                        Toast.makeText(getActivity(),"You have to fill your course",Toast.LENGTH_SHORT).show();
+                    } else{
+                        if (role.equals("Student")){
+                            if(course.getText().toString().isEmpty()){
+                                Toast.makeText(getActivity(),"You have to fill your course",Toast.LENGTH_SHORT).show();
+                            }else{
+                                Log.i("Signup", "Registering Student");
+                                String uri = "http://greek-tour-guides.eu/ioannina/dissertation/insert_user.php?id="+id.getText().toString()+"&role="+role+"&pass="+pass.getText().toString()+"&course="+course.getText().toString();
+                                model.signup(uri);
+                            }
+                        }else{
+                            Log.i("Signup", "Registering Teacher");
+                            String uri = "http://greek-tour-guides.eu/ioannina/dissertation/insert_user.php?id="+id.getText().toString()+"&role="+role+"&pass="+pass.getText().toString()+"&course=";
+                            model.signup(uri);
+                        }
 
-                    }else{
-                        Log.i("Signup", "ready");
-                        String uri = "http://greek-tour-guides.eu/ioannina/dissertation/insert_user.php?id="+id.getText().toString()+"&role=student&pass="+pass.getText().toString()+"&course="+course.getText().toString();
-                        model.signup(uri);
 
                     }
 

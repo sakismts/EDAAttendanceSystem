@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import java.text.AttributedCharacterIterator;
@@ -32,6 +33,7 @@ public class LoginFragment extends Fragment implements AttendanceModel.OnSignInU
     AttendanceModel model = AttendanceModel.getOurInstance();
     public static final String MyPREFERENCES = "MyPrefs" ;
     SharedPreferences sharedpreferences;
+    String role;
 
     private OnLoginListener mListener;
 
@@ -54,6 +56,28 @@ public class LoginFragment extends Fragment implements AttendanceModel.OnSignInU
         Button signup = (Button)view.findViewById(R.id.btn_signup);
         id = (EditText)view.findViewById(R.id.edt_id);
         pass = (EditText)view.findViewById(R.id.edt_pass);
+        RadioGroup radioGroup = (RadioGroup)view.findViewById(R.id.radioGroup);
+        int checkedRadioButtonId = radioGroup.getCheckedRadioButtonId();
+        if (checkedRadioButtonId == -1) {
+            // No item selected
+        }
+        else{
+            if (checkedRadioButtonId == R.id.rb_student) {
+                role="Student";
+            }else if (checkedRadioButtonId == R.id.rb_teacher){
+                role="Teacher";
+            }
+        }
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if (checkedId == R.id.rb_student) {
+                    role="Student";
+                }else if (checkedId == R.id.rb_teacher){
+                    role="Teacher";
+                }
+            }
+        });
 
 
         login.setOnClickListener(new View.OnClickListener() {
@@ -67,7 +91,7 @@ public class LoginFragment extends Fragment implements AttendanceModel.OnSignInU
 
                 }else{
                     Log.i("Signup", "ready");
-                    String uri = "http://greek-tour-guides.eu/ioannina/dissertation/check_user.php?id="+id.getText().toString()+"&pass="+pass.getText().toString();
+                    String uri = "http://greek-tour-guides.eu/ioannina/dissertation/check_user.php?id="+id.getText().toString()+"&pass="+pass.getText().toString()+"&role="+role;
                     model.signin(uri);
 
                 }
