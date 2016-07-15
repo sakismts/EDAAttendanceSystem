@@ -151,6 +151,15 @@ public class AttendanceModel {
     private OnCheckBeaconListener checkBeaconUpdateListener; //define var of the interface
 
 
+
+    private OnGetFacebookDetailsListener GetFacebookDetailsListener;
+
+
+
+
+    private OnGetUsersAttendListener GetUsersAttendListener;
+
+
     private OnSendFeedBack feedBackListener;
 
 
@@ -297,11 +306,79 @@ public class AttendanceModel {
 
 
     /////////////////////////////////////////////////////
+///get facebook Details /////////
+    //INTERFACE for signup
+    public interface  OnGetFacebookDetailsListener{
+        void onGetFacebookDetailsListener(String fbid,String fbName);
+
+    }
+
+    public void setGetFacebookDetailsListener(OnGetFacebookDetailsListener getFacebookDetailsListener) {
+        GetFacebookDetailsListener = getFacebookDetailsListener;
+    }
+
+    public void getfbDetails(String uri){
+
+        Log.i("Faebook","Sending request");
+        //  String uri = "http://greek-tour-guides.eu/ioannina/dissertation/insert_user.php?id=2&role=student&pass=1&course=a";
+        JsonObjectRequest request = new JsonObjectRequest(uri, getfbinfolistener,getfbinfoErrorListener);
+
+        MyApplication.getInstance().getRequestQueue().add(request);
+
+    }
+
+    Response.Listener<JSONObject> getfbinfolistener = new Response.Listener<JSONObject>(){
+
+
+        @Override
+        public void onResponse(JSONObject response) {
+            System.out.println(response);
+            int result=-1;
+            try {
+                result= response.getInt("success");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            if (result==1){
+                try {
+                    JSONArray tmp_student = response.getJSONArray("fbDetails");
+                    String id="";
+                    String name="";
+                    for (int i=0; i<tmp_student.length();i++){
+                        JSONObject objjson = tmp_student.getJSONObject(i);
+                         id = objjson.getString("fbID");
+                         name = objjson.getString("fbName");
+                    }
+                    notifyListenergetfbinfo(id,name);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+    };
+
+    Response.ErrorListener getfbinfoErrorListener = new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+
+        }
+    };
+
+    private void notifyListenergetfbinfo(String id, String name){
+
+
+        if (GetFacebookDetailsListener != null)
+
+            GetFacebookDetailsListener.onGetFacebookDetailsListener(id,name);
+
+    }
+
+    ////////
 
 
 
-
-   ////////Sing in Section///////////////
+   ////////check attendances Section///////////////
 
     public void CheckAttendance(String uri){
 
@@ -361,7 +438,70 @@ public class AttendanceModel {
     }
 
     ///////////////////////////////////////////////////////////////
-    /////////////check Attendance/////////////////////////////////
+    /////////////sign in /////////////////////////////////
+
+////////get users atternd///////////////
+
+    public void GetUsersAttends(String uri){
+
+        Log.i("Attendance","Check request");
+        //  String uri = "http://greek-tour-guides.eu/ioannina/dissertation/insert_user.php?id=2&role=student&pass=1&course=a";
+        JsonObjectRequest request = new JsonObjectRequest(uri, getUsersListener,getUsersErrorListener);
+
+        MyApplication.getInstance().getRequestQueue().add(request);
+
+    }
+
+    Response.Listener<JSONObject> getUsersListener = new Response.Listener<JSONObject>(){
+
+
+        @Override
+        public void onResponse(JSONObject response) {
+            System.out.println(response);
+            int result=-1;
+            try {
+                result= response.getInt("success");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            if (result==1)
+                notifyListenerGetUsers(response);
+            else
+                notifyListenerGetUsers(response);
+        }
+    };
+
+    Response.ErrorListener getUsersErrorListener = new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+
+        }
+    };
+
+    //INTERFACE
+    public interface  OnGetUsersAttendListener{
+        void OnGetUsersAttendListener(JSONObject signed);
+
+    }
+
+
+    public void setGetUsersAttendListener(OnGetUsersAttendListener getUsersAttendListener) {
+        GetUsersAttendListener = getUsersAttendListener;
+    }
+
+
+
+    private void notifyListenerGetUsers(JSONObject response){
+
+        if (GetUsersAttendListener != null)
+
+            GetUsersAttendListener.OnGetUsersAttendListener(response);
+
+    }
+
+    ///////////////////////////////////////////////////////////////
+
+
 
     public void signin(String uri){
 
@@ -718,6 +858,17 @@ public class AttendanceModel {
 
     }
 
+    public void deleteAllItems(){
+        try {
+            open();
+            database.delete(LecturesDBHelper.TABLE_NAME, null, null);
+            close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public void updateAttendance(String title,String module,String type,String start, String end,String location, String attendance ){
 
         ContentValues values = new ContentValues();
@@ -1014,6 +1165,76 @@ public class AttendanceModel {
         }
         Collections.sort(tmpList, Collections.reverseOrder());
         setAttendances_list(tmpList);
+
+
+
+    }
+
+    public void readAttendances(int month){
+
+        ArrayList<Lecture>  tmpList = new ArrayList<Lecture>();
+        String[] allColumns = {
+                LecturesDBHelper.COLUMN_TITLE,
+                LecturesDBHelper.COLUMN_MODULE,
+                LecturesDBHelper.COLUMN_TYPE,
+                LecturesDBHelper.COLUMN_START,
+                LecturesDBHelper.COLUMN_END,
+                LecturesDBHelper.COLUMN_LOCATION,
+                LecturesDBHelper.COLUMN_DESCRIPTION,
+                LecturesDBHelper.COLUMN_ATTENDANCE,
+                LecturesDBHelper.COLUMN_FEEDBACK
+
+        };
+
+        dbCursor = database.query(LecturesDBHelper.TABLE_NAME,allColumns,null,null,null,null,null,null);
+
+
+        //dbCursor.moveToFirst();
+        while (dbCursor.moveToNext()) {
+
+            String title = dbCursor.getString(dbCursor.getColumnIndexOrThrow(LecturesDBHelper.COLUMN_TITLE));
+            String module = dbCursor.getString(dbCursor.getColumnIndexOrThrow(LecturesDBHelper.COLUMN_MODULE));
+            String type = dbCursor.getString(dbCursor.getColumnIndexOrThrow(LecturesDBHelper.COLUMN_TYPE));
+            String start = dbCursor.getString(dbCursor.getColumnIndexOrThrow(LecturesDBHelper.COLUMN_START));
+            String end = dbCursor.getString(dbCursor.getColumnIndexOrThrow(LecturesDBHelper.COLUMN_END));
+            String location = dbCursor.getString(dbCursor.getColumnIndexOrThrow(LecturesDBHelper.COLUMN_LOCATION));
+            String description = dbCursor.getString(dbCursor.getColumnIndexOrThrow(LecturesDBHelper.COLUMN_DESCRIPTION));
+            String attendance = dbCursor.getString(dbCursor.getColumnIndexOrThrow(LecturesDBHelper.COLUMN_ATTENDANCE));
+            String feedback = dbCursor.getString(dbCursor.getColumnIndexOrThrow(LecturesDBHelper.COLUMN_FEEDBACK));
+            if(feedback==null)
+                feedback="false";
+            Log.i("Feedback",feedback);
+
+            SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'");
+            TimeZone timeZone = TimeZone.getTimeZone("GMT");
+            format.setTimeZone(timeZone);
+            Date tmpt_start=null;
+            Date tmpt_end=null;
+            try {
+                tmpt_start = format.parse(start);
+                tmpt_end = format.parse(end);
+            } catch (ParseException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+            if (attendance.equals("true") && feedback.equals("false"))
+                tmpList.add(new Lecture(title, module, type, tmpt_start, tmpt_end, location, description,attendance));
+
+
+        }
+        Collections.sort(tmpList, Collections.reverseOrder());
+
+        getAttendances_list().clear();
+        Calendar c1 = Calendar.getInstance();
+
+        for (Lecture tmp : tmpList){
+            c1.setTime(tmp.getStart());
+            int tmp_month = c1.get(Calendar.MONTH)+1;
+            if (tmp_month==month) {
+                getAttendances_list().add(tmp);
+            }
+        }
 
 
 

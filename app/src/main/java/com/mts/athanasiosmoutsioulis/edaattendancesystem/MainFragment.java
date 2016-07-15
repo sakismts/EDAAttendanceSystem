@@ -132,6 +132,14 @@ public class MainFragment extends Fragment implements AttendanceModel.OnSignAtte
         model.close();
         System.out.println("todays count" + model.getLectures_list_today().size());
 
+        LinearLayout fbList = (LinearLayout)view.findViewById(R.id.ll_facebookList);
+        fbList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent fbIntent=new Intent(getActivity(),FacebookList.class);
+                startActivity(fbIntent);
+            }
+        });
         LinearLayout lectures = (LinearLayout)view.findViewById(R.id.ll_lectures);
         lectures.setOnClickListener(new View.OnClickListener() {
             @Override

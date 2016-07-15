@@ -9,6 +9,8 @@ import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -21,6 +23,7 @@ public class FeedBackList extends AppCompatActivity implements AdapterFeedback.M
     private RecyclerView.Adapter mAdapter;
     private LinearLayoutManager mLayoutManager;
     private Lecture tmp_lecture=null;
+    Spinner spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,10 +84,37 @@ public class FeedBackList extends AppCompatActivity implements AdapterFeedback.M
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.android_action_bar_spinner_menu, menu);
-        String[] state= {"All","September","Oktober","November","December","January","February", "March", "April","May", "June","July","August"};
+        String[] state= {"All","January","February", "March", "April","May", "June","July","August","September","Oktober","November","December"};
 
         MenuItem item = menu.findItem(R.id.spinner);
-        Spinner spinner = (Spinner) MenuItemCompat.getActionView(item);
+        spinner = (Spinner) MenuItemCompat.getActionView(item);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+               if (position==0){
+                   try {
+                       model.opendb_read();
+                       model.readAttendances();
+                   } catch (SQLException e) {
+                       e.printStackTrace();
+                   }
+               }else{
+                   try {
+                       model.opendb_read();
+                       model.readAttendances(position);
+                   } catch (SQLException e) {
+                       e.printStackTrace();
+                   }
+               }
+                mAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
 
 //        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
 //                R.array.spinner_list_item_array, android.R.layout.simple_spinner_item);

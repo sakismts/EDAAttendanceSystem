@@ -1,6 +1,7 @@
 package com.mts.athanasiosmoutsioulis.edaattendancesystem;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.preference.PreferenceManager;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -63,6 +65,7 @@ public class AdapterRecycler extends RecyclerView.Adapter<AdapterRecycler.ViewHo
         // each data item is just a string in this case
         public TextView txtHeader, txtDate, txtTime, txtLocation;
         public ImageView type, attendance;
+        public Button more;
 
 
         public ViewHolder(View v) {
@@ -73,10 +76,11 @@ public class AdapterRecycler extends RecyclerView.Adapter<AdapterRecycler.ViewHo
             txtLocation = (TextView) v.findViewById(R.id.tv_location);
             type = (ImageView) v.findViewById(R.id.lecture_icon);
             attendance = (ImageView) v.findViewById(R.id.img_attendance);
+            more=(Button)v.findViewById(R.id.btn_more);
 
         }
 
-        public void setData(Lecture Lectureitems, int position) {
+        public void setData(final Lecture Lectureitems, int position) {
             txtHeader.setText(Lectureitems.getType() + " " + Lectureitems.getTitle()+" "+ Lectureitems.getModule());
             txtLocation.setText(Lectureitems.getLocation());
             //date
@@ -109,6 +113,15 @@ public class AdapterRecycler extends RecyclerView.Adapter<AdapterRecycler.ViewHo
                 type.setImageResource(R.drawable.computer_lab);
             else
                 type.setImageResource(R.drawable.lecture_icon);
+
+            more.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(context, LectureDetails.class);
+                    i.putExtra("LectureDetails", Lectureitems);
+                    context.startActivity(i);
+                }
+            });
 
 
         }

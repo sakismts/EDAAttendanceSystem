@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.mts.athanasiosmoutsioulis.edaattendancesystem.LectureDetails">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:background="#00BCD4"
+        android:id="@+id/tv_details_header"
+        android:elevation="10dp">
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Title"
+            android:id="@+id/tv_details_title"
+            android:layout_alignParentStart="true"
+            android:textColor="#fff"
+            android:textSize="20sp"
+            android:layout_marginTop="50dp"
+            android:layout_marginLeft="20dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Time"
+            android:id="@+id/tv_details_time"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="20dp"
+            android:textColor="#fff"
+            android:textSize="20sp"
+            android:layout_marginLeft="20dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Location"
+            android:id="@+id/tv_details_location"
+            android:textSize="20sp"
+            android:textColor="#fff"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="20dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Date"
+            android:id="@+id/tv_details_date"
+            android:layout_above="@+id/tv_details_time"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="20dp"
+            android:textSize="20sp"
+            android:textColor="#fff" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/scrollView"
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/img_location">
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="20dp"
+            android:id="@+id/tv_detail_description"
+            android:text="Description" />
+    </ScrollView>
+
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/img_location"
+        android:layout_below="@+id/tv_details_header"
+        android:src="@drawable/place_icon"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="20dp" />
+
+</RelativeLayout>

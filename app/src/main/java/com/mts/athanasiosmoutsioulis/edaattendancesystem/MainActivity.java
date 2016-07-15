@@ -432,7 +432,8 @@ public class MainActivity extends AppCompatActivity
                                 String[] parts = property.getValue().split(" ");
                                 type= parts[0];
                                 module=parts[1];
-                                title=parts[2];
+                                for (int k=2; k<parts.length;k++)
+                                {title=title+" "+parts[k];}
                                 break;
                             case "DESCRIPTION":
                                 description=property.getValue();
@@ -528,6 +529,7 @@ public class MainActivity extends AppCompatActivity
                         String calendar_url= feed_url.getText().toString();
                         calendar_url=calendar_url.replace("webcal","http");
                         Log.i("calendar",calendar_url);
+                        model.deleteAllItems();
                         new DownloadFileFromURL().execute(calendar_url);
                     }
                 })
