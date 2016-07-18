@@ -2,6 +2,7 @@ package com.mts.athanasiosmoutsioulis.edaattendancesystem;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -21,6 +22,9 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        if (model==null)
+            model = new AttendanceModel(this);
+
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 //        if (savedInstanceState == null) {
 //            Fragment fragment = new LoginFragment();
@@ -68,9 +72,13 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.On
 
     @Override
     public void onLoginClicked() {
-        Intent returnIntent = new Intent();
-        returnIntent.putExtra("result", true);
-        setResult(Activity.RESULT_OK, returnIntent);
+//        Intent returnIntent = new Intent();
+//        returnIntent.putExtra("result", true);
+//        setResult(Activity.RESULT_OK, returnIntent);
+//        finish();
+        Intent mainActivity= new Intent(this,MainActivity.class);
+        mainActivity.putExtra("logged",true);
+        startActivity(mainActivity);
         finish();
     }
 
@@ -82,6 +90,15 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.On
     public void onResume() {
         super.onResume();
         SystemRequirementsChecker.checkWithDefaultDialogs(this);
+        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        if (sharedpreferences.getBoolean("logged", false)== true){
+            Intent mainActivity= new Intent(this,MainActivity.class);
+            mainActivity.putExtra("logged",true);
+            startActivity(mainActivity);
+            finish();
+
+        }
+
 
     }
 }

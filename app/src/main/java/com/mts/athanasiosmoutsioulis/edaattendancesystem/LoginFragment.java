@@ -156,6 +156,7 @@ public class LoginFragment extends Fragment implements AttendanceModel.OnSignInU
             editor.putString("id", id.getText().toString());
             editor.putString("pass", pass.getText().toString());
             editor.putBoolean("logged", true);
+            editor.putString("role",role);
             editor.commit();
             Toast.makeText(getActivity(),"The Login was successful",Toast.LENGTH_SHORT).show();
             if (mListener!=null){

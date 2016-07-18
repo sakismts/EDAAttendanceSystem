@@ -1055,7 +1055,7 @@ public class AttendanceModel {
             String feedback = dbCursor.getString(dbCursor.getColumnIndexOrThrow(LecturesDBHelper.COLUMN_FEEDBACK));
             if(feedback==null)
                 feedback="false";
-            Log.i("Feedback",feedback);
+
 
             SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'");
             TimeZone timeZone = TimeZone.getTimeZone("GMT");

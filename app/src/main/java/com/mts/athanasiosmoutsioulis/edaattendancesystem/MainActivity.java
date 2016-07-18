@@ -73,7 +73,6 @@ public class MainActivity extends AppCompatActivity
 
     public static final String MyPREFERENCES = "MyPrefs" ;
     SharedPreferences sharedpreferences;
-    static final int LOGIN_REQUEST = 1;  // The request code
     static final int FBLOGIN_REQUEST = 2;  // The request code
     CalendarBuilder builder;
 
@@ -129,7 +128,30 @@ public class MainActivity extends AppCompatActivity
             fragmentTransaction.add(R.id.main_fragment,fragment).commit();
         }
 
-        update_header_details();
+        /// update the login details
+        Profile profile = Profile.getCurrentProfile();
+                    if (profile==null){
+                        new AlertDialog.Builder(MainActivity.this)
+                                .setTitle("Facebook Login")
+                                .setMessage("Do you also want to login with Facebook")
+                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Intent facebookLogin = new Intent(MainActivity.this, FacebookActivity.class);
+                                        startActivityForResult(facebookLogin, FBLOGIN_REQUEST);
+                                    }
+                                })
+                                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        // do nothing
+                                    }
+                                })
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .show();
+
+                    }
+                    update_header_details();
+
+
 
 
 
@@ -196,7 +218,8 @@ public class MainActivity extends AppCompatActivity
                             update_header_details();
 
                             Intent loginActivity = new Intent(MainActivity.this, LoginActivity.class);
-                            startActivityForResult(loginActivity, LOGIN_REQUEST);
+                            startActivity(loginActivity);
+                            finish();
 
                         }
                     })
@@ -231,65 +254,66 @@ public class MainActivity extends AppCompatActivity
         super.onResume();
         SystemRequirementsChecker.checkWithDefaultDialogs(this);
         // if the user is not logged than to the the Login screen
-        if (sharedpreferences.getBoolean("logged", false)== false){
-            //the activity login will return a result if the user logged in or no
-            Intent loginActivity = new Intent(MainActivity.this, LoginActivity.class);
-            startActivityForResult(loginActivity, LOGIN_REQUEST);
-        }else{
-            //update the gui
-            FragmentManager fragmentManager = getFragmentManager();
-            MainFragment fragment = (MainFragment) fragmentManager.findFragmentById(R.id.main_fragment);
-            fragment.update_login();
-            
-
-        }
+//        if (sharedpreferences.getBoolean("logged", false)== false){
+//            //the activity login will return a result if the user logged in or no
+//            Intent loginActivity = new Intent(MainActivity.this, LoginActivity.class);
+//            startActivityForResult(loginActivity, LOGIN_REQUEST);
+//        }else{
+//            //update the gui
+//            FragmentManager fragmentManager = getFragmentManager();
+//            MainFragment fragment = (MainFragment) fragmentManager.findFragmentById(R.id.main_fragment);
+//            fragment.update_login();
+//
+//
+//        }
 
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Check which request we're responding to
-        if (requestCode == LOGIN_REQUEST) {
-            // Make sure the request was successful
-            if (resultCode == RESULT_OK) {
-                Log.i("Request","ok");
-                Boolean result=data.getBooleanExtra("result", false);
-                if (result == true){
-                    //if the user logged in the update the ui with his info
-
-                    Profile profile = Profile.getCurrentProfile();
-                    if (profile==null){
-                        new AlertDialog.Builder(MainActivity.this)
-                                .setTitle("Facebook Login")
-                                .setMessage("Do you also want to login with Facebook")
-                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        Intent facebookLogin = new Intent(MainActivity.this, FacebookActivity.class);
-                                        startActivityForResult(facebookLogin, FBLOGIN_REQUEST);
-                                    }
-                                })
-                                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        // do nothing
-                                    }
-                                })
-                                .setIcon(android.R.drawable.ic_dialog_alert)
-                                .show();
-
-                    }
-                    update_header_details();
-                    FragmentManager fragmentManager = getFragmentManager();
-                    MainFragment fragment = (MainFragment) fragmentManager.findFragmentById(R.id.main_fragment);
-                    fragment.update_login();
-
-                }
-
-            }
-            // if the user wasn't logged in the close the application
-            if (resultCode == Activity.RESULT_CANCELED) {
-                Log.i("Request","cancel");
-                finish();
-            }
-        }else  if (requestCode == FBLOGIN_REQUEST) {
+//        if (requestCode == LOGIN_REQUEST) {
+//            // Make sure the request was successful
+//            if (resultCode == RESULT_OK) {
+//                Log.i("Request","ok");
+//                Boolean result=data.getBooleanExtra("result", false);
+//                if (result == true){
+//                    //if the user logged in the update the ui with his info
+//
+//                    Profile profile = Profile.getCurrentProfile();
+//                    if (profile==null){
+//                        new AlertDialog.Builder(MainActivity.this)
+//                                .setTitle("Facebook Login")
+//                                .setMessage("Do you also want to login with Facebook")
+//                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+//                                    public void onClick(DialogInterface dialog, int which) {
+//                                        Intent facebookLogin = new Intent(MainActivity.this, FacebookActivity.class);
+//                                        startActivityForResult(facebookLogin, FBLOGIN_REQUEST);
+//                                    }
+//                                })
+//                                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+//                                    public void onClick(DialogInterface dialog, int which) {
+//                                        // do nothing
+//                                    }
+//                                })
+//                                .setIcon(android.R.drawable.ic_dialog_alert)
+//                                .show();
+//
+//                    }
+//                    update_header_details();
+//                    FragmentManager fragmentManager = getFragmentManager();
+//                    MainFragment fragment = (MainFragment) fragmentManager.findFragmentById(R.id.main_fragment);
+//                    fragment.update_login();
+//
+//                }
+//
+//            }
+//            // if the user wasn't logged in the close the application
+//            if (resultCode == Activity.RESULT_CANCELED) {
+//                Log.i("Request","cancel");
+//                finish();
+//            }
+//        }else
+        if (requestCode == FBLOGIN_REQUEST) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
                 Log.i("FBRequest","ok");

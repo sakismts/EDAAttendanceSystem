@@ -78,7 +78,6 @@ public class ManualAttendance extends AppCompatActivity implements AttendanceMod
         Attendanceprogressdialog=new ProgressDialog(this);
         Attendanceprogressdialog.setMessage("Sign Attendance, please wait.");
         model.setSignAttendanceListener(this);
-
         noLectures=(TextView)findViewById(R.id.tv_noLectures);
         noLectures.setVisibility(View.GONE);
         progress = ProgressDialog.show(this, "Searching for Lectures to Sign",

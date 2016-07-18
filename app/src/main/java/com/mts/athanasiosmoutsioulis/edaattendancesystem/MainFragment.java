@@ -117,10 +117,6 @@ public class MainFragment extends Fragment implements AttendanceModel.OnSignAtte
         });
 
 
-
-
-
-
         //read lectures for today
         System.out.println("the size of today lectures is : " + model.getLectures_list_today().size());
         try {
@@ -164,6 +160,7 @@ public class MainFragment extends Fragment implements AttendanceModel.OnSignAtte
                 startActivity(manualAtt);
             }
         });
+        update_login();
         update_FBlogin();
 
         Boolean calendar_feeds=sharedpreferences.getBoolean("Calendar", false);
