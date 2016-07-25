@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -21,6 +22,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Base64;
 import android.util.Log;
@@ -34,9 +36,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,6 +57,9 @@ import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.Property;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import java.io.File;
@@ -65,16 +73,20 @@ import java.net.URLConnection;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, MainFragment.OnFragmentInteractionListener, MainFragment.OnLoadCalendarFeeds {
+        implements NavigationView.OnNavigationItemSelectedListener, MainFragment.OnFragmentInteractionListener, MainFragment.OnLoadCalendarFeeds, MainFragmentTeacher.OnTeacherFragmentInteractionListener {
     AttendanceModel model;
 
     public static final String MyPREFERENCES = "MyPrefs" ;
     SharedPreferences sharedpreferences;
     static final int FBLOGIN_REQUEST = 2;  // The request code
     CalendarBuilder builder;
+    Spinner spinner;
+
 
 
     @Override
@@ -85,16 +97,13 @@ public class MainActivity extends AppCompatActivity
 
         setContentView(R.layout.activity_main);
 
-
-
-
         model=AttendanceModel.getOurInstance();
         if (model==null)
         model= new AttendanceModel(this);
         builder = new CalendarBuilder();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -105,7 +114,56 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        System.out.println(sharedpreferences.getString("MyModulesString","empty"));
+        String tmp_modules=sharedpreferences.getString("MyModulesString","empty");
+        if(!tmp_modules.equals("empty")){
+            try {
+                JSONObject obj=new JSONObject(tmp_modules);
+                JSONArray tmp_jsonArray=obj.getJSONArray("modules");
+                model.getMyModules().clear();
+                for (int i=0; i<tmp_jsonArray.length();i++){
+                    model.getMyModules().add(tmp_jsonArray.getJSONObject(i).getString("moduleID"));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        System.out.println(model.getMyModules());
+
+
         //Load Main activity fragment
+        if (sharedpreferences.getString("role","nothing").equals("Teacher")){
+            navigationView.getMenu().clear(); //clear old inflated items.
+            navigationView.inflateMenu(R.menu.activity_main_drawer_teacher); //inflate new items.
+
+            //System.out.println("the size in main Activity of my modules is "+myModules.size());
+            if (findViewById(R.id.main_fragment_teacher) != null) {
+
+                // However, if we're being restored from a previous state,
+                // then we don't need to do anything and should return or else
+                // we could end up with overlapping fragments.
+                if (savedInstanceState != null) {
+                    return;
+                }
+
+                // Create a new Fragment to be placed in the activity layout
+                Fragment fragment = new MainFragmentTeacher();
+
+                // In case this activity was started with special instructions from an
+                // Intent, pass the Intent's extras to the fragment as arguments
+
+                // Add the fragment to the 'fragment_container' FrameLayout
+                android.app.FragmentManager fragmentManager = getFragmentManager();
+                android.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+                fragmentTransaction.add(R.id.main_fragment_teacher,fragment).commit();
+            }
+
+        }else{
+            navigationView.getMenu().clear(); //clear old inflated items.
+            navigationView.inflateMenu(R.menu.activity_main_drawer); //inflate new items.
         if (findViewById(R.id.main_fragment) != null) {
 
             // However, if we're being restored from a previous state,
@@ -128,28 +186,32 @@ public class MainActivity extends AppCompatActivity
             fragmentTransaction.add(R.id.main_fragment,fragment).commit();
         }
 
-        /// update the login details
-        Profile profile = Profile.getCurrentProfile();
-                    if (profile==null){
-                        new AlertDialog.Builder(MainActivity.this)
-                                .setTitle("Facebook Login")
-                                .setMessage("Do you also want to login with Facebook")
-                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        Intent facebookLogin = new Intent(MainActivity.this, FacebookActivity.class);
-                                        startActivityForResult(facebookLogin, FBLOGIN_REQUEST);
-                                    }
-                                })
-                                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        // do nothing
-                                    }
-                                })
-                                .setIcon(android.R.drawable.ic_dialog_alert)
-                                .show();
+            Profile profile = Profile.getCurrentProfile();
+            if (profile==null){
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("Facebook Login")
+                        .setMessage("Do you also want to login with Facebook")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent facebookLogin = new Intent(MainActivity.this, FacebookActivity.class);
+                                startActivityForResult(facebookLogin, FBLOGIN_REQUEST);
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
 
-                    }
-                    update_header_details();
+            }
+            update_header_details();
+        }
+
+
+
+
 
 
 
@@ -170,7 +232,45 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
+        if (sharedpreferences.getString("role","nothing").equals("Teacher")){
+            getMenuInflater().inflate(R.menu.main, menu);
+           // getMenuInflater().inflate(R.menu.android_action_bar_spinner_menu, menu);
+//            final String[] state= model.getMyModules().toArray(new String[model.getMyModules().size()]);
+//
+//            MenuItem item = menu.findItem(R.id.spinner);
+//            spinner = (Spinner) MenuItemCompat.getActionView(item);
+//            //spinner.setPopupBackgroundResource(R.drawable.spinner);
+//
+//            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//                @Override
+//                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                    System.out.println("menu"+state[position]);
+//                     MainFragmentTeacher teacherFrag = (MainFragmentTeacher)
+//                            getFragmentManager().findFragmentById(R.id.main_fragment_teacher);
+//                    if(teacherFrag!=null)
+//                    teacherFrag.updateModule(state[position]);
+//
+//
+//                }
+//
+//                @Override
+//                public void onNothingSelected(AdapterView<?> parent) {
+//
+//                }
+//            });
+
+
+//        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+//                R.array.spinner_list_item_array, android.R.layout.simple_spinner_item);
+//            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,  android.R.layout.simple_spinner_item, state);
+//
+//            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//
+//            spinner.setAdapter(adapter);
+        } else{
         getMenuInflater().inflate(R.menu.main, menu);
+        }
+
         return true;
     }
 
@@ -211,11 +311,11 @@ public class MainActivity extends AppCompatActivity
                             editor.putString("photo_profile", "");
                             editor.commit();
                             LoginManager.getInstance().logOut();
-                            FragmentManager fragmentManager = getFragmentManager();
-                            MainFragment fragment = (MainFragment) fragmentManager.findFragmentById(R.id.main_fragment);
-                            fragment.update_logout();
+//                            FragmentManager fragmentManager = getFragmentManager();
+//                            MainFragment fragment = (MainFragment) fragmentManager.findFragmentById(R.id.main_fragment);
+//                            fragment.update_logout();
                             //nav header details
-                            update_header_details();
+                           // update_header_details();
 
                             Intent loginActivity = new Intent(MainActivity.this, LoginActivity.class);
                             startActivity(loginActivity);
@@ -234,9 +334,13 @@ public class MainActivity extends AppCompatActivity
             Intent facebookLogin = new Intent(MainActivity.this, FacebookActivity.class);
             startActivityForResult(facebookLogin, FBLOGIN_REQUEST);
 
-        } /*else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.cources) {
+            Intent mycources=new Intent(this,MyModules.class);
+            startActivity(mycources);
 
-        } else if (id == R.id.nav_manage) {
+
+
+        } /*else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_share) {
 
@@ -253,19 +357,24 @@ public class MainActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         SystemRequirementsChecker.checkWithDefaultDialogs(this);
-        // if the user is not logged than to the the Login screen
-//        if (sharedpreferences.getBoolean("logged", false)== false){
-//            //the activity login will return a result if the user logged in or no
-//            Intent loginActivity = new Intent(MainActivity.this, LoginActivity.class);
-//            startActivityForResult(loginActivity, LOGIN_REQUEST);
-//        }else{
-//            //update the gui
-//            FragmentManager fragmentManager = getFragmentManager();
-//            MainFragment fragment = (MainFragment) fragmentManager.findFragmentById(R.id.main_fragment);
-//            fragment.update_login();
-//
-//
-//        }
+        String tmp_modules=sharedpreferences.getString("MyModulesString","empty");
+        if(!tmp_modules.equals("empty")){
+            try {
+                JSONObject obj=new JSONObject(tmp_modules);
+                JSONArray tmp_jsonArray=obj.getJSONArray("modules");
+                model.getMyModules().clear();
+                for (int i=0; i<tmp_jsonArray.length();i++){
+                    model.getMyModules().add(tmp_jsonArray.getJSONObject(i).getString("moduleID"));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }else {
+            model.getMyModules().clear();
+        }
+        System.out.println(model.getMyModules());
+        invalidateOptionsMenu();
+
 
     }
     @Override
@@ -369,6 +478,11 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onLoadCalendarFeeds() {
         showDialog_CalendarImport();
+
+    }
+
+    @Override
+    public void onTeacherFragmentInteraction(Uri uri) {
 
     }
 
@@ -600,4 +714,14 @@ public class MainActivity extends AppCompatActivity
         Toast.makeText(this, "Alarm Scheduled for 08:01", Toast.LENGTH_SHORT).show();
 
     }
+
+//    @Override
+//    public void finish() {
+//        super.finish();
+//        SharedPreferences.Editor prefsEditor = sharedpreferences.edit();
+//        System.out.println("the size is "+model.getMyModules().size());
+//        prefsEditor.putStringSet("myModules",model.getMyModules());
+//        prefsEditor.commit();
+//
+//    }
 }

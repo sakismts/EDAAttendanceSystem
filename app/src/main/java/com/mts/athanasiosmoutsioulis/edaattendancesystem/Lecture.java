@@ -33,7 +33,16 @@ public class Lecture implements Serializable, Comparable<Lecture>{
 
     }
 
+    public Lecture(String module, String type, Date start, Date end, String location, int studentsAttend) {
+        this.module = module;
+        this.type = type;
+        this.start = start;
+        this.end = end;
+        this.location = location;
 
+        this.StudentsAttend = studentsAttend;
+
+    }
 
     public String getTitle() {
         return title;
@@ -100,6 +109,16 @@ public class Lecture implements Serializable, Comparable<Lecture>{
     private String description;
     private String attendance;
     private String feedback;
+
+    public int getStudentsAttend() {
+        return StudentsAttend;
+    }
+
+    public void setStudentsAttend(int studentsAttend) {
+        StudentsAttend = studentsAttend;
+    }
+
+    private int StudentsAttend;
 
     public String getFeedback() {
         return feedback;

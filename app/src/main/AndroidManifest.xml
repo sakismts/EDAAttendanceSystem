@@ -25,6 +25,7 @@
         <activity android:name=".LoginActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -73,6 +74,17 @@
         <activity android:name=".FacebookList" >
         </activity>
         <activity android:name=".LectureDetails" >
+        </activity>
+        <activity
+            android:name=".MyModules"
+            android:label="@string/title_activity_my_modules"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+        <activity android:name=".AvailableModules" >
+        </activity>
+        <activity android:name=".AttendancesList" >
+        </activity>
+        <activity android:name=".TeacherAttendanceSheet" >
         </activity>
     </application>
 

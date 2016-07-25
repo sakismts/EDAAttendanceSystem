@@ -5,13 +5,12 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.mts.athanasiosmoutsioulis.edaattendancesystem.FeedBackList">
+    tools:context="com.mts.athanasiosmoutsioulis.edaattendancesystem.AttendancesList">
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/fd_recycler_view"
+        android:id="@+id/at_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"
         />
-
 
 </RelativeLayout>
