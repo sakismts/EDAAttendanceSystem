@@ -1,17 +1,11 @@
 package com.mts.athanasiosmoutsioulis.edaattendancesystem;
 
-import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -19,12 +13,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
- * Created by AthanasiosMoutsioulis on 24/07/16.
+ * Created by AthanasiosMoutsioulis on 26/07/16.
  */
-public class AdapterTeacherAttendances extends RecyclerView.Adapter<AdapterTeacherAttendances.ViewHolder> {
+public class AdapterTeacherFeedBackList extends RecyclerView.Adapter<AdapterTeacherFeedBackList.ViewHolder> {
     SharedPreferences sharedpreferences;
     public static final String MyPREFERENCES = "MyPrefs" ;
-    private AttendancesListFragment.OnLectureItemClickedListener listener;
+    private TeacherFeedBackFragment.OnFeedbackItemClickedListener listener;
 
     @Override
     public void onViewDetachedFromWindow(ViewHolder holder) {
@@ -40,12 +34,12 @@ public class AdapterTeacherAttendances extends RecyclerView.Adapter<AdapterTeach
     private AttendanceModel model = AttendanceModel.getOurInstance();
 
 
-    public AdapterTeacherAttendances(Context ctx) {
+    public AdapterTeacherFeedBackList(Context ctx) {
         super();
         this.context = ctx;
 
-        if (this.context instanceof AttendancesListFragment.OnLectureItemClickedListener){
-            listener= (AttendancesListFragment.OnLectureItemClickedListener) context;
+        if (this.context instanceof TeacherFeedBackFragment.OnFeedbackItemClickedListener){
+            listener= (TeacherFeedBackFragment.OnFeedbackItemClickedListener) context;
 
         }
 
@@ -85,7 +79,7 @@ public class AdapterTeacherAttendances extends RecyclerView.Adapter<AdapterTeach
                 @Override
                 public void onClick(View v) {
                     if (listener!=null){
-                        listener.onLectureItemClickedListener(getAdapterPosition());
+                        listener.onFeedbackItemClicked(getAdapterPosition());
                     }
                 }
             });
@@ -118,7 +112,7 @@ public class AdapterTeacherAttendances extends RecyclerView.Adapter<AdapterTeach
             //String end_hour = (String) android.text.format.DateFormat.format("HH", Lectureitems.getEnd());
             final String end_minutes = (String) android.text.format.DateFormat.format("mm", Lectureitems.getEnd());
             txtTime.setText(start_hour + ":" + start_minutes + " - " + end_hour + ":" + end_minutes);
-            tvAttendancesCount.setText(Integer.toString(Lectureitems.getStudentsAttend()));
+            tvAttendancesCount.setText(Integer.toString(Lectureitems.getStudentsFeedBack()));
 
         }
 
@@ -129,12 +123,12 @@ public class AdapterTeacherAttendances extends RecyclerView.Adapter<AdapterTeach
 
     // Create new views (invoked by the layout manager)
     @Override
-    public AdapterTeacherAttendances.ViewHolder onCreateViewHolder(ViewGroup parent,
-                                                         int viewType) {
+    public AdapterTeacherFeedBackList.ViewHolder onCreateViewHolder(ViewGroup parent,
+                                                                   int viewType) {
         View v = null;
         // create a new view
         if (viewType == 1) {
-            v = LayoutInflater.from(parent.getContext()).inflate(R.layout.teacher_attendances, parent, false);
+            v = LayoutInflater.from(parent.getContext()).inflate(R.layout.teacher_feedback_item, parent, false);
         }
         // set the view's size, margins, paddings and layout parameters
         ViewHolder vh = new ViewHolder(v);
@@ -178,4 +172,5 @@ public class AdapterTeacherAttendances extends RecyclerView.Adapter<AdapterTeach
 
 
 }
+
 

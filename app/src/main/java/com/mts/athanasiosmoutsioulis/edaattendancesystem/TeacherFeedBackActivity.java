@@ -4,33 +4,31 @@ import android.app.FragmentManager;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.widget.Toast;
 
 import java.util.Calendar;
 
-public class AttendancesList extends AppCompatActivity implements AttendancesListFragment.OnLectureItemClickedListener{
-AttendanceModel model=AttendanceModel.getOurInstance();
-    public boolean hasTwoPanes;
+public class TeacherFeedBackActivity extends AppCompatActivity implements TeacherFeedBackFragment.OnFeedbackItemClickedListener {
 
+    AttendanceModel model=AttendanceModel.getOurInstance();
+    public boolean hasTwoPanes;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_attendances_list);
-        if(findViewById(R.id.list_studentsids_fragment)==null){
+        setContentView(R.layout.activity_teacher_feed_back);
+        if(findViewById(R.id.list_studentsFD_fragment)==null){
             hasTwoPanes=false;
 
         }else{
             hasTwoPanes=true;
-        }
+            ////load the first item to the second fragment
 
+
+        }
     }
 
-
     @Override
-    public void onLectureItemClickedListener(int position) {
+    public void onFeedbackItemClicked(int position) {
         Calendar c_start = Calendar.getInstance();
         c_start.setTime(model.getTeacherAttendances().get(position).getStart());
         String startDate=c_start.get(Calendar.DAY_OF_MONTH)+"/"+String.valueOf(c_start.get(Calendar.MONTH)+1)+"/"+c_start.get(Calendar.YEAR)+"T"+c_start.get(Calendar.HOUR_OF_DAY)+":"+c_start.get(Calendar.MINUTE);
@@ -41,18 +39,19 @@ AttendanceModel model=AttendanceModel.getOurInstance();
 
         if(hasTwoPanes){
             FragmentManager fragmentManager= getFragmentManager();
-            AttendanceSheetFragment fragment= (AttendanceSheetFragment) fragmentManager.findFragmentById(R.id.list_studentsids_fragment);
-            fragment.updateStudentAttendances(model.getTeacherAttendances().get(position).getModule(),startDate,endDate);
+            TeacherFeedbackSheetFragment fragment= (TeacherFeedbackSheetFragment) fragmentManager.findFragmentById(R.id.list_studentsFD_fragment);
+            fragment.updateStudentAttendances(model.getTeacherAttendances().get(position).getModule(),model.getTeacherAttendances().get(position).getType(),startDate,endDate);
 
 
         }else{
 
 
-        Intent intent=new Intent(this,TeacherAttendanceSheet.class);
-        intent.putExtra("moduleID", model.getTeacherAttendances().get(position).getModule());
-        intent.putExtra("startDate",startDate);
-        intent.putExtra("endDate",endDate);
-        startActivity(intent);
+            Intent intent=new Intent(this,TeacherFeedbackSheetActivity.class);
+            intent.putExtra("moduleID", model.getTeacherAttendances().get(position).getModule());
+            intent.putExtra("moduleType", model.getTeacherAttendances().get(position).getType());
+            intent.putExtra("startDate",startDate);
+            intent.putExtra("endDate",endDate);
+            startActivity(intent);
         }
     }
 }

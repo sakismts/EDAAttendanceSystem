@@ -17,18 +17,19 @@ import android.view.ViewGroup;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link AttendancesListFragment.OnLectureItemClickedListener} interface
+ * {@link TeacherFeedBackFragment.OnFeedbackItemClickedListener} interface
  * to handle interaction events.
  */
-public class AttendancesListFragment extends Fragment implements AttendanceModel.OnGetTeacherAttendances{
+public class TeacherFeedBackFragment extends Fragment implements AttendanceModel.OnGetTeacherAttendances{
     AttendanceModel model=AttendanceModel.getOurInstance();
     String module;
     private RecyclerView.Adapter mAdapter;
     private LinearLayoutManager mLayoutManager;
     ProgressDialog progress;
-    private OnLectureItemClickedListener mListener;
 
-    public AttendancesListFragment() {
+    private OnFeedbackItemClickedListener mListener;
+
+    public TeacherFeedBackFragment() {
         // Required empty public constructor
     }
 
@@ -37,8 +38,8 @@ public class AttendancesListFragment extends Fragment implements AttendanceModel
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_attendances_list, container, false);
-        RecyclerView attendRecycler = (RecyclerView) view.findViewById(R.id.at_recycler_view);
+       View view= inflater.inflate(R.layout.fragment_teacher_feed_back, container, false);
+        RecyclerView attendRecycler = (RecyclerView) view.findViewById(R.id.feed_recycler_view);
         attendRecycler.setHasFixedSize(true);
         model.getTeacherAttendances().clear();
         // use a linear layout manager
@@ -46,16 +47,16 @@ public class AttendancesListFragment extends Fragment implements AttendanceModel
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mLayoutManager.scrollToPosition(0);
         attendRecycler.setLayoutManager(mLayoutManager);
-        mAdapter = new AdapterTeacherAttendances(getActivity());
+        mAdapter = new AdapterTeacherFeedBackList(getActivity());
 
         attendRecycler.setAdapter(mAdapter);
         model.setGetTeacherAttendancesListener(this);
         Intent intent = getActivity().getIntent();
         module=intent.getStringExtra("module");
-        progress = ProgressDialog.show(getActivity(), "Attendances List",
-                "Loading Attendances for " + module, true);
         String uri = "http://greek-tour-guides.eu/ioannina/dissertation/getTeacherAttendances.php?module_id="+ module;
         Log.i("URI", uri.toString());
+        progress = ProgressDialog.show(getActivity(), "Feedbacks List",
+                "Loading feedbacks for "+module, true);
         model.getTeacherAttendaces(uri);
         return view;
     }
@@ -66,7 +67,7 @@ public class AttendancesListFragment extends Fragment implements AttendanceModel
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (OnLectureItemClickedListener) activity;
+            mListener = (OnFeedbackItemClickedListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -79,6 +80,16 @@ public class AttendancesListFragment extends Fragment implements AttendanceModel
         mListener = null;
     }
 
+    @Override
+    public void onGetTeacherAttendances(boolean signed) {
+        progress.dismiss();
+        mAdapter.notifyDataSetChanged();
+        if(!model.getTeacherAttendances().isEmpty()){
+            if(((TeacherFeedBackActivity)getActivity()).hasTwoPanes)
+                 ((TeacherFeedBackActivity)getActivity()).onFeedbackItemClicked(0);
+        }
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -89,19 +100,9 @@ public class AttendancesListFragment extends Fragment implements AttendanceModel
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnLectureItemClickedListener {
+    public interface OnFeedbackItemClickedListener {
         // TODO: Update argument type and name
-        public void onLectureItemClickedListener(int position);
+        public void onFeedbackItemClicked(int position);
     }
 
-    @Override
-    public void onGetTeacherAttendances(boolean signed) {
-        progress.dismiss();
-        mAdapter.notifyDataSetChanged();
-        if(!model.getTeacherAttendances().isEmpty()){
-            if(((AttendancesList)getActivity()).hasTwoPanes)
-                ((AttendancesList)getActivity()).onLectureItemClickedListener(0);
-        }
-
-    }
 }

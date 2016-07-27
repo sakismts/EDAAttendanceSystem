@@ -84,7 +84,13 @@
         </activity>
         <activity android:name=".AttendancesList" >
         </activity>
-        <activity android:name=".TeacherAttendanceSheet" >
+        <activity
+            android:name=".TeacherAttendanceSheet"
+             >
+        </activity>
+        <activity android:name=".TeacherFeedBackActivity" >
+        </activity>
+        <activity android:name=".TeacherFeedbackSheetActivity" >
         </activity>
     </application>
 

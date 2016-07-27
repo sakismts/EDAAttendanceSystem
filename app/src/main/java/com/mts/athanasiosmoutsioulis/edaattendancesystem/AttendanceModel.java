@@ -88,6 +88,17 @@ public class AttendanceModel {
     //teacher Attendances
     ArrayList<Lecture> TeacherAttendances= new ArrayList<Lecture>();
 
+    ///teacher feedback
+
+    public ArrayList<Attendance> getTeacherFeedback() {
+        return TeacherFeedback;
+    }
+
+    public void setTeacherFeedback(ArrayList<Attendance> teacherFeedback) {
+        TeacherFeedback = teacherFeedback;
+    }
+
+    ArrayList<Attendance> TeacherFeedback=new ArrayList<Attendance>();
 
     public ArrayList<Lecture> getAttendances_list() {
         return attendances_list;
@@ -448,6 +459,7 @@ public class AttendanceModel {
                         JSONArray tmp_attendances = response.getJSONArray("attendances");
 
                         int count=0;
+                        int feedback_count=0;
                         for (int i=0; i<tmp_attendances.length();i++){
 
                             JSONObject objjson = tmp_attendances.getJSONObject(i);
@@ -468,9 +480,13 @@ public class AttendanceModel {
                             {
                                 JSONObject tmpt_objjson = tmp_attendances.getJSONObject(i+1);
                                 if (startDate.equals(tmpt_objjson.getString("startDate"))){
+                                    if(!feedback.isEmpty())
+                                        feedback_count++;
                                  count++;
                                 }else{
                                     count++;
+                                    if(!feedback.isEmpty())
+                                        feedback_count++;
                                     Date tmpt_start=null;
                                     Date tmpt_end=null;
                                     try {
@@ -480,12 +496,16 @@ public class AttendanceModel {
                                         // TODO Auto-generated catch block
                                         e.printStackTrace();
                                     }
-                                    Lecture tmp= new Lecture(moduleID,LectureType,tmpt_start,tmpt_end,location,count);
+                                    Lecture tmp= new Lecture(moduleID,LectureType,tmpt_start,tmpt_end,location,count,feedback_count);
                                     getTeacherAttendances().add(tmp);
+
                                     count=0;
+                                    feedback_count=0;
                                 }
                             }else{
                                 count++;
+                                if(!feedback.isEmpty())
+                                    feedback_count++;
                                 Date tmpt_start=null;
                                 Date tmpt_end=null;
                                 try {
@@ -495,8 +515,9 @@ public class AttendanceModel {
                                     // TODO Auto-generated catch block
                                     e.printStackTrace();
                                 }
-                                Lecture tmp= new Lecture(moduleID,LectureType,tmpt_start,tmpt_end,location,count);
+                                Lecture tmp= new Lecture(moduleID,LectureType,tmpt_start,tmpt_end,location,count,feedback_count);
                                 getTeacherAttendances().add(tmp);
+
                             }
                             //date=startDate;
 
@@ -600,7 +621,8 @@ public class AttendanceModel {
                         String shareID = objjson.getString("shareID");
                         System.out.println(StudentId);
                         getStudents_Attendance_list().add(new Attendance(StudentId,valid,shareID,feedback));
-
+                        if(!feedback.isEmpty())
+                            getTeacherFeedback().add(new Attendance(StudentId,valid,shareID,feedback));
 
                     }
 

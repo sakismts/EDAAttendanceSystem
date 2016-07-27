@@ -37,7 +37,7 @@ public class MainFragmentTeacher extends Fragment {
     SharedPreferences sharedpreferences;
     private OnTeacherFragmentInteractionListener mListener;
     TextView id;
-    LinearLayout ll_attendaces;
+    LinearLayout ll_attendaces,ll_feedback;
     AttendanceModel model = AttendanceModel.getOurInstance();
     ArrayAdapter<String> spineradapter;
     String[] state;
@@ -63,14 +63,21 @@ public class MainFragmentTeacher extends Fragment {
 
         id = (TextView)view.findViewById(R.id.tv_id);
         ll_attendaces = (LinearLayout)view.findViewById(R.id.teacher_ll_attendances);
-
+        ll_feedback=(LinearLayout)view.findViewById(R.id.teacher_ll_feedback);
         ll_attendaces.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent attendancesList= new Intent(getActivity(),AttendancesList.class);
-
                 attendancesList.putExtra("module",module);
                 startActivity(attendancesList);
+            }
+        });
+        ll_feedback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent feedbackList= new Intent(getActivity(),TeacherFeedBackActivity.class);
+                feedbackList.putExtra("module",module);
+                startActivity(feedbackList);
             }
         });
         /////spiner////
