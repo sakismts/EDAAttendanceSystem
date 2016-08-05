@@ -26,7 +26,7 @@ import java.util.ArrayList;
  * to handle interaction events.
  */
 public class SignupFragment extends Fragment implements AttendanceModel.OnSignUpUpdateListener, AttendanceModel.OnCourseListUpdateListener{
-    EditText id,pass,confpass;
+    EditText id,pass,confpass,fullName;
     AutoCompleteTextView course;
     String role;
     AttendanceModel model = AttendanceModel.getOurInstance();
@@ -49,6 +49,7 @@ public class SignupFragment extends Fragment implements AttendanceModel.OnSignUp
 
         Button submit = (Button)view.findViewById(R.id.btn_submit);
         id = (EditText)view.findViewById(R.id.edt_signupId);
+        fullName = (EditText)view.findViewById(R.id.edt_FullName);
         pass = (EditText)view.findViewById(R.id.edt_signupPass);
         confpass = (EditText)view.findViewById(R.id.edt_signupConfPass);
         course = (AutoCompleteTextView)view.findViewById(R.id.autoCompleteTextView);
@@ -70,9 +71,11 @@ public class SignupFragment extends Fragment implements AttendanceModel.OnSignUp
                 if (checkedId == R.id.rb_student) {
                     role="Student";
                     course.setVisibility(View.VISIBLE);
+                    fullName.setVisibility(View.GONE);
                 }else if (checkedId == R.id.rb_teacher){
                     role="Teacher";
                     course.setVisibility(View.GONE);
+                    fullName.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -100,12 +103,12 @@ public class SignupFragment extends Fragment implements AttendanceModel.OnSignUp
                                 Toast.makeText(getActivity(),"You have to fill your course",Toast.LENGTH_SHORT).show();
                             }else{
                                 Log.i("Signup", "Registering Student");
-                                String uri = "http://greek-tour-guides.eu/ioannina/dissertation/insert_user.php?id="+id.getText().toString()+"&role="+role+"&pass="+pass.getText().toString()+"&course="+course.getText().toString();
+                                String uri = "http://greek-tour-guides.eu/ioannina/dissertation/insert_user.php?id="+id.getText().toString()+"&role="+role+"&pass="+pass.getText().toString()+"&course="+course.getText().toString()+"&FBname=";
                                 model.signup(uri);
                             }
                         }else{
                             Log.i("Signup", "Registering Teacher");
-                            String uri = "http://greek-tour-guides.eu/ioannina/dissertation/insert_user.php?id="+id.getText().toString()+"&role="+role+"&pass="+pass.getText().toString()+"&course=";
+                            String uri = "http://greek-tour-guides.eu/ioannina/dissertation/insert_user.php?id="+id.getText().toString()+"&role="+role+"&pass="+pass.getText().toString()+"&course=&FBname="+fullName.getText().toString();
                             model.signup(uri);
                         }
 

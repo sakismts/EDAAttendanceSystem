@@ -502,7 +502,7 @@ public class MainActivity extends AppCompatActivity
         protected void onPreExecute() {
             super.onPreExecute();
 
-            dialog.setMessage("Loading your calendar indo...");
+            dialog.setMessage("Loading your calendar info...");
             dialog.show();
         }
 

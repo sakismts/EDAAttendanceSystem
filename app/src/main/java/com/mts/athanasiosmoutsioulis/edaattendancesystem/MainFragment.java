@@ -33,6 +33,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.Button;
@@ -76,6 +77,7 @@ import java.util.UUID;
  */
 public class MainFragment extends Fragment implements AttendanceModel.OnSignAttendanceListener{
     TextView id;
+    TextView status;
     TextView fbName;
     ImageView photo_profile;
     SharedPreferences sharedpreferences;
@@ -106,7 +108,7 @@ public class MainFragment extends Fragment implements AttendanceModel.OnSignAtte
         Attendanceprogressdialog=new ProgressDialog(getActivity());
         Attendanceprogressdialog.setMessage("Sign Attendance, please wait.");
         model.setSignAttendanceListener(this);
-
+        status=(TextView)view.findViewById(R.id.tv_status);
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -205,7 +207,7 @@ public class MainFragment extends Fragment implements AttendanceModel.OnSignAtte
     @Override
     public void onResume() {
         super.onResume();
-
+        updateStatus();
 
     }
 
@@ -306,8 +308,12 @@ public class MainFragment extends Fragment implements AttendanceModel.OnSignAtte
         public void onReceive(Context arg0, Intent arg1) {
             // TODO Auto-generated method stub
 
+            if(arg1.getBooleanExtra("Detected_Lecture",false)==true){
+               updateStatus();
+            }else{
             String datapassed = arg1.getStringExtra("Lecture");
             displayAttendanceDialog(datapassed);
+            }
 
         }
 
@@ -396,8 +402,31 @@ public class MainFragment extends Fragment implements AttendanceModel.OnSignAtte
         });
 
         handler.postDelayed(runnable, 1000);
+            Toast.makeText(getActivity(),"You have signed successfully!",Toast.LENGTH_SHORT).show();
         }
 
+    }
+
+    private  void updateStatus(){
+        Lecture tmp=checkLectures();
+        if(tmp!=null){
+            if (tmp.getAttendance().equals("false")){
+        System.out.println();
+        status.setText("You have "+tmp.getType()+" "+tmp.getTitle()+tmp.getLocation()+"\n Status:Not Signed");
+        Animation anim = new AlphaAnimation(0.0f, 1.0f);
+        anim.setDuration(100); //You can manage the blinking time with this parameter
+        anim.setStartOffset(20);
+        anim.setRepeatMode(Animation.REVERSE);
+        anim.setRepeatCount(Animation.INFINITE);
+        status.startAnimation(anim);}
+        else{
+                status.setText("You have "+tmp.getType()+" "+tmp.getTitle()+tmp.getLocation()+"\n Status:Signed");
+                status.clearAnimation();
+            }
+        }else{
+            status.setText("");
+            status.clearAnimation();
+        }
     }
     private void setScaleAnimation(View view) {
         ScaleAnimation anim = new ScaleAnimation(0.0f, 1.0f, 0.0f, 1.0f, Animation.RELATIVE_TO_SELF, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f);
@@ -405,6 +434,40 @@ public class MainFragment extends Fragment implements AttendanceModel.OnSignAtte
         view.startAnimation(anim);
     }
 
+
+    public Lecture checkLectures(){
+        Calendar c = Calendar.getInstance();
+        int c_day = c.get(Calendar.DAY_OF_MONTH);
+        int c_month = c.get(Calendar.MONTH)+1;
+        int c_year = c.get(Calendar.YEAR);
+        int c_hour = c.get(Calendar.HOUR_OF_DAY);
+        int c_seconds = c.get(Calendar.SECOND);
+
+        Calendar c1 = Calendar.getInstance();
+        Calendar c2 = Calendar.getInstance();
+        for (Lecture tmp: model.getLectures_list_today()){
+            c1.setTime(tmp.getStart());
+            c2.setTime(tmp.getEnd());
+            int day = c1.get(Calendar.DAY_OF_MONTH);
+            int month = c1.get(Calendar.MONTH)+1;
+            int year = c1.get(Calendar.YEAR);
+
+            if (day==c_day && month==c_month && year==c_year) {
+                int c_hour1 = c1.get(Calendar.HOUR_OF_DAY);
+
+                int c_hour2 = c2.get(Calendar.HOUR_OF_DAY);
+
+                if (c_hour>=c1.get(Calendar.HOUR_OF_DAY) && c_hour< c2.get(Calendar.HOUR_OF_DAY)){
+                    System.out.println("Day :"+c_day+ " - " +day+", Month :"+c_month+ " - " +month+", Hour :"+c_hour+" - "+c1.get(Calendar.HOUR_OF_DAY));
+                    Log.i("Lecture","Current lecture is at :"+tmp.getLocation());
+
+                    return tmp;
+                }
+            }
+        }
+        return null;
+
+    }
 
 }
 

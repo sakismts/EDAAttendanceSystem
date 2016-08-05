@@ -293,7 +293,7 @@ public class ManualAttendance extends AppCompatActivity implements AttendanceMod
     @Override
     public void onCheckAttendanceListener(boolean attendace) {
 
-        if(attendace==false){
+
             lecture.setVisibility(View.VISIBLE);
             txtHeader = (TextView)findViewById(R.id.tv_title);
             txtDate = (TextView)findViewById(R.id.tv_date);
@@ -355,8 +355,22 @@ public class ManualAttendance extends AppCompatActivity implements AttendanceMod
             else
                 type.setImageResource(R.drawable.lecture_icon);
 
-        }else{
-            Toast.makeText(this,"You have already signed", Toast.LENGTH_SHORT).show();
+        if(attendace==true) {
+            Toast.makeText(this, "You have already signed", Toast.LENGTH_SHORT).show();
+            btn_attendance.setEnabled(false);
+            btn_attendance.setBackgroundColor(Color.GRAY);
+            if(tmp_attendance_class.getAttendance().equals("false")){
+                String dateStart = DateFormat.format("yyyyMMdd'T'HHmmss'Z'", tmp_attendance_class.getStart()).toString();
+                String dateEnd = DateFormat.format("yyyyMMdd'T'HHmmss'Z'", tmp_attendance_class.getEnd()).toString();
+            try {
+                model.open();
+                model.updateAttendance(tmp_attendance_class.getTitle(),tmp_attendance_class.getModule(),tmp_attendance_class.getType(),dateStart,dateEnd,tmp_attendance_class.getLocation(),"true");
+                model.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            }
+
         }
 
     }
@@ -438,6 +452,7 @@ public class ManualAttendance extends AppCompatActivity implements AttendanceMod
             });
 
             handler.postDelayed(runnable, 1000);
+            Toast.makeText(this,"You have signed successfully!",Toast.LENGTH_SHORT).show();
         }
     }
     private void setScaleAnimation(View view) {

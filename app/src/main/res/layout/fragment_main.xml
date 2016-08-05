@@ -26,7 +26,6 @@
                     android:id="@+id/img_fbPhoto"
                     android:src="@drawable/photo_profile"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dp"
                     android:scaleType="fitCenter"
                     android:layout_centerVertical="true" />
 
@@ -36,7 +35,7 @@
                     android:layout_height="match_parent"
                     android:layout_alignTop="@+id/img_fbPhoto"
                     android:layout_toRightOf="@+id/img_fbPhoto"
-                    android:padding="10dp">
+                    android:padding="5dp">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -55,6 +54,18 @@
                         android:textColor="#fff"
                         android:padding="5dp"
                         android:textSize="20sp" />
+
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:text="New Text"
+                        android:id="@+id/tv_status"
+                        android:textColor="#fff"
+                        android:padding="5dp"
+                        android:layout_gravity="bottom"
+                        android:gravity="bottom|right"
+                        android:layout_marginBottom="30dp"
+                        android:textAlignment="center" />
                 </LinearLayout>
 
             </RelativeLayout>

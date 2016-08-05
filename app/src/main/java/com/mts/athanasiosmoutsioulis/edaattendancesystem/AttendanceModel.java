@@ -515,6 +515,7 @@ public class AttendanceModel {
                                     // TODO Auto-generated catch block
                                     e.printStackTrace();
                                 }
+
                                 Lecture tmp= new Lecture(moduleID,LectureType,tmpt_start,tmpt_end,location,count,feedback_count);
                                 getTeacherAttendances().add(tmp);
 
@@ -880,10 +881,22 @@ public class AttendanceModel {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            if (result==1)
-                notifyListenerSignIn(true);
+            if (result==1){
+                try {
+                    JSONArray tmp_user = response.getJSONArray("user");
+                    String name="";
+                    for (int i=0; i<tmp_user.length();i++){
+                        JSONObject objjson = tmp_user.getJSONObject(i);
+                        name = objjson.getString("fbName");
+                    }
+                    notifyListenerSignIn(true,name);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
             else
-                notifyListenerSignIn(false);
+                notifyListenerSignIn(false,"");
         }
     };
 
@@ -896,7 +909,7 @@ public class AttendanceModel {
 
     //INTERFACE for signin
     public interface  OnSignInUpdateListener{
-        void onSignInUpdateListener(boolean signed);
+        void onSignInUpdateListener(boolean signed, String name);
 
     }
 
@@ -904,12 +917,12 @@ public class AttendanceModel {
         this.signinUpdateListener = signinUpdateListener;
     }
 
-    private void notifyListenerSignIn(boolean login){
+    private void notifyListenerSignIn(boolean login, String name){
 
 
         if (signinUpdateListener != null)
 
-            signinUpdateListener.onSignInUpdateListener(login);
+            signinUpdateListener.onSignInUpdateListener(login,name);
 
     }
 
@@ -1232,6 +1245,7 @@ public class AttendanceModel {
     }
 
     public void deleteAllItems(){
+        counter=0;
         try {
             open();
             database.delete(LecturesDBHelper.TABLE_NAME, null, null);

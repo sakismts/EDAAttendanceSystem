@@ -148,7 +148,7 @@ public class LoginFragment extends Fragment implements AttendanceModel.OnSignInU
     }
 
     @Override
-    public void onSignInUpdateListener(boolean login) {
+    public void onSignInUpdateListener(boolean login, String name) {
         if (login==true){
             Log.i("Signin", "success");
             SharedPreferences.Editor editor = sharedpreferences.edit();
@@ -157,6 +157,7 @@ public class LoginFragment extends Fragment implements AttendanceModel.OnSignInU
             editor.putString("pass", pass.getText().toString());
             editor.putBoolean("logged", true);
             editor.putString("role",role);
+            editor.putString("FName",name);
             editor.commit();
             Toast.makeText(getActivity(),"The Login was successful",Toast.LENGTH_SHORT).show();
             if (mListener!=null){

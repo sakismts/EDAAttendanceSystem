@@ -30,14 +30,14 @@ import java.util.Set;
  * {@link MainFragmentTeacher.OnTeacherFragmentInteractionListener} interface
  * to handle interaction events.
  */
-public class MainFragmentTeacher extends Fragment {
+public class MainFragmentTeacher extends Fragment  {
     Spinner spinner;
     Set<String> myModules;
     public static final String MyPREFERENCES = "MyPrefs" ;
     SharedPreferences sharedpreferences;
     private OnTeacherFragmentInteractionListener mListener;
-    TextView id;
-    LinearLayout ll_attendaces,ll_feedback;
+    TextView id,Name;
+    LinearLayout ll_attendaces,ll_feedback,ll_chart;
     AttendanceModel model = AttendanceModel.getOurInstance();
     ArrayAdapter<String> spineradapter;
     String[] state;
@@ -62,8 +62,10 @@ public class MainFragmentTeacher extends Fragment {
         myModules = sharedpreferences.getStringSet("myModules", new HashSet<String>());
 
         id = (TextView)view.findViewById(R.id.tv_id);
+        Name = (TextView)view.findViewById(R.id.tv_fbName);
         ll_attendaces = (LinearLayout)view.findViewById(R.id.teacher_ll_attendances);
         ll_feedback=(LinearLayout)view.findViewById(R.id.teacher_ll_feedback);
+        ll_chart=(LinearLayout)view.findViewById(R.id.teacher_ll_charts);
         ll_attendaces.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -78,6 +80,14 @@ public class MainFragmentTeacher extends Fragment {
                 Intent feedbackList= new Intent(getActivity(),TeacherFeedBackActivity.class);
                 feedbackList.putExtra("module",module);
                 startActivity(feedbackList);
+            }
+        });
+        ll_chart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent chartAct= new Intent(getActivity(),ChartActivity.class);
+                chartAct.putExtra("module",module);
+                startActivity(chartAct);
             }
         });
         /////spiner////
@@ -117,6 +127,7 @@ public class MainFragmentTeacher extends Fragment {
 
     public void update_login() {
         id.setText(sharedpreferences.getString("id", "User"));
+        Name.setText(sharedpreferences.getString("FName", " "));
 
     }
 

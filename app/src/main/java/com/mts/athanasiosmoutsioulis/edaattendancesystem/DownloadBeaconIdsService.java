@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.SystemClock;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -24,6 +25,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -76,6 +78,8 @@ public class DownloadBeaconIdsService extends Service implements AttendanceModel
                     // Deploy the Beacons that belongs to todays lectures
                     ArrayList<com.mts.athanasiosmoutsioulis.edaattendancesystem.Beacon> todayBeaconList= new ArrayList<com.mts.athanasiosmoutsioulis.edaattendancesystem.Beacon>();
                     String BeaconKJsonListString=sharedpreferences.getString("BeaconList", "empty");
+                    String location= checkLecturesTime().toString().toLowerCase();
+                    Log.i("Service", location);
                     if (!BeaconKJsonListString.equals("empty")){
                         try {
                             JSONArray jsonArrayBeacon = new JSONArray(BeaconKJsonListString);
@@ -87,8 +91,7 @@ public class DownloadBeaconIdsService extends Service implements AttendanceModel
                             e.printStackTrace();
                         }
 
-                        String location= checkLecturesTime().toString().toLowerCase();
-                        Log.i("Service", location);
+
 
 
 
@@ -262,8 +265,11 @@ public class DownloadBeaconIdsService extends Service implements AttendanceModel
                 if (c_hour>=c1.get(Calendar.HOUR_OF_DAY) && c_hour< c2.get(Calendar.HOUR_OF_DAY)){
                     System.out.println("Day :"+c_day+ " - " +day+", Month :"+c_month+ " - " +month+", Hour :"+c_hour+" - "+c1.get(Calendar.HOUR_OF_DAY));
                     tmp_attendance_class=tmp;
-                    Log.i("Lecture","Current lecture is at :"+tmp.getLocation());
-
+                    Log.i("Lecture", "Current lecture is at :" + tmp.getLocation());
+                    Intent intent = new Intent();
+                    intent.setAction(MY_ACTION);
+                    intent.putExtra("Detected_Lecture",true);
+                    sendBroadcast(intent);
                     return tmp.getLocation();
                 }
             }
@@ -296,13 +302,25 @@ public class DownloadBeaconIdsService extends Service implements AttendanceModel
     @Override
     public void onCheckAttendanceListener(boolean signed) {
 
-        if(!signed){
+        if(signed==false){
             Intent intent = new Intent();
             intent.setAction(MY_ACTION);
             intent.putExtra("Lecture", "Do you want to sign for the " + tmp_attendance_class.getType() + " of " + tmp_attendance_class.getModule() + " at " + tmp_attendance_class.getLocation());
             sendBroadcast(intent);
             showNotification();
 
+        }else{
+            if(tmp_attendance_class.getAttendance().equals("false")){
+                String dateStart = DateFormat.format("yyyyMMdd'T'HHmmss'Z'", tmp_attendance_class.getStart()).toString();
+                String dateEnd = DateFormat.format("yyyyMMdd'T'HHmmss'Z'", tmp_attendance_class.getEnd()).toString();
+                try {
+                    model.open();
+                    model.updateAttendance(tmp_attendance_class.getTitle(),tmp_attendance_class.getModule(),tmp_attendance_class.getType(),dateStart,dateEnd,tmp_attendance_class.getLocation(),"true");
+                    model.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
     }

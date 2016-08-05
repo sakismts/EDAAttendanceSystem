@@ -44,13 +44,22 @@
         android:layout_below="@+id/edt_signupPass"
         android:layout_centerHorizontal="true"
         android:hint="Confirm password" />
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:id="@+id/edt_FullName"
+        android:visibility="gone"
+        android:layout_below="@+id/edt_signupConfPass"
+        android:layout_centerHorizontal="true"
+        android:hint="Full Name" />
 
     <RadioGroup
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:id="@+id/radioGroup"
-        android:layout_below="@+id/edt_signupConfPass"
+        android:layout_below="@+id/edt_FullName"
         android:layout_alignParentStart="true">
 
         <RadioButton
