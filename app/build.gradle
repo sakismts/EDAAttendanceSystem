@@ -43,4 +43,5 @@ dependencies {
     compile 'commons-lang:commons-lang:2.6'
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.0-beta1'
     compile 'com.itextpdf:itextg:5.5.9'
+    compile 'com.hudomju:swipe-to-dismiss-undo:1.0'
 }

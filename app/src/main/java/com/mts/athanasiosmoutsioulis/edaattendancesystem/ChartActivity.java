@@ -1,6 +1,14 @@
 package com.mts.athanasiosmoutsioulis.edaattendancesystem;
 
+import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Environment;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.annotation.SuppressLint;
@@ -12,11 +20,15 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.itextpdf.text.DocumentException;
 import com.mts.athanasiosmoutsioulis.edaattendancesystem.DayAxisValueFormatter;
 import com.mts.athanasiosmoutsioulis.edaattendancesystem.MyAxisValueFormatter;
 import com.mts.athanasiosmoutsioulis.edaattendancesystem.XYMarkerView;
@@ -36,7 +48,11 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.MPPointF;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class ChartActivity extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener,
         OnChartValueSelectedListener, AttendanceModel.OnGetTeacherAttendances {
@@ -45,7 +61,13 @@ public class ChartActivity extends AppCompatActivity implements SeekBar.OnSeekBa
     private TextView tvX, tvY;
     protected Typeface mTfRegular;
     protected Typeface mTfLight;
+    private Animation fab_open,fab_close;
+    private Boolean isFabOpen = false;
+    private FloatingActionButton fab,fab1;
+    private View cover_view;
     private AttendanceModel model=AttendanceModel.getOurInstance();
+    String filePath;
+    String module;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,11 +82,62 @@ public class ChartActivity extends AppCompatActivity implements SeekBar.OnSeekBa
         model.setGetTeacherAttendancesListener(this);
         model.getTeacherAttendances().clear();
         Intent intent = getIntent();
-        String module=intent.getStringExtra("module");
+         module=intent.getStringExtra("module");
         String uri = "http://greek-tour-guides.eu/ioannina/dissertation/getTeacherAttendances.php?module_id="+ module;
         Log.i("URI", uri.toString());
         model.getTeacherAttendaces(uri);
         mSeekBarX = (SeekBar) findViewById(R.id.seekBar1);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab1 = (FloatingActionButton)findViewById(R.id.fab1);
+        cover_view=(View)findViewById(R.id.cover_view);
+        fab_open = AnimationUtils.loadAnimation(this, R.anim.fab_open);
+        fab_close = AnimationUtils.loadAnimation(this, R.anim.fab_close);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                //  .setAction("Action", null).show();
+                if (isFabOpen == false)
+                    animateFAB();
+                else {
+
+                        saveImage();
+                        open_Image();
+
+                }
+            }
+        });
+        cover_view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                animateFAB();
+
+            }
+        });
+
+        fab1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    saveImage();
+                final File myfile = new File(filePath);
+                if (!myfile.exists()) {
+                    Log.i("FILE", "Pdf Directory created");
+                }else{ Log.i("FILE", "Pdf Directory exist");
+                }
+                    Intent email = new Intent(Intent.ACTION_SEND);
+                    email.putExtra(Intent.EXTRA_SUBJECT,"Chart for "+module);
+
+                    Uri uri = Uri.fromFile(myfile);
+                    email.putExtra(Intent.EXTRA_STREAM, uri);
+                    email.setType("message/rfc822");
+                    startActivity(email);
+
+
+            }
+        });
+
+
 
 
         mChart = (BarChart) findViewById(R.id.chart1);
@@ -138,6 +211,48 @@ public class ChartActivity extends AppCompatActivity implements SeekBar.OnSeekBa
         mSeekBarX.setOnSeekBarChangeListener(this);
 
         // mChart.setDrawLegend(false);
+    }
+
+    private void open_Image() {
+
+        final File myfile = new File(filePath);
+        if (!myfile.exists()) {
+            Log.i("FILE", "Pdf Directory created");
+        }else{ Log.i("FILE", "Pdf Directory exist");
+        }
+
+        new AlertDialog.Builder(this)
+                .setTitle("Open Image File")
+                .setMessage("Do you want to open the Image file?")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        Intent intent = new Intent();
+                        intent.setAction(Intent.ACTION_VIEW);
+                        System.out.println(filePath);
+                        intent.setDataAndType(Uri.fromFile(myfile), "*/*");
+                        startActivity(intent);
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+
+
+    }
+
+    private void saveImage() {
+        Date date = new Date() ;
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(date);
+        String filename="Chart_"+module+"_"+timeStamp;
+        mChart.saveToPath(filename,"/Documents/EDA/");
+        filePath=Environment.getExternalStorageDirectory().getPath()+ "/Documents/EDA/"+ filename
+                + ".png";
+
     }
 
     /*@Override
@@ -307,11 +422,68 @@ public class ChartActivity extends AppCompatActivity implements SeekBar.OnSeekBa
         //System.out.println("the number is:"+model.getTeacherAttendances().size()-1);
         mSeekBarX.setMax(model.getTeacherAttendances().size()-1);
         setData(1);
+        File pdfFolder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "EDA");
+        if (!pdfFolder.exists()) {
+            pdfFolder.mkdir();
+            Log.i("PDF", "Pdf Directory created");
+        }
+//        Date date = new Date() ;
+//        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(date);
+//
+//        System.out.println("the folder path is:"+pdfFolder.getAbsolutePath());
+//
+//        File myFile = new File(pdfFolder.getAbsolutePath(),  "chart.png");
+
+       // mChart.saveToGallery("chart.jpg", 85);
 
 //        for (Lecture tmp:model.getTeacherAttendances()){
 //            System.out.println("the number is:"+tmp.getStudentsAttend());
 //        }
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        int hasReadExternalPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (hasReadExternalPermission != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[] {Manifest.permission.READ_EXTERNAL_STORAGE},
+                    123);
+            return;
+        }
+        int hasWriteExternalPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (hasWriteExternalPermission != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    124);
+            return;
+        }
+    }
+
+    public void animateFAB(){
+
+        if(isFabOpen){
+            cover_view.setVisibility(View.GONE);
+            fab.setImageResource(R.drawable.options_menu_float);
+            fab1.startAnimation(fab_close);
+
+            fab1.setClickable(false);
+            isFabOpen = false;
+
+
+        } else {
+
+            //fab.startAnimation(rotate_forward);
+            cover_view.setVisibility(View.VISIBLE);
+            cover_view.bringToFront();
+            fab.setImageResource(R.drawable.save_icon);
+            fab1.startAnimation(fab_open);
+
+            fab1.setClickable(true);
+            isFabOpen = true;
+
+
+        }
+    }
+
 }
 
 
