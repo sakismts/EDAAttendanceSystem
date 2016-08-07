@@ -336,8 +336,10 @@ public class MainFragment extends Fragment implements AttendanceModel.OnSignAtte
                         String module_id=model.getCurrentLecture().getModule();
                         String lecture_type=model.getCurrentLecture().getType();
                         String location=model.getCurrentLecture().getLocation();
+
                         Calendar c_start = Calendar.getInstance();
                         c_start.setTime(model.getCurrentLecture().getStart());
+                        System.out.println(model.getCurrentLecture().getStart());
                         String startDate=c_start.get(Calendar.DAY_OF_MONTH)+"/"+String.valueOf(c_start.get(Calendar.MONTH)+1)+"/"+c_start.get(Calendar.YEAR)+"T"+c_start.get(Calendar.HOUR_OF_DAY)+":"+c_start.get(Calendar.MINUTE);
 
                         Calendar c_end = Calendar.getInstance();

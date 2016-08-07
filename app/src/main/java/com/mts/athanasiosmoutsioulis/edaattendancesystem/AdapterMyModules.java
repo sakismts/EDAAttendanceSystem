@@ -2,6 +2,7 @@ package com.mts.athanasiosmoutsioulis.edaattendancesystem;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +11,10 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -22,7 +27,11 @@ import java.util.Set;
 public class AdapterMyModules extends RecyclerView.Adapter<AdapterMyModules.ViewHolder> {
 
     public static final String MyPREFERENCES = "MyPrefs" ;
+    SharedPreferences sharedpreferences;
     private AttendanceModel model = AttendanceModel.getOurInstance();
+    ArrayList<String> mymodules_array;
+
+
 
 
     @Override
@@ -39,6 +48,8 @@ public class AdapterMyModules extends RecyclerView.Adapter<AdapterMyModules.View
     public AdapterMyModules(Context context) {
         super();
         this.context = context;
+
+        sharedpreferences = context.getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
     }
 
     @Override
@@ -95,7 +106,7 @@ public class AdapterMyModules extends RecyclerView.Adapter<AdapterMyModules.View
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         String moduleItem = null;
-        ArrayList<String> mymodules_array =new ArrayList<String>(model.getMyModules());
+        mymodules_array=new ArrayList<String>(model.getMyModules());
         moduleItem = mymodules_array.get(position).toString();
         holder.setData(moduleItem, position);
 
@@ -107,6 +118,43 @@ public class AdapterMyModules extends RecyclerView.Adapter<AdapterMyModules.View
     public int getItemCount() {
 
         return model.getMyModules().size();
+    }
+
+    public void removeItem(int position) {
+        System.out.println(position);
+        model.getMyModules().remove(mymodules_array.get(position));
+
+//        mymodules_array.clear();
+//        mymodules_array=new ArrayList<String>(model.getMyModules());
+        mymodules_array.remove(position);
+        notifyItemRemoved(position);
+        System.out.println(model.getMyModules().size());
+        notifyItemRangeChanged(position, mymodules_array.size());
+
+        SharedPreferences.Editor editor=sharedpreferences.edit();
+        editor.putString("MyModulesString", getJSONArray(model.getMyModules()).toString());
+        editor.commit();
+    }
+
+    public JSONObject getJSONArray(Set tmp) {
+        JSONArray JsonArray=new JSONArray();
+        for(String tmpString:model.getMyModules()){
+            JSONObject obj = new JSONObject();
+            try {
+                obj.put("moduleID", tmpString);
+            } catch (JSONException e) {
+                Log.i("JSONException: ", e.getMessage());
+            }
+            JsonArray.put(obj);
+        }
+        JSONObject modulesObj = new JSONObject();
+        try {
+            modulesObj.put("modules", JsonArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return modulesObj;
     }
 
 

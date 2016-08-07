@@ -22,6 +22,7 @@ android:padding="5dp">
             android:text="New Text"
             android:id="@+id/Module"
             />
+
     </LinearLayout>
 
 </android.support.v7.widget.CardView>

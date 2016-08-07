@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.sql.SQLException;
@@ -24,6 +25,8 @@ public class FeedBackList extends AppCompatActivity implements AdapterFeedback.M
     private LinearLayoutManager mLayoutManager;
     private Lecture tmp_lecture=null;
     Spinner spinner;
+    TextView tv_nothing;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +51,25 @@ public class FeedBackList extends AppCompatActivity implements AdapterFeedback.M
         mAdapter = new AdapterFeedback(this);
 
         attendRecycler.setAdapter(mAdapter);
+        tv_nothing=(TextView)findViewById(R.id.tv_modules);
+        if (model.getAttendances_list().isEmpty()){
 
+            tv_nothing.setVisibility(View.VISIBLE);
+        }else{
+            tv_nothing.setVisibility(View.GONE);
+        }
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (model.getAttendances_list().isEmpty()){
+
+            tv_nothing.setVisibility(View.VISIBLE);
+        }else{
+            tv_nothing.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -78,6 +99,12 @@ public class FeedBackList extends AppCompatActivity implements AdapterFeedback.M
             e.printStackTrace();
         }
         mAdapter.notifyDataSetChanged();
+        if (model.getAttendances_list().isEmpty()){
+
+            tv_nothing.setVisibility(View.VISIBLE);
+        }else{
+            tv_nothing.setVisibility(View.GONE);
+        }
 
     }
 

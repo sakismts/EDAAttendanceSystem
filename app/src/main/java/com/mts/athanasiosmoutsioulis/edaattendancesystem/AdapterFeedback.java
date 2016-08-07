@@ -3,6 +3,8 @@ package com.mts.athanasiosmoutsioulis.edaattendancesystem;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -10,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -21,6 +24,8 @@ import android.widget.Toast;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
+
+import static com.mts.athanasiosmoutsioulis.edaattendancesystem.R.color.colorAccent;
 
 /**
  * Created by AthanasiosMoutsioulis on 08/07/16.
@@ -112,35 +117,44 @@ public class AdapterFeedback  extends RecyclerView.Adapter<AdapterFeedback.ViewH
                 public void onClick(View v) {
                     System.out.println(Lectureitems.getStart());
                     // custom dialog
-                    final Dialog dialog = new Dialog(context);
-                    dialog.setContentView(R.layout.feedback_dialog);
+                   // final Dialog dialog = new Dialog(context);
+                   // dialog.setContentView(R.layout.feedback_dialog);
+
+                    final AlertDialog.Builder dialog = new AlertDialog.Builder(context,R.style.AppCompatAlertDialogStyle);
+
+                    // Get the layout inflater
+                    LayoutInflater inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+                    final View view = inflater.inflate(R.layout.feedback_dialog, null );
+                    // Inflate and set the layout for the dialog
+                    // Pass null as the parent view because its going in the dialog layout
+                    dialog.setView(view);
+
+
                     dialog.setTitle("Feedback");
 
+
                     // set the custom dialog components - text, image and button
-                    TextView title = (TextView) dialog.findViewById(R.id.tv_title);
+                    TextView title = (TextView) view.findViewById(R.id.tv_title);
                     title.setText(Lectureitems.getType() + " " + Lectureitems.getTitle() + " " + Lectureitems.getModule());
-                    TextView location = (TextView) dialog.findViewById(R.id.tv_location);
+                    System.out.println(Lectureitems.getType() + " " + Lectureitems.getTitle() + " " + Lectureitems.getModule());
+                    TextView location = (TextView) view.findViewById(R.id.tv_location);
                     location.setText(Lectureitems.getLocation());
-                    TextView date = (TextView) dialog.findViewById(R.id.tv_date);
+                    TextView date = (TextView) view.findViewById(R.id.tv_date);
                     date.setText(day + "/" + intMonth + "/" + year);
-                    TextView time = (TextView) dialog.findViewById(R.id.tv_time);
+                    TextView time = (TextView) view.findViewById(R.id.tv_time);
                     time.setText(start_hour + ":" + start_minutes + " - " + end_hour + ":" + end_minutes);
+                    final AlertDialog ad = dialog.show();
 
-
-
-
-
-
-                    Button dialogButton = (Button) dialog.findViewById(R.id.btn_send);
+                    Button dialogButton = (Button) view.findViewById(R.id.btn_send);
                     // if button is clicked, close the custom dialog
                     dialogButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
 
-                            if(OnupdateFeedbackListener!=null){
+                            if (OnupdateFeedbackListener != null) {
                                 ////preparing the URI
-                                final EditText et_feedback=(EditText)dialog.findViewById(R.id.et_feedback);
-                                feedback_text=et_feedback.getText().toString();
+                                final EditText et_feedback = (EditText) view.findViewById(R.id.et_feedback);
+                                feedback_text = et_feedback.getText().toString();
 
 //                                et_feedback.addTextChangedListener(new TextWatcher() {
 //                                    public void afterTextChanged(Editable s) {
@@ -156,34 +170,40 @@ public class AdapterFeedback  extends RecyclerView.Adapter<AdapterFeedback.ViewH
 //                                });
                                 System.out.println(feedback_text);
 
-                                CheckBox share_id=(CheckBox)dialog.findViewById(R.id.check_id);
-                                String share_ID=null;
-                                if (share_id.isChecked())
-                                    share_ID="true";
+                                CheckBox anonymous = (CheckBox) view.findViewById(R.id.check_id);
+                                String share_ID = null;
+                                if (anonymous.isChecked())
+                                    share_ID = "false";
                                 else
-                                    share_ID="false";
-                                String user_id=sharedpreferences.getString("id", "User");
-                                String module_id=Lectureitems.getModule();
-                                String lecture_type=Lectureitems.getType();
-                                String mylocation=Lectureitems.getLocation();
+                                    share_ID = "true";
+                                String user_id = sharedpreferences.getString("id", "User");
+                                String module_id = Lectureitems.getModule();
+                                String lecture_type = Lectureitems.getType();
+                                String mylocation = Lectureitems.getLocation();
                                 Calendar c_start = Calendar.getInstance();
                                 c_start.setTime(Lectureitems.getStart());
-                                String startDate=c_start.get(Calendar.DAY_OF_MONTH)+"/"+String.valueOf(c_start.get(Calendar.MONTH)+1)+"/"+c_start.get(Calendar.YEAR)+"T"+c_start.get(Calendar.HOUR_OF_DAY)+":"+c_start.get(Calendar.MINUTE);
+                                String startDate = c_start.get(Calendar.DAY_OF_MONTH) + "/" + String.valueOf(c_start.get(Calendar.MONTH) + 1) + "/" + c_start.get(Calendar.YEAR) + "T" + c_start.get(Calendar.HOUR_OF_DAY) + ":" + c_start.get(Calendar.MINUTE);
 
                                 Calendar c_end = Calendar.getInstance();
                                 c_end.setTime(Lectureitems.getEnd());
-                                String endDate=c_end.get(Calendar.DAY_OF_MONTH)+"/"+String.valueOf(c_end.get(Calendar.MONTH)+1)+"/"+c_end.get(Calendar.YEAR)+"T"+c_end.get(Calendar.HOUR_OF_DAY)+":"+c_end.get(Calendar.MINUTE);
+                                String endDate = c_end.get(Calendar.DAY_OF_MONTH) + "/" + String.valueOf(c_end.get(Calendar.MONTH) + 1) + "/" + c_end.get(Calendar.YEAR) + "T" + c_end.get(Calendar.HOUR_OF_DAY) + ":" + c_end.get(Calendar.MINUTE);
 
-                                final String uri = "http://greek-tour-guides.eu/ioannina/dissertation/updateFeedback.php?student_id="+user_id+"&module_id="+module_id+"&lectureType="+lecture_type+"&location="+mylocation+"&startDate="+startDate+"&endDate="+endDate+"&feedback="+ feedback_text +"&shareid="+share_ID;
+                                final String uri = "http://greek-tour-guides.eu/ioannina/dissertation/updateFeedback.php?student_id=" + user_id + "&module_id=" + module_id + "&lectureType=" + lecture_type + "&location=" + mylocation + "&startDate=" + startDate + "&endDate=" + endDate + "&feedback=" + feedback_text + "&shareid=" + share_ID;
 
                                 Log.i("URI", uri.toString());
-                                OnupdateFeedbackListener.onupdateFeedback(uri,Lectureitems);
-                            dialog.dismiss();
+                                OnupdateFeedbackListener.onupdateFeedback(uri, Lectureitems);
+                                ad.dismiss();
                             }
                         }
                     });
 
-                    dialog.show();
+
+//                    WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+//                    lp.copyFrom(dialog.getWindow().getAttributes());
+//                    lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+//                    lp.height = WindowManager.LayoutParams.MATCH_PARENT;
+
+                    //dialog.getWindow().setAttributes(lp);
                 }
             });
 
