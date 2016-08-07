@@ -37,7 +37,7 @@ public class XYMarkerView extends MarkerView {
     public void refreshContent(Entry e, Highlight highlight) {
 
         System.out.println(e);
-        tvContent.setText("x: " + xAxisValueFormatter.getFormattedValue(e.getX(), null) + ", y: " + format.format(e.getY()));
+        tvContent.setText("Date: "+ xAxisValueFormatter.getFormattedValue(e.getX(), null) + ", A: " + format.format(e.getY()));
     }
 
     @Override

@@ -52,6 +52,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 public class ChartActivity extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener,
@@ -78,7 +79,6 @@ public class ChartActivity extends AppCompatActivity implements SeekBar.OnSeekBa
         mTfRegular = Typeface.createFromAsset(getAssets(), "OpenSans-Regular.ttf");
         mTfLight = Typeface.createFromAsset(getAssets(), "OpenSans-Light.ttf");
         tvX = (TextView) findViewById(R.id.tvXMax);
-        tvY = (TextView) findViewById(R.id.tvYMax);
         model.setGetTeacherAttendancesListener(this);
         model.getTeacherAttendances().clear();
         Intent intent = getIntent();
@@ -165,7 +165,7 @@ public class ChartActivity extends AppCompatActivity implements SeekBar.OnSeekBa
         xAxis.setTypeface(mTfLight);
         xAxis.setDrawGridLines(false);
         xAxis.setGranularity(1f); // only intervals of 1 day
-        xAxis.setLabelCount(7);
+        xAxis.setLabelCount(4);
         // xAxis.setAvoidFirstLastClipping(true);
         xAxis.setValueFormatter(xAxisFormatter);
 
@@ -210,7 +210,8 @@ public class ChartActivity extends AppCompatActivity implements SeekBar.OnSeekBa
 
         mSeekBarX.setOnSeekBarChangeListener(this);
 
-        // mChart.setDrawLegend(false);
+
+       // mChart.setDrawLegend(false);
     }
 
     private void open_Image() {
@@ -349,7 +350,7 @@ public class ChartActivity extends AppCompatActivity implements SeekBar.OnSeekBa
     private void setData(int count) {
 
         int start = 0;
-        float[] myvalues={1,2,3,9};
+        //float[] myvalues={1,2,3,9};
         mChart.getXAxis().setAxisMinValue(start);
         mChart.getXAxis().setAxisMaxValue(start + count+2);
 
@@ -359,8 +360,8 @@ public class ChartActivity extends AppCompatActivity implements SeekBar.OnSeekBa
 //            float mult = (range + 1);
 //            float val = (float) (Math.random() * mult);
 
-           // yVals1.add(new BarEntry(i + 1f, model.getTeacherAttendances().get(i).getStudentsAttend()));
-            yVals1.add(new BarEntry(i + 1f,myvalues[i]));
+            yVals1.add(new BarEntry(i + 1f, model.getTeacherAttendances().get(i).getStudentsAttend()));
+           // yVals1.add(new BarEntry(i + 1f,myvalues[i]));
                         //yVals1.add(new BarEntry(i + 1f, val));
         }
 
@@ -374,7 +375,8 @@ public class ChartActivity extends AppCompatActivity implements SeekBar.OnSeekBa
             mChart.getData().notifyDataChanged();
             mChart.notifyDataSetChanged();
         } else {
-            set1 = new BarDataSet(yVals1, "The year 2017");
+
+            set1 = new BarDataSet(yVals1, "The year 2016-2017");
             set1.setColors(ColorTemplate.MATERIAL_COLORS);
 
             ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();

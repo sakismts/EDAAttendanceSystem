@@ -474,7 +474,7 @@ public class AttendanceModel {
                             String shareID = objjson.getString("shareID");
                             SimpleDateFormat format = new SimpleDateFormat("dd'/'MM'/'yyyy'T'HH':'mm");
                             System.out.println(startDate);
-                            System.out.println(i);
+
 
                             if (i+1<=tmp_attendances.length()-1)
                             {
@@ -498,7 +498,7 @@ public class AttendanceModel {
                                     }
                                     Lecture tmp= new Lecture(moduleID,LectureType,tmpt_start,tmpt_end,location,count,feedback_count);
                                     getTeacherAttendances().add(tmp);
-
+                                    System.out.println(count);
                                     count=0;
                                     feedback_count=0;
                                 }

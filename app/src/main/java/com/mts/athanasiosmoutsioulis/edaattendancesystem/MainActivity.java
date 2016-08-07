@@ -1,5 +1,6 @@
 package com.mts.athanasiosmoutsioulis.edaattendancesystem;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Fragment;
@@ -36,10 +37,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -206,10 +209,10 @@ public class MainActivity extends AppCompatActivity
                         .show();
 
             }
-            update_header_details();
+
         }
 
-
+        update_header_details();
 
 
 
@@ -447,26 +450,31 @@ public class MainActivity extends AppCompatActivity
         TextView student_id=(TextView)hView.findViewById(R.id.header_id);
         TextView fbname=(TextView)hView.findViewById(R.id.header_fbName);
         student_id.setText(sharedpreferences.getString("id", "User"));
-        Profile profile = Profile.getCurrentProfile();
-        if (profile!=null){
-            String previouslyEncodedImage = sharedpreferences.getString("photo_profile", "");
-            if( !previouslyEncodedImage.equalsIgnoreCase("") ){
-                byte[] b = Base64.decode(previouslyEncodedImage, Base64.DEFAULT);
-                Bitmap bitmap = BitmapFactory.decodeByteArray(b, 0, b.length);
-                RoundedBitmapDrawable roundedBitmapDrawable= RoundedBitmapDrawableFactory.create(getResources(), bitmap);
+        if (sharedpreferences.getString("role","nothing").equals("Teacher")){
+            fbname.setText(sharedpreferences.getString("FName", " "));
+            fbname.setVisibility(View.VISIBLE);
+
+        }else {
+            Profile profile = Profile.getCurrentProfile();
+            if (profile != null) {
+                String previouslyEncodedImage = sharedpreferences.getString("photo_profile", "");
+                if (!previouslyEncodedImage.equalsIgnoreCase("")) {
+                    byte[] b = Base64.decode(previouslyEncodedImage, Base64.DEFAULT);
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(b, 0, b.length);
+                    RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), bitmap);
+                    roundedBitmapDrawable.setCornerRadius(25);
+                    nav_img.setImageDrawable(roundedBitmapDrawable);
+                }
+                fbname.setText(profile.getName().toString());
+                fbname.setVisibility(View.VISIBLE);
+            } else {
+                Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.photo_profile);
+                RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), imageBitmap);
                 roundedBitmapDrawable.setCornerRadius(25);
                 nav_img.setImageDrawable(roundedBitmapDrawable);
+                fbname.setVisibility(View.GONE);
             }
-            fbname.setText(profile.getName().toString());
-            fbname.setVisibility(View.VISIBLE);
-        }else{
-            Bitmap imageBitmap=BitmapFactory.decodeResource(getResources(),  R.drawable.photo_profile);
-            RoundedBitmapDrawable roundedBitmapDrawable= RoundedBitmapDrawableFactory.create(getResources(), imageBitmap);
-            roundedBitmapDrawable.setCornerRadius(25);
-            nav_img.setImageDrawable(roundedBitmapDrawable);
-            fbname.setVisibility(View.GONE);
         }
-
 
     }
 
