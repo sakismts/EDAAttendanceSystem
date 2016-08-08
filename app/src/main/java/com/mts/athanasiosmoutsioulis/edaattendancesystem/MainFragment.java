@@ -109,14 +109,13 @@ public class MainFragment extends Fragment implements AttendanceModel.OnSignAtte
         Attendanceprogressdialog.setMessage("Sign Attendance, please wait.");
         model.setSignAttendanceListener(this);
         status=(TextView)view.findViewById(R.id.tv_status);
-        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent feedback = new Intent(getActivity(), FeedBackList.class);
-                startActivity(feedback);
-            }
-        });
+//        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//            }
+//        });
 
 
         //read lectures for today
@@ -154,6 +153,15 @@ public class MainFragment extends Fragment implements AttendanceModel.OnSignAtte
                 startActivity(schedule);
             }
         });
+        LinearLayout feedbackList = (LinearLayout)view.findViewById(R.id.ll_feedbackList);
+        feedbackList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent feedback = new Intent(getActivity(), FeedBackList.class);
+                startActivity(feedback);
+            }
+        });
+
         LinearLayout manualAttendance = (LinearLayout)view.findViewById(R.id.ll_search_beacon);
         manualAttendance.setOnClickListener(new View.OnClickListener() {
             @Override

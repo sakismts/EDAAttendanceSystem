@@ -8,10 +8,10 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:theme="@style/ThemeOverlay.AppCompat.Dark" android:orientation="vertical">
 
-    <ImageView android:layout_width="fill_parent" android:layout_height="90dp"
+    <ImageView android:layout_width="90dp" android:layout_height="90dp"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:src="@drawable/kent_logo" android:id="@+id/nav_img"
-        android:scaleType="centerCrop"
+
         android:paddingBottom="@dimen/nav_header_vertical_spacing" />
 
     <TextView android:layout_width="match_parent" android:layout_height="wrap_content"

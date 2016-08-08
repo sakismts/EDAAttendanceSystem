@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
@@ -377,8 +378,8 @@ public class ChartActivity extends AppCompatActivity implements SeekBar.OnSeekBa
         } else {
 
             set1 = new BarDataSet(yVals1, "The year 2016-2017");
-            set1.setColors(ColorTemplate.MATERIAL_COLORS);
-
+            //set1.setColors(ColorTemplate.MATERIAL_COLORS);
+            //set1.setColor(Color.BLUE);
             ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
             dataSets.add(set1);
 

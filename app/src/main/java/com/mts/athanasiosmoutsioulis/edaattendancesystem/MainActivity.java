@@ -453,6 +453,11 @@ public class MainActivity extends AppCompatActivity
         if (sharedpreferences.getString("role","nothing").equals("Teacher")){
             fbname.setText(sharedpreferences.getString("FName", " "));
             fbname.setVisibility(View.VISIBLE);
+            LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,90);
+            nav_img.setLayoutParams(lp);
+            nav_img.getLayoutParams().height = (int) getResources().getDimension(R.dimen.profile_image);
+            nav_img.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
+            nav_img.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
         }else {
             Profile profile = Profile.getCurrentProfile();
@@ -723,13 +728,5 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-//    @Override
-//    public void finish() {
-//        super.finish();
-//        SharedPreferences.Editor prefsEditor = sharedpreferences.edit();
-//        System.out.println("the size is "+model.getMyModules().size());
-//        prefsEditor.putStringSet("myModules",model.getMyModules());
-//        prefsEditor.commit();
-//
-//    }
+
 }

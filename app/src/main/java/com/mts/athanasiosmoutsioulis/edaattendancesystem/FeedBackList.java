@@ -111,7 +111,7 @@ public class FeedBackList extends AppCompatActivity implements AdapterFeedback.M
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.android_action_bar_spinner_menu, menu);
-        String[] state= {"All","January","February", "March", "April","May", "June","July","August","September","Oktober","November","December"};
+        String[] state= {"All months","January","February", "March", "April","May", "June","July","August","September","Oktober","November","December"};
 
         MenuItem item = menu.findItem(R.id.spinner);
         spinner = (Spinner) MenuItemCompat.getActionView(item);
