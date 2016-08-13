@@ -56,7 +56,7 @@ public class AdapterAttendanceSheet extends RecyclerView.Adapter<AdapterAttendan
     // you provide access to all the views for a data item in a view holder
     public class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        public TextView txtStudentID, txtvalid;
+        public TextView txtStudentID, txtvalid,txtStudentName;
 
 
 
@@ -65,13 +65,14 @@ public class AdapterAttendanceSheet extends RecyclerView.Adapter<AdapterAttendan
             super(v);
             txtStudentID = (TextView) v.findViewById(R.id.tv_studentId_attendance);
             txtvalid = (TextView) v.findViewById(R.id.tv_valid_attendance);
+            txtStudentName=(TextView) v.findViewById(R.id.tv_studentName_attendance);
 
         }
 
         public void setData(final Attendance item, int position) {
             txtStudentID.setText(item.getStudentId());
             txtvalid.setText(item.getValid());
-
+            txtStudentName.setText(item.getFullName());
 
         }
 

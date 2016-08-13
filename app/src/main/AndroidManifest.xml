@@ -5,8 +5,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"></uses-permission>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name=".MyApplication"
@@ -37,6 +37,8 @@
         </activity>
         <activity
             android:name=".ScheduleActivity"
+            android:launchMode="singleTop"
+            android:parentActivityName=".MainActivity"
             android:label="@string/title_activity_schedule"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
@@ -64,30 +66,53 @@
             android:exported="true" >
         </service>
 
-        <activity android:name=".ManualAttendance" >
+        <activity android:name=".ManualAttendance"
+            android:launchMode="singleTop"
+            android:parentActivityName=".MainActivity">
+
         </activity>
-        <activity android:name=".FeedBackList" >
+        <activity android:name=".FeedBackList"
+            android:launchMode="singleTop"
+            android:parentActivityName=".MainActivity">
         </activity>
-        <activity android:name=".FacebookList" >
+        <activity android:name=".FacebookList"
+            android:parentActivityName=".MainActivity">
         </activity>
-        <activity android:name=".LectureDetails" >
+        <activity android:name=".LectureDetails"
+            android:launchMode="singleTop"
+            android:parentActivityName=".ScheduleActivity">
         </activity>
         <activity
             android:name=".MyModules"
             android:label="@string/title_activity_my_modules"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
-        <activity android:name=".AvailableModules" >
+        <activity android:name=".AvailableModules"
+            android:launchMode="singleTop"
+            android:parentActivityName=".MainActivity">
         </activity>
-        <activity android:name=".AttendancesList" >
+        <activity android:name=".AttendancesList"
+            android:launchMode="singleTop"
+            android:parentActivityName=".MainActivity">
         </activity>
-        <activity android:name=".TeacherAttendanceSheet" >
+        <activity android:name=".TeacherAttendanceSheet"
+            android:parentActivityName=".AttendancesList">
         </activity>
-        <activity android:name=".TeacherFeedBackActivity" >
+        <activity android:name=".TeacherFeedBackActivity"
+            android:launchMode="singleTop"
+            android:parentActivityName=".MainActivity">
         </activity>
-        <activity android:name=".TeacherFeedbackSheetActivity" >
+        <activity android:name=".TeacherFeedbackSheetActivity"
+            android:launchMode="singleTop"
+            android:parentActivityName=".TeacherFeedBackActivity">
         </activity>
-        <activity android:name=".ChartActivity" >
+        <activity android:name=".ChartActivity"
+            android:launchMode="singleTop"
+            android:parentActivityName=".MainActivity">
+        </activity>
+        <activity android:name=".WelcomeActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+
         </activity>
     </application>
 

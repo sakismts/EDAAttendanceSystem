@@ -6,17 +6,25 @@
     android:weightSum="5">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="New Text"
+        android:gravity="left"
         android:id="@+id/tv_studentId_attendance"
-        android:layout_weight="4" />
+        android:layout_weight="1" />
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:id="@+id/tv_studentName_attendance"
+        android:layout_weight="3"
+        android:gravity="left" />
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="New Text"
         android:id="@+id/tv_valid_attendance"
         android:layout_weight="1"
-        android:gravity="center_horizontal" />
+        android:gravity="left" />
 </LinearLayout>

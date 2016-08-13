@@ -119,6 +119,11 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        if(sharedpreferences.getBoolean("IsFirstTimeLaunch",true)==true){
+            Intent welcome=new Intent(this,WelcomeActivity.class);
+            startActivity(welcome);
+
+        }
         System.out.println(sharedpreferences.getString("MyModulesString","empty"));
         String tmp_modules=sharedpreferences.getString("MyModulesString","empty");
         if(!tmp_modules.equals("empty")){
@@ -189,30 +194,30 @@ public class MainActivity extends AppCompatActivity
             fragmentTransaction.add(R.id.main_fragment,fragment).commit();
         }
 
-            Profile profile = Profile.getCurrentProfile();
-            if (profile==null){
-                new AlertDialog.Builder(MainActivity.this)
-                        .setTitle("Facebook Login")
-                        .setMessage("Do you also want to login with Facebook")
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                Intent facebookLogin = new Intent(MainActivity.this, FacebookActivity.class);
-                                startActivityForResult(facebookLogin, FBLOGIN_REQUEST);
-                            }
-                        })
-                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // do nothing
-                            }
-                        })
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .show();
-
-            }
+//            Profile profile = Profile.getCurrentProfile();
+//            if (profile==null){
+//                new AlertDialog.Builder(MainActivity.this)
+//                        .setTitle("Facebook Login")
+//                        .setMessage("Do you also want to login with Facebook")
+//                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                Intent facebookLogin = new Intent(MainActivity.this, FacebookActivity.class);
+//                                startActivityForResult(facebookLogin, FBLOGIN_REQUEST);
+//                            }
+//                        })
+//                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                // do nothing
+//                            }
+//                        })
+//                        .setIcon(android.R.drawable.ic_dialog_alert)
+//                        .show();
+//
+//            }
 
         }
 
-        update_header_details();
+
 
 
 
@@ -377,7 +382,7 @@ public class MainActivity extends AppCompatActivity
         }
         System.out.println(model.getMyModules());
         invalidateOptionsMenu();
-
+        update_header_details();
 
     }
     @Override

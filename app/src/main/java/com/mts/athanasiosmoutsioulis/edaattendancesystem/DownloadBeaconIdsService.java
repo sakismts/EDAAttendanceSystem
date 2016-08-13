@@ -44,6 +44,7 @@ public class DownloadBeaconIdsService extends Service implements AttendanceModel
     private Lecture tmp_attendance_class;
     final static String MY_ACTION = "MY_ACTION";
     private int lecture_hour;
+    private boolean notificationsend=false;
 
 
 
@@ -177,7 +178,6 @@ public class DownloadBeaconIdsService extends Service implements AttendanceModel
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i("Service","Start");
-        Toast.makeText(getApplicationContext(),"started",Toast.LENGTH_SHORT).show();
         Handler myHandler= new Handler(mythread.getLooper());
 
         myHandler.post(new Runnable() {
@@ -217,6 +217,7 @@ public class DownloadBeaconIdsService extends Service implements AttendanceModel
                             timer[0].cancel();
                             timer[0] = null;
                             beaconManager.startRanging(region);
+                            notificationsend=false;
                             if (model.getCheckAttendanceListener()==null)
                                 setListener();
 
@@ -306,8 +307,11 @@ public class DownloadBeaconIdsService extends Service implements AttendanceModel
             Intent intent = new Intent();
             intent.setAction(MY_ACTION);
             intent.putExtra("Lecture", "Do you want to sign for the " + tmp_attendance_class.getType() + " of " + tmp_attendance_class.getModule() + " at " + tmp_attendance_class.getLocation());
+            if(!notificationsend){
             sendBroadcast(intent);
             showNotification();
+            notificationsend=true;
+            }
 
         }else{
             if(tmp_attendance_class.getAttendance().equals("false")){

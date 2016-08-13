@@ -219,7 +219,7 @@ public class AttendanceSheetFragment extends Fragment implements AttendanceModel
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(date);
 
         System.out.println(pdfFolder.getAbsolutePath());
-        String filename=this.moduleID+"_"+this.SDate;
+        String filename="attendances"+this.moduleID+"_"+this.SDate;
                 ;
         myFile = new File(pdfFolder.getAbsolutePath(), filename.replace('/','_')+ ".pdf");
         OutputStream output = new FileOutputStream(myFile);
@@ -265,7 +265,7 @@ public class AttendanceSheetFragment extends Fragment implements AttendanceModel
 
 
         //specify column widths
-        float[] columnWidths = {1.5f, 2f, 2f};
+        float[] columnWidths = {1.5f, 2f, 2f,2f};
         //create PDF table with the given widths
         PdfPTable table = new PdfPTable(columnWidths);
         // set table width a percentage of the page width
@@ -276,6 +276,7 @@ public class AttendanceSheetFragment extends Fragment implements AttendanceModel
         //insert column headings
         insertCell(table, "A/A", Element.ALIGN_CENTER, 1, bf12);
         insertCell(table, "Student ID", Element.ALIGN_LEFT, 1, bf12);
+        insertCell(table, "Student Name", Element.ALIGN_LEFT, 1, bf12);
         insertCell(table, "Valid", Element.ALIGN_LEFT, 1, bf12);
 
         table.setHeaderRows(1);
@@ -286,6 +287,7 @@ public class AttendanceSheetFragment extends Fragment implements AttendanceModel
 
             insertCell(table, Integer.toString(counter), Element.ALIGN_CENTER, 1, bf12);
             insertCell(table, tmp.getStudentId(), Element.ALIGN_LEFT, 1, bf12);
+            insertCell(table, tmp.getFullName(), Element.ALIGN_LEFT, 1, bf12);
             insertCell(table, tmp.getValid(), Element.ALIGN_LEFT, 1, bf12);
             counter++;
 

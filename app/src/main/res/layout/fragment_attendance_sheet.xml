@@ -28,19 +28,27 @@
         android:weightSum="5"
         android:layout_alignParentStart="true">
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Student ID"
+            android:gravity="left"
             android:id="@+id/txtheader1"
-            android:layout_weight="4" />
+            android:layout_weight="1" />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Student Name"
+            android:gravity="left"
+            android:id="@+id/txtheader2"
+            android:layout_weight="3" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Valid"
-            android:id="@+id/txtheader2"
+            android:id="@+id/txtheader3"
             android:layout_weight="1"
-            android:gravity="center_horizontal" />
+            android:gravity="left" />
 
     </LinearLayout>
 
@@ -52,13 +60,6 @@
         android:scrollbars="vertical"
         android:layout_below="@+id/header_wrapper"
         android:layout_marginTop="10dp" />
-
-
-
-
-
-
-
     </RelativeLayout>
         <android.support.design.widget.FloatingActionButton
             xmlns:app="http://schemas.android.com/apk/res-auto"

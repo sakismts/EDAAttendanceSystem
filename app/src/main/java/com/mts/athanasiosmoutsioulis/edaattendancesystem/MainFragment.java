@@ -13,8 +13,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -77,7 +79,7 @@ import java.util.UUID;
  */
 public class MainFragment extends Fragment implements AttendanceModel.OnSignAttendanceListener{
     TextView id;
-    TextView status;
+    TextView status,status_sign;
     TextView fbName;
     ImageView photo_profile;
     SharedPreferences sharedpreferences;
@@ -109,6 +111,7 @@ public class MainFragment extends Fragment implements AttendanceModel.OnSignAtte
         Attendanceprogressdialog.setMessage("Sign Attendance, please wait.");
         model.setSignAttendanceListener(this);
         status=(TextView)view.findViewById(R.id.tv_status);
+        status_sign=(TextView)view.findViewById(R.id.tv_status_signed);
 //        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -166,16 +169,16 @@ public class MainFragment extends Fragment implements AttendanceModel.OnSignAtte
         manualAttendance.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent manualAtt=new Intent(getActivity(),ManualAttendance.class);
+                Intent manualAtt = new Intent(getActivity(), ManualAttendance.class);
                 startActivity(manualAtt);
             }
         });
         update_login();
-        update_FBlogin();
 
-        Boolean calendar_feeds=sharedpreferences.getBoolean("Calendar", false);
-        if(calendar_feeds==false)
-        showDialog_ImportCalendar();
+
+//        Boolean calendar_feeds=sharedpreferences.getBoolean("Calendar", false);
+//        if(calendar_feeds==false)
+//        showDialog_ImportCalendar();
 
         //Register BroadcastReceiver
         //to receive event from our service
@@ -186,6 +189,9 @@ public class MainFragment extends Fragment implements AttendanceModel.OnSignAtte
 
         Intent msgIntent = new Intent(getActivity(), DownloadBeaconIdsService.class);
         getActivity().startService(msgIntent);
+
+        Log.i("StudentId", sharedpreferences.getString("id", "User"));
+        Log.i("StudentName",sharedpreferences.getString("fullName", "User"));
         //
         return view;
     }
@@ -216,6 +222,7 @@ public class MainFragment extends Fragment implements AttendanceModel.OnSignAtte
     public void onResume() {
         super.onResume();
         updateStatus();
+        update_FBlogin();
 
     }
 
@@ -354,7 +361,7 @@ public class MainFragment extends Fragment implements AttendanceModel.OnSignAtte
                         c_end.setTime(model.getCurrentLecture().getEnd());
                         String endDate=c_end.get(Calendar.DAY_OF_MONTH)+"/"+String.valueOf(c_end.get(Calendar.MONTH)+1)+"/"+c_end.get(Calendar.YEAR)+"T"+c_end.get(Calendar.HOUR_OF_DAY)+":"+c_end.get(Calendar.MINUTE);
 
-                        String uri = "http://greek-tour-guides.eu/ioannina/dissertation/insert_attendance.php?student_id="+user_id+"&module_id="+module_id+"&lectureType="+lecture_type+"&location="+location+"&startDate="+startDate+"&endDate="+endDate+"&valid=true";
+                        String uri = "http://greek-tour-guides.eu/ioannina/dissertation/insert_attendance.php?student_id="+user_id+"&module_id="+module_id+"&lectureType="+lecture_type+"&location="+location+"&startDate="+startDate+"&endDate="+endDate+"&valid=true"+"&fullName="+sharedpreferences.getString("fullName","").replaceAll(" ","_");
                         Log.i("URI",uri.toString());
                         model.signAttendance(uri);
                     }
@@ -413,6 +420,7 @@ public class MainFragment extends Fragment implements AttendanceModel.OnSignAtte
 
         handler.postDelayed(runnable, 1000);
             Toast.makeText(getActivity(),"You have signed successfully!",Toast.LENGTH_SHORT).show();
+            updateStatus();
         }
 
     }
@@ -422,20 +430,19 @@ public class MainFragment extends Fragment implements AttendanceModel.OnSignAtte
         if(tmp!=null){
             if (tmp.getAttendance().equals("false")){
         System.out.println();
-        status.setText("You have "+tmp.getType()+" "+tmp.getTitle()+tmp.getLocation()+"\n Status:Not Signed");
-        Animation anim = new AlphaAnimation(0.0f, 1.0f);
-        anim.setDuration(100); //You can manage the blinking time with this parameter
-        anim.setStartOffset(20);
-        anim.setRepeatMode(Animation.REVERSE);
-        anim.setRepeatCount(Animation.INFINITE);
-        status.startAnimation(anim);}
+        status.setText("Attend:" + tmp.getType() + " " + tmp.getTitle() + " " + tmp.getLocation() + "\n ");
+                status_sign.setText("Status:Not Signed");
+                status_sign.setTextColor(Color.RED);
+        }
         else{
-                status.setText("You have "+tmp.getType()+" "+tmp.getTitle()+tmp.getLocation()+"\n Status:Signed");
-                status.clearAnimation();
+                status.setText("Attend:" + tmp.getType() + " " + tmp.getTitle() +" "+ tmp.getLocation() + "\n");
+                status_sign.setText("Status:Signed");
+
             }
         }else{
-            status.setText("");
-            status.clearAnimation();
+            status.setText("Attend:No Lectures or Workshops");
+            status_sign.setText("");
+
         }
     }
     private void setScaleAnimation(View view) {

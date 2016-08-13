@@ -26,7 +26,7 @@ import java.util.ArrayList;
  * to handle interaction events.
  */
 public class SignupFragment extends Fragment implements AttendanceModel.OnSignUpUpdateListener, AttendanceModel.OnCourseListUpdateListener{
-    EditText id,pass,confpass,fullName;
+    EditText id,pass,confpass,fullName,email;
     AutoCompleteTextView course;
     String role;
     AttendanceModel model = AttendanceModel.getOurInstance();
@@ -49,6 +49,7 @@ public class SignupFragment extends Fragment implements AttendanceModel.OnSignUp
 
         Button submit = (Button)view.findViewById(R.id.btn_submit);
         id = (EditText)view.findViewById(R.id.edt_signupId);
+        email=(EditText)view.findViewById(R.id.edt_user_email);
         fullName = (EditText)view.findViewById(R.id.edt_FullName);
         pass = (EditText)view.findViewById(R.id.edt_signupPass);
         confpass = (EditText)view.findViewById(R.id.edt_signupConfPass);
@@ -71,11 +72,10 @@ public class SignupFragment extends Fragment implements AttendanceModel.OnSignUp
                 if (checkedId == R.id.rb_student) {
                     role="Student";
                     course.setVisibility(View.VISIBLE);
-                    fullName.setVisibility(View.GONE);
+
                 }else if (checkedId == R.id.rb_teacher){
                     role="Teacher";
                     course.setVisibility(View.GONE);
-                    fullName.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -88,6 +88,8 @@ public class SignupFragment extends Fragment implements AttendanceModel.OnSignUp
             submit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
+
                     if (id.getText().toString().isEmpty()){
                         Toast.makeText(getActivity(),"You have to fill the id",Toast.LENGTH_SHORT).show();
 
@@ -97,18 +99,25 @@ public class SignupFragment extends Fragment implements AttendanceModel.OnSignUp
                     }else if(!confpass.getText().toString().equals(pass.getText().toString())){
                         Toast.makeText(getActivity(),"The confirm password doesn't match",Toast.LENGTH_SHORT).show();
 
-                    } else{
+                    } else if(fullName.getText().toString().isEmpty()){
+                        Toast.makeText(getActivity(),"You have to fill your Name",Toast.LENGTH_SHORT).show();
+
+                    } else if(email.getText().toString().isEmpty()){
+                        Toast.makeText(getActivity(),"You have to fill your email",Toast.LENGTH_SHORT).show();
+
+                    }else{
                         if (role.equals("Student")){
                             if(course.getText().toString().isEmpty()){
                                 Toast.makeText(getActivity(),"You have to fill your course",Toast.LENGTH_SHORT).show();
                             }else{
                                 Log.i("Signup", "Registering Student");
-                                String uri = "http://greek-tour-guides.eu/ioannina/dissertation/insert_user.php?id="+id.getText().toString()+"&role="+role+"&pass="+pass.getText().toString()+"&course="+course.getText().toString()+"&FBname=";
+                                String uri = "http://greek-tour-guides.eu/ioannina/dissertation/insert_user.php?id="+id.getText().toString()+"&role="+role+"&pass="+pass.getText().toString()+"&course="+course.getText().toString().replaceAll(" ", "_")+"&FBname=&fullName="+fullName.getText().toString().replaceAll(" ", "_")+"&email="+email.getText().toString();
+                                Log.i("Signup", uri);
                                 model.signup(uri);
                             }
                         }else{
                             Log.i("Signup", "Registering Teacher");
-                            String uri = "http://greek-tour-guides.eu/ioannina/dissertation/insert_user.php?id="+id.getText().toString()+"&role="+role+"&pass="+pass.getText().toString()+"&course=&FBname="+fullName.getText().toString();
+                            String uri = "http://greek-tour-guides.eu/ioannina/dissertation/insert_user.php?id="+id.getText().toString()+"&role="+role+"&pass="+pass.getText().toString()+"&course=&FBname=&fullName="+fullName.getText().toString().replaceAll(" ","_")+"&email="+email.getText().toString();
                             model.signup(uri);
                         }
 

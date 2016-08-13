@@ -5,26 +5,77 @@
     android:orientation="vertical"
     android:gravity="center_horizontal">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#96E0F2F1"
+        android:id="@+id/cover_view"
+        android:visibility="gone" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#fff"
+        android:layout_marginTop="5dp"
+        android:padding="20dp">
+
     <!-- TODO: Update blank fragment layout -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="10dp"
         android:id="@+id/tv_feedbackSheet_header"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:layout_alignParentStart="true" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="No Feedbacks"
         android:padding="10dp"
-        android:id="@+id/tv_feedbackSheet_status" />
+        android:id="@+id/tv_feedbackSheet_status"
+        android:layout_below="@+id/tv_feedbackSheet_header" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/fdsheet_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"
-        android:layout_marginTop="10dp" />
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/tv_feedbackSheet_status" />
+</RelativeLayout>
+
+        <android.support.design.widget.FloatingActionButton
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/fab1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:borderWidth="0dp"
+            android:elevation="0dp"
+            app:fabSize="mini"
+            android:src="@android:drawable/ic_dialog_email"
+            android:layout_alignParentEnd="false"
+            android:layout_alignParentBottom="false"
+            android:visibility="invisible"
+            android:layout_above="@+id/fab"
+            android:layout_alignRight="@+id/fab"
+            android:layout_marginBottom="10dp" />
+
+        <android.support.design.widget.FloatingActionButton
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:borderWidth="0dp"
+            android:elevation="0dp"
+            android:src="@drawable/options_menu_float"
+            app:fabSize="normal"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="20dp"
+            android:layout_marginRight="20dp" />
+    </RelativeLayout>
 
 
 </LinearLayout>

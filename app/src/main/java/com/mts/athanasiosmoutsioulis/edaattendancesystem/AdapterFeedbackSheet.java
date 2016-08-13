@@ -67,7 +67,7 @@ public class AdapterFeedbackSheet extends RecyclerView.Adapter<AdapterFeedbackSh
             if(item.getAnonymous().equals("false")){
                 txtStudentID.setText("Anonymous");
             }else{
-                txtStudentID.setText(item.getStudentId());
+                txtStudentID.setText(item.getStudentId()+" - "+item.getFullName());
             }
 
                 txtfeedback.setText(item.getFeedback());

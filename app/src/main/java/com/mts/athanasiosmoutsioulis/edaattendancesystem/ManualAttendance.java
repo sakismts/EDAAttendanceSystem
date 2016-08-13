@@ -320,7 +320,7 @@ public class ManualAttendance extends AppCompatActivity implements AttendanceMod
                     c_end.setTime(tmp_attendance_class.getEnd());
                     String endDate=c_end.get(Calendar.DAY_OF_MONTH)+"/"+String.valueOf(c_end.get(Calendar.MONTH)+1)+"/"+c_end.get(Calendar.YEAR)+"T"+c_end.get(Calendar.HOUR_OF_DAY)+":"+c_end.get(Calendar.MINUTE);
 
-                    String uri = "http://greek-tour-guides.eu/ioannina/dissertation/insert_attendance.php?student_id="+user_id+"&module_id="+module_id+"&lectureType="+lecture_type+"&location="+location+"&startDate="+startDate+"&endDate="+endDate+"&valid="+ beaconvalidation.toString();
+                    String uri = "http://greek-tour-guides.eu/ioannina/dissertation/insert_attendance.php?student_id="+user_id+"&module_id="+module_id+"&lectureType="+lecture_type+"&location="+location+"&startDate="+startDate+"&endDate="+endDate+"&valid="+ beaconvalidation.toString()+"&fullName="+sharedpreferences.getString("fullName","").replaceAll(" ","_");
                     Log.i("URI",uri.toString());
 
                     model.signAttendance(uri);

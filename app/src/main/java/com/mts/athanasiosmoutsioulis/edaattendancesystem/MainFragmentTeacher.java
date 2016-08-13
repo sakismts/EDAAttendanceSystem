@@ -127,7 +127,7 @@ public class MainFragmentTeacher extends Fragment  {
 
     public void update_login() {
         id.setText(sharedpreferences.getString("id", "User"));
-        Name.setText(sharedpreferences.getString("FName", " "));
+        Name.setText(sharedpreferences.getString("fullName", " "));
 
     }
 

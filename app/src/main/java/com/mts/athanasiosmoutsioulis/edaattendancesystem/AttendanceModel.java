@@ -619,11 +619,12 @@ public class AttendanceModel {
                         String StudentId = objjson.getString("StudentId");
                         String valid = objjson.getString("valid");
                         String feedback = objjson.getString("feedback");
+                        String fullName = objjson.getString("fullName");
                         String shareID = objjson.getString("shareID");
                         System.out.println(StudentId);
-                        getStudents_Attendance_list().add(new Attendance(StudentId,valid,shareID,feedback));
+                        getStudents_Attendance_list().add(new Attendance(StudentId,valid,shareID,feedback,fullName));
                         if(!feedback.isEmpty())
-                            getTeacherFeedback().add(new Attendance(StudentId,valid,shareID,feedback));
+                            getTeacherFeedback().add(new Attendance(StudentId,valid,shareID,feedback,fullName));
 
                     }
 
@@ -887,7 +888,7 @@ public class AttendanceModel {
                     String name="";
                     for (int i=0; i<tmp_user.length();i++){
                         JSONObject objjson = tmp_user.getJSONObject(i);
-                        name = objjson.getString("fbName");
+                        name = objjson.getString("fullName");
                     }
                     notifyListenerSignIn(true,name);
                 } catch (JSONException e) {

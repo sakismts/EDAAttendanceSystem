@@ -38,9 +38,6 @@ public class AlarmReciever extends BroadcastReceiver implements AttendanceModel.
         sharedpreferences = context.getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         Log.i("Alarm","alarm");
 
-
-        // Show the toast  like in above screen shot
-        Toast.makeText(context, "Alarm Triggered", Toast.LENGTH_LONG).show();
     }
 
     private void load_today_lectures() {

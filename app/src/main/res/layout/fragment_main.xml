@@ -57,15 +57,23 @@
 
                     <TextView
                         android:layout_width="fill_parent"
-                        android:layout_height="fill_parent"
+                        android:layout_height="wrap_content"
                         android:text="New Text"
                         android:id="@+id/tv_status"
                         android:textColor="#fff"
                         android:padding="5dp"
                         android:layout_gravity="bottom"
-                        android:gravity="bottom|right"
-                        android:layout_marginBottom="30dp"
-                        android:textAlignment="center" />
+                        android:layout_marginTop="20dp"
+                        android:ellipsize="end"
+                        android:maxLines="2" />
+
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="New Text"
+                        android:id="@+id/tv_status_signed"
+                        android:textColor="#fff"
+                        android:paddingLeft="5dp" />
                 </LinearLayout>
 
             </RelativeLayout>
