@@ -33,13 +33,14 @@
         </activity>
         <activity
             android:name=".FacebookActivity"
+            android:label="Facebook Login"
             android:parentActivityName=".MainActivity" >
         </activity>
         <activity
             android:name=".ScheduleActivity"
             android:launchMode="singleTop"
             android:parentActivityName=".MainActivity"
-            android:label="@string/title_activity_schedule"
+            android:label="Timetable"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
 
@@ -68,32 +69,38 @@
 
         <activity android:name=".ManualAttendance"
             android:launchMode="singleTop"
+            android:label="Manual Attendance"
             android:parentActivityName=".MainActivity">
 
         </activity>
         <activity android:name=".FeedBackList"
             android:launchMode="singleTop"
+            android:label="Pending Feedbacks"
             android:parentActivityName=".MainActivity">
         </activity>
         <activity android:name=".FacebookList"
+            android:label="FB CLassmates"
             android:parentActivityName=".MainActivity">
         </activity>
         <activity android:name=".LectureDetails"
             android:launchMode="singleTop"
+            android:label="Info"
             android:parentActivityName=".ScheduleActivity">
         </activity>
         <activity
             android:name=".MyModules"
             android:label="@string/title_activity_my_modules"
+            android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
         <activity android:name=".AvailableModules"
             android:launchMode="singleTop"
-            android:parentActivityName=".MainActivity">
+            android:label="Available Modules"
+            android:parentActivityName=".MyModules">
         </activity>
         <activity android:name=".AttendancesList"
             android:launchMode="singleTop"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".MyModules">
         </activity>
         <activity android:name=".TeacherAttendanceSheet"
             android:parentActivityName=".AttendancesList">

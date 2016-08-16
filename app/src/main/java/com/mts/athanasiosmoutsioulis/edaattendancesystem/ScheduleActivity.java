@@ -67,7 +67,7 @@ public class ScheduleActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
-                System.out.println("the position is " + position);
+
             }
 
             @Override

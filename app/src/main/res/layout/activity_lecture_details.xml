@@ -55,6 +55,15 @@
             android:layout_marginLeft="20dp"
             android:textSize="20sp"
             android:textColor="#fff" />
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:id="@+id/img_location"
+            android:src="@drawable/place_icon"
+            android:layout_alignParentEnd="false"
+            android:layout_toLeftOf="@+id/tv_details_location"
+            android:layout_alignBottom="@+id/tv_details_location" />
     </RelativeLayout>
 
     <ScrollView
@@ -62,23 +71,27 @@
         android:layout_height="fill_parent"
         android:id="@+id/scrollView"
         android:layout_marginTop="20dp"
-        android:layout_below="@+id/img_location">
-
-        <TextView
-            android:layout_width="fill_parent"
+        android:layout_below="@+id/tv_details_header">
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="20dp"
-            android:id="@+id/tv_detail_description"
-            android:text="Description" />
-    </ScrollView>
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="20dp"
+                android:text="Description"
+                android:textSize="20sp" />
 
-    <ImageView
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:id="@+id/img_location"
-        android:layout_below="@+id/tv_details_header"
-        android:src="@drawable/place_icon"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="20dp" />
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="20dp"
+                android:id="@+id/tv_detail_description"
+                android:text="Description" />
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </RelativeLayout>

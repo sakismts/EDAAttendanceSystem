@@ -272,7 +272,10 @@ public class WelcomeActivity extends AppCompatActivity {
 
             final View view = layoutInflater.inflate(layouts[position], container, false);
             container.addView(view);
-            if(position==1){
+            if(position==0){
+                btnPrevious.setVisibility(View.GONE);
+            }
+            else if(position==1){
                 Button import_timetable = (Button) view.findViewById(R.id.btn_import_timetable);
                final EditText feed_url=(EditText)view.findViewById(R.id.edt_calendar_url);
                 import_timetable.setOnClickListener(new View.OnClickListener() {
