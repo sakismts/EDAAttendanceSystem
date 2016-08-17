@@ -13,9 +13,6 @@ import java.util.List;
 public class DayAxisValueFormatter implements AxisValueFormatter {
     AttendanceModel model=AttendanceModel.getOurInstance();
 
-    protected String[] mMonths = new String[]{
-            "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"
-    };
 
     private BarLineChartBase<?> chart;
 
@@ -27,12 +24,7 @@ public class DayAxisValueFormatter implements AxisValueFormatter {
     public String getFormattedValue(float value, AxisBase axis) {
         System.out.println("the value is :"+value);
 
-        List<String > dates= Arrays.asList("01/1/16","02/1/16","03/1/16","04/1/16","05/1/16","06/1/16","07/1/16","08/1/16","09/1/16","10/1/16","11/1/16","12/1/16","13/1/16","14/1/16");
-       /* dates.add(0,"test");
-        dates.add(" ");
-        System.out.println(dates);
 
-        String str_return=dates.get((int)value).toString();*/
         String str_return=" ";
        if(value==0){
             str_return=" ";
@@ -43,7 +35,7 @@ public class DayAxisValueFormatter implements AxisValueFormatter {
            System.out.println("the value is:" +value);
         }
         else {
-            str_return="sakis";
+
            System.out.println("the value is:" +value);
 //
            final String intMonth = (String) android.text.format.DateFormat.format("MM", model.getTeacherAttendances().get((int)value-1).getStart()); //06

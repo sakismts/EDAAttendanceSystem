@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MenuItem;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -62,6 +63,20 @@ public class AvailableModules extends AppCompatActivity implements AttendanceMod
         editor.putString("MyModulesString",getJSONArray(model.getMyModules()).toString());
         editor.commit();
         finish();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                System.out.println(getJSONArray(model.getMyModules()));
+                SharedPreferences.Editor editor=sharedpreferences.edit();
+                editor.putString("MyModulesString",getJSONArray(model.getMyModules()).toString());
+                editor.commit();
+                finish();
+                break;
+        }
+        return true;
     }
 
     public JSONObject getJSONArray(Set tmp) {

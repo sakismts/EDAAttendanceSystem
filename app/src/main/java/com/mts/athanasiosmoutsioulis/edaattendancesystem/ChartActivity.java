@@ -358,12 +358,8 @@ public class ChartActivity extends AppCompatActivity implements SeekBar.OnSeekBa
         ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
 
         for (int i = start; i < start + count + 1; i++) {
-//            float mult = (range + 1);
-//            float val = (float) (Math.random() * mult);
-
             yVals1.add(new BarEntry(i + 1f, model.getTeacherAttendances().get(i).getStudentsAttend()));
-           // yVals1.add(new BarEntry(i + 1f,myvalues[i]));
-                        //yVals1.add(new BarEntry(i + 1f, val));
+
         }
 
         System.out.println(yVals1);

@@ -98,6 +98,7 @@ public class WelcomeActivity extends AppCompatActivity {
                     model.updateFBaccount("http://greek-tour-guides.eu/ioannina/dissertation/updateFBaccount.php?student_id="+user_id+"&fbID="+newProfile.getId()+"&fbName="+newProfile.getFirstName()+"_"+newProfile.getLastName());
                     new DownloadImage((ImageView)findViewById(R.id.imageView)).execute(imageUrl.toString());
                     model.setFbName(newProfile.getName());
+                    btnNext.setText("NEXT");
                 }else{
                     ImageView img = (ImageView)findViewById(R.id.imageView);
                     img.setImageResource(R.drawable.photo_profile);
@@ -142,6 +143,8 @@ public class WelcomeActivity extends AppCompatActivity {
 
         myViewPagerAdapter = new MyViewPagerAdapter();
         viewPager.setAdapter(myViewPagerAdapter);
+       // viewPager.setOnTouchListener(null);
+        viewPager.beginFakeDrag();
         viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
 
         btnPrevious.setOnClickListener(new View.OnClickListener() {
@@ -198,6 +201,7 @@ public class WelcomeActivity extends AppCompatActivity {
         SharedPreferences.Editor editor=sharedpreferences.edit();
         editor.putBoolean("IsFirstTimeLaunch", false);
         editor.commit();
+        scheduleAlarm();
         finish();
     }
 
@@ -222,6 +226,9 @@ public class WelcomeActivity extends AppCompatActivity {
                     btnNext.setEnabled(false);
                     btnNext.setTextColor(Color.GRAY);
                 }
+                btnPrevious.setVisibility(View.VISIBLE);
+            }else if (position==2){
+                btnNext.setText("SKIP");
                 btnPrevious.setVisibility(View.VISIBLE);
             }
             else if (position == layouts.length - 1) {
@@ -500,7 +507,7 @@ public class WelcomeActivity extends AppCompatActivity {
             editor.putBoolean("Calendar",true);
             editor.commit();
             model.load_today_lectures();
-            scheduleAlarm();
+
             Toast.makeText(WelcomeActivity.this,"You have successfully imported your timetable!",Toast.LENGTH_SHORT).show();
             btnNext.setEnabled(true);
             btnNext.setTextColor(Color.WHITE);
@@ -546,6 +553,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
         public DownloadImage(ImageView bmImage) {
             this.bmImage = bmImage;
+            dialog = new ProgressDialog(WelcomeActivity.this);
 //
         }
 
@@ -554,7 +562,8 @@ public class WelcomeActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
 
-            // dialog.show();
+            dialog.setMessage("Loading photo profile...");
+            dialog.show();
         }
 
         protected Bitmap doInBackground(String... urls) {
@@ -583,7 +592,7 @@ public class WelcomeActivity extends AppCompatActivity {
             edit.commit();
             ///
             bmImage.setImageBitmap(result);
-
+            dialog.dismiss();
 
 
 

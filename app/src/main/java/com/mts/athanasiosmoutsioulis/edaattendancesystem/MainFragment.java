@@ -223,6 +223,7 @@ public class MainFragment extends Fragment implements AttendanceModel.OnSignAtte
         super.onResume();
         updateStatus();
         update_FBlogin();
+        Log.i("Resume","fragment");
 
     }
 
@@ -323,9 +324,11 @@ public class MainFragment extends Fragment implements AttendanceModel.OnSignAtte
         public void onReceive(Context arg0, Intent arg1) {
             // TODO Auto-generated method stub
 
+            Log.i("Broadcast","resceiver");
             if(arg1.getBooleanExtra("Detected_Lecture",false)==true){
                updateStatus();
             }else{
+                Log.i("Broadcast","send");
             String datapassed = arg1.getStringExtra("Lecture");
             displayAttendanceDialog(datapassed);
             }
@@ -437,6 +440,7 @@ public class MainFragment extends Fragment implements AttendanceModel.OnSignAtte
         else{
                 status.setText("Attend:" + tmp.getType() + " " + tmp.getTitle() +" "+ tmp.getLocation() + "\n");
                 status_sign.setText("Status:Signed");
+                status_sign.setTextColor(Color.RED);
 
             }
         }else{
