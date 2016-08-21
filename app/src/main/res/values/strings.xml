@@ -23,15 +23,16 @@
     <string name="slide_1_desc">In order to start you should first configure the application.\nClick next to continue.</string>
 
     <string name="slide_2_title">Import your Timetable</string>
-    <string name="slide_2_desc">Please go the website:\n https://www.kent.ac.uk/student/my-study/ \n Copy the Calendar feed and paste it to the field bellow and click Import. </string>
+    <string name="slide_2_desc">Please go the website:\n https://www.kent.ac.uk/student/my-study \n Copy the Calendar feed and paste it to the field bellow and click Import. </string>
 
     <string name="slide_3_title">Great Discounts</string>
     <string name="slide_3_desc">Best discounts on every single service we offer!</string>
 
-    <string name="slide_4_title">Finish</string>
+    <string name="slide_4_title">Finished!</string>
     <string name="slide_4_desc">You have finished your configuration!</string>
 
     <string name="play_again_desc">To see the welcome slider again, goto Settings -> apps -> welcome slider -> clear data</string>
     <string name="play_again">Play Again</string>
+    <string name="title_activity_maps">Map</string>
 
 </resources>

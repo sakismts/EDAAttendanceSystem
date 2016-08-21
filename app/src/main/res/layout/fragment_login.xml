@@ -32,7 +32,9 @@
         android:layout_alignParentStart="true"
         android:layout_below="@+id/textView"
         android:layout_alignEnd="@+id/imageView"
-        android:text="am2072" />
+        android:imeOptions="actionNext"
+        android:text="am2072"
+        android:inputType="text" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -72,7 +74,9 @@
         android:textAllCaps="false"
         android:layout_centerHorizontal="true"
         style="@style/Widget.AppCompat.Button.Borderless"
-        android:layout_below="@+id/btn_login" />
+        android:layout_below="@+id/btn_login"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentBottom="true" />
 
     <RadioGroup
         android:layout_width="fill_parent"

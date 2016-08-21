@@ -102,6 +102,9 @@ public class MainFragmentTeacher extends Fragment  {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 System.out.println("menu"+state[position]);
                 module=state[position];
+                SharedPreferences.Editor editor=sharedpreferences.edit();
+                editor.putString("mymodule",module);
+                editor.commit();
 
 
             }
@@ -121,8 +124,22 @@ public class MainFragmentTeacher extends Fragment  {
         spinner.setAdapter(spineradapter);
 
 
+
         update_login();
         return view;
+    }
+
+    private int getIndex(Spinner spinner, String myString)
+    {
+        int index = 0;
+
+        for (int i=0;i<spinner.getCount();i++){
+            if (spinner.getItemAtPosition(i).toString().equalsIgnoreCase(myString)){
+                index = i;
+                break;
+            }
+        }
+        return index;
     }
 
     public void update_login() {
@@ -148,6 +165,11 @@ public class MainFragmentTeacher extends Fragment  {
         spineradapter = new ArrayAdapter<String>(getActivity(),  android.R.layout.simple_spinner_item, state);
         spineradapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(spineradapter);
+        if(!sharedpreferences.getString("mymodule","").isEmpty()){
+            //private method of your class
+            spinner.setSelection(getIndex(spinner, sharedpreferences.getString("mymodule","")));
+            module=sharedpreferences.getString("mymodule","");
+        }
     }
 
     @Override

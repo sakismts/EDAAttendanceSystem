@@ -71,7 +71,7 @@
                 android:layout_height="wrap_content"
                 android:weightSum="5"
                 android:layout_weight="1"
-                android:background="#009688"
+                android:background="#ff8989"
                 android:layout_marginBottom="1dp"
                 android:layout_marginTop="1dp"
                 android:id="@+id/teacher_ll_attendances">
@@ -101,7 +101,7 @@
                 android:weightSum="5"
                 android:id="@+id/teacher_ll_charts"
                 android:layout_weight="1"
-                android:background="#009688"
+                android:background="#b0aac2"
                 android:layout_marginTop="1dp"
                 android:layout_marginBottom="1dp">
 
@@ -128,7 +128,7 @@
                 android:layout_height="wrap_content"
                 android:weightSum="5"
                 android:layout_weight="1"
-                android:background="#009688"
+                android:background="#3B5894"
                 android:layout_marginTop="1dp"
                 android:layout_marginBottom="1dp"
                 android:id="@+id/teacher_ll_feedback"

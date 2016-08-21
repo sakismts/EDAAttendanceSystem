@@ -38,7 +38,9 @@
             android:text="@string/slide_2_desc"
             android:textAlignment="center"
             android:textColor="@android:color/white"
-            android:textSize="@dimen/slide_desc" />
+            android:textSize="@dimen/slide_desc"
+            android:linksClickable="true"
+            android:autoLink="web" />
 
         <EditText
             android:layout_width="fill_parent"

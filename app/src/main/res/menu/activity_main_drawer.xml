@@ -6,10 +6,12 @@
             android:title="Logout" />
         <item android:id="@+id/menu_FBAccount" android:icon="@drawable/ic_action_facebook_icon"
             android:title="Facebook Account" />
-        <!--<item android:id="@+id/nav_slideshow" android:icon="@android:drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
-        <item android:id="@+id/nav_manage" android:icon="@android:drawable/ic_menu_manage"
-            android:title="Tools" />-->
+        <item android:id="@+id/map" android:icon="@drawable/map_btn"
+            android:title="Map" />
+        <item android:id="@+id/about" android:icon="@drawable/about_btn"
+            android:title="About" />
+        <item android:id="@+id/telephones" android:icon="@drawable/phone"
+            android:title="Useful telephones" />
     </group>
 
     <!--<item android:title="Communicate">-->

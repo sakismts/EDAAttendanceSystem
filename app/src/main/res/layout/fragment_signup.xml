@@ -14,7 +14,8 @@
         android:hint="Id"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="44dp" />
+        android:layout_marginTop="44dp"
+        android:inputType="text" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -59,10 +60,12 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:id="@+id/edt_FullName"
+        android:imeOptions="actionNext"
         android:visibility="visible"
         android:layout_below="@+id/edt_signupConfPass"
         android:layout_centerHorizontal="true"
-        android:hint="Full Name" />
+        android:hint="Full Name"
+        android:inputType="textPersonName" />
 
     <RadioGroup
         android:layout_width="fill_parent"
@@ -92,7 +95,9 @@
         android:id="@+id/autoCompleteTextView"
         android:layout_below="@+id/radioGroup"
         android:layout_centerHorizontal="true"
-        android:hint="Cource name" />
+        android:imeOptions="actionDone"
+        android:hint="Cource name"
+        android:inputType="text" />
 
 
 

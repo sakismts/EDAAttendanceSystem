@@ -47,7 +47,7 @@ public class FacebookActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
+        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         accessTokenTracker = new AccessTokenTracker() {
             @Override
             protected void onCurrentAccessTokenChanged(AccessToken oldToken, AccessToken newToken) {
@@ -63,6 +63,9 @@ public class FacebookActivity extends AppCompatActivity {
                     Uri imageUrl= newProfile.getProfilePictureUri(300, 300);
                     Log.i("Facebook", imageUrl.toString());
                     Log.i("FacebbokId", newProfile.getId());
+                    SharedPreferences.Editor editor = sharedpreferences.edit();
+                    editor.putString("FBname",newProfile.getName());
+                    editor.commit();
                     String user_id=sharedpreferences.getString("id", "User");
                     model.updateFBaccount("http://greek-tour-guides.eu/ioannina/dissertation/updateFBaccount.php?student_id="+user_id+"&fbID="+newProfile.getId()+"&fbName="+newProfile.getFirstName()+"_"+newProfile.getLastName());
                     new DownloadImage((ImageView)findViewById(R.id.imageView)).execute(imageUrl.toString());

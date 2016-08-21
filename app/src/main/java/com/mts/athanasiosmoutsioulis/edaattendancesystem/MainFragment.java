@@ -269,6 +269,8 @@ public class MainFragment extends Fragment implements AttendanceModel.OnSignAtte
     public void update_login() {
         id.setText(sharedpreferences.getString("id", "User"));
 
+        fbName.setText(sharedpreferences.getString("fullName", " "));
+
     }
 
     public void update_logout(){
@@ -277,7 +279,6 @@ public class MainFragment extends Fragment implements AttendanceModel.OnSignAtte
         RoundedBitmapDrawable roundedBitmapDrawable= RoundedBitmapDrawableFactory.create(getResources(), imageBitmap);
         roundedBitmapDrawable.setCornerRadius(25);
         photo_profile.setImageDrawable(roundedBitmapDrawable);
-        fbName.setVisibility(View.GONE);
 
     }
 
@@ -293,7 +294,7 @@ public class MainFragment extends Fragment implements AttendanceModel.OnSignAtte
                 roundedBitmapDrawable.setCornerRadius(25);
                  photo_profile.setImageDrawable(roundedBitmapDrawable);
             }
-             fbName.setVisibility(View.VISIBLE);
+
              fbName.setText(profile.getName());
 
         }else{
@@ -302,7 +303,7 @@ public class MainFragment extends Fragment implements AttendanceModel.OnSignAtte
             RoundedBitmapDrawable roundedBitmapDrawable= RoundedBitmapDrawableFactory.create(getResources(), imageBitmap);
             roundedBitmapDrawable.setCornerRadius(25);
               photo_profile.setImageDrawable(roundedBitmapDrawable);
-            fbName.setVisibility(View.GONE);
+
 
         }
 

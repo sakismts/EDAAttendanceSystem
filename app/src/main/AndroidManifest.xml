@@ -7,6 +7,14 @@
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+
+    <!--
+         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
+         Google Maps Android API v2, but you must specify either coarse or fine
+         location permissions for the 'MyLocation' functionality. 
+    -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:name=".MyApplication"
@@ -38,9 +46,9 @@
         </activity>
         <activity
             android:name=".ScheduleActivity"
+            android:label="Timetable"
             android:launchMode="singleTop"
             android:parentActivityName=".MainActivity"
-            android:label="Timetable"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
 
@@ -67,25 +75,28 @@
             android:exported="true" >
         </service>
 
-        <activity android:name=".ManualAttendance"
-            android:launchMode="singleTop"
+        <activity
+            android:name=".ManualAttendance"
             android:label="Manual Attendance"
-            android:parentActivityName=".MainActivity">
-
-        </activity>
-        <activity android:name=".FeedBackList"
             android:launchMode="singleTop"
+            android:parentActivityName=".MainActivity" >
+        </activity>
+        <activity
+            android:name=".FeedBackList"
             android:label="Pending Feedbacks"
-            android:parentActivityName=".MainActivity">
-        </activity>
-        <activity android:name=".FacebookList"
-            android:label="FB CLassmates"
-            android:parentActivityName=".MainActivity">
-        </activity>
-        <activity android:name=".LectureDetails"
             android:launchMode="singleTop"
+            android:parentActivityName=".MainActivity" >
+        </activity>
+        <activity
+            android:name=".FacebookList"
+            android:label="FB CLassmates"
+            android:parentActivityName=".MainActivity" >
+        </activity>
+        <activity
+            android:name=".LectureDetails"
             android:label="Info"
-            android:parentActivityName=".ScheduleActivity">
+            android:launchMode="singleTop"
+            android:parentActivityName=".ScheduleActivity" >
         </activity>
         <activity
             android:name=".MyModules"
@@ -93,33 +104,71 @@
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
-        <activity android:name=".AvailableModules"
-            android:launchMode="singleTop"
+        <activity
+            android:name=".AvailableModules"
             android:label="Available Modules"
-            android:parentActivityName=".MyModules">
-        </activity>
-        <activity android:name=".AttendancesList"
             android:launchMode="singleTop"
-            android:parentActivityName=".MyModules">
+            android:parentActivityName=".MyModules" >
         </activity>
-        <activity android:name=".TeacherAttendanceSheet"
-            android:parentActivityName=".AttendancesList">
-        </activity>
-        <activity android:name=".TeacherFeedBackActivity"
+        <activity
+            android:name=".AttendancesList"
             android:launchMode="singleTop"
+            android:parentActivityName=".MyModules" >
+        </activity>
+        <activity
+            android:name=".TeacherAttendanceSheet"
+            android:parentActivityName=".AttendancesList" >
+        </activity>
+        <activity
+            android:name=".TeacherFeedBackActivity"
+            android:launchMode="singleTop"
+            android:parentActivityName=".MainActivity" >
+        </activity>
+        <activity
+            android:name=".TeacherFeedbackSheetActivity"
+            android:launchMode="singleTop"
+            android:parentActivityName=".TeacherFeedBackActivity" >
+        </activity>
+        <activity
+            android:name=".ChartActivity"
+            android:launchMode="singleTop"
+            android:parentActivityName=".MainActivity" >
+        </activity>
+        <activity
+            android:name=".WelcomeActivity"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+        <activity
+            android:name=".PreferencesActivity"
+            android:label="Settings" >
+        </activity>
+        <activity android:name=".TeacherPreferences" >
+        </activity>
+        <activity android:name=".AboutActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="About EDA"
             android:parentActivityName=".MainActivity">
         </activity>
-        <activity android:name=".TeacherFeedbackSheetActivity"
-            android:launchMode="singleTop"
-            android:parentActivityName=".TeacherFeedBackActivity">
-        </activity>
-        <activity android:name=".ChartActivity"
-            android:launchMode="singleTop"
+        <activity android:name=".TelephonesActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="Usefull phones"
             android:parentActivityName=".MainActivity">
         </activity>
-        <activity android:name=".WelcomeActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+        <!--
+             The API key for Google Maps-based APIs is defined as a string resource.
+             (See the file "res/values/google_maps_api.xml").
+             Note that the API key is linked to the encryption key used to sign the APK.
+             You need a different API key for each encryption key, including the release key that is used to
+             sign the APK for publishing.
+             You can define the keys for the debug and release targets in src/debug/ and src/release/. 
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
 
+        <activity
+            android:name=".MapsActivity"
+            android:label="@string/title_activity_maps" >
         </activity>
     </application>
 

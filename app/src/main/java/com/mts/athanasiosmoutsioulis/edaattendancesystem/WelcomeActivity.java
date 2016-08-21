@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.content.Context;
@@ -21,7 +22,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.util.Base64;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -48,6 +51,8 @@ import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.Property;
+
+import org.w3c.dom.Text;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -76,6 +81,7 @@ public class WelcomeActivity extends AppCompatActivity {
     private AccessTokenTracker accessTokenTracker;
     private ProfileTracker profileTracker;
     private  boolean timetable_load=false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,8 +149,8 @@ public class WelcomeActivity extends AppCompatActivity {
 
         myViewPagerAdapter = new MyViewPagerAdapter();
         viewPager.setAdapter(myViewPagerAdapter);
-       // viewPager.setOnTouchListener(null);
-        viewPager.beginFakeDrag();
+        viewPager.setOnTouchListener(null);
+
         viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
 
         btnPrevious.setOnClickListener(new View.OnClickListener() {
@@ -172,7 +178,14 @@ public class WelcomeActivity extends AppCompatActivity {
                 }
             }
         });
+
+
+
+
+
     }
+
+
 
     private void addBottomDots(int currentPage) {
         dots = new TextView[layouts.length];
@@ -205,8 +218,15 @@ public class WelcomeActivity extends AppCompatActivity {
         finish();
     }
 
+
+
+
+
+
     //  viewpager change listener
     ViewPager.OnPageChangeListener viewPagerPageChangeListener = new ViewPager.OnPageChangeListener() {
+
+
 
         @Override
         public void onPageSelected(int position) {
@@ -215,30 +235,28 @@ public class WelcomeActivity extends AppCompatActivity {
             // changing the next button text 'NEXT' / 'GOT IT'
             if (position==0){
                 btnPrevious.setVisibility(View.GONE);
-                btnNext.setEnabled(true);
                 btnNext.setTextColor(Color.WHITE);
             }else if (position==1){
-
-                if(timetable_load){
-                    btnNext.setEnabled(true);
-                    btnNext.setTextColor(Color.WHITE);
-                }else{
-                    btnNext.setEnabled(false);
-                    btnNext.setTextColor(Color.GRAY);
-                }
+                btnNext.setText("NEXT");
                 btnPrevious.setVisibility(View.VISIBLE);
             }else if (position==2){
+                btnNext.setEnabled(true);
                 btnNext.setText("SKIP");
                 btnPrevious.setVisibility(View.VISIBLE);
-            }
-            else if (position == layouts.length - 1) {
-                // last page. make button text to GOT IT
-                btnNext.setText(getString(R.string.start));
-                btnPrevious.setVisibility(View.GONE);
-            } else {
-                // still pages are left
-                btnNext.setText(getString(R.string.next));
-                btnPrevious.setVisibility(View.VISIBLE);
+                btnNext.setTextColor(Color.WHITE);
+            }else if (position==3){
+                if(!timetable_load){
+                    btnNext.setEnabled(false);
+                    btnNext.setText(getString(R.string.start));
+                    btnPrevious.setVisibility(View.VISIBLE);
+                    btnNext.setTextColor(Color.GRAY);
+                }else{
+                    btnNext.setText(getString(R.string.start));
+                    btnNext.setEnabled(true);
+                    viewPager.beginFakeDrag();
+                    btnPrevious.setVisibility(View.GONE);
+                    btnNext.setTextColor(Color.WHITE);
+                }
             }
         }
 
@@ -251,6 +269,7 @@ public class WelcomeActivity extends AppCompatActivity {
         public void onPageScrollStateChanged(int arg0) {
 
         }
+
     };
 
     /**
@@ -273,6 +292,7 @@ public class WelcomeActivity extends AppCompatActivity {
         public MyViewPagerAdapter() {
         }
 
+
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
             layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -280,6 +300,7 @@ public class WelcomeActivity extends AppCompatActivity {
             final View view = layoutInflater.inflate(layouts[position], container, false);
             container.addView(view);
             if(position==0){
+                if(viewPager.getCurrentItem()==0)
                 btnPrevious.setVisibility(View.GONE);
             }
             else if(position==1){
@@ -348,6 +369,16 @@ public class WelcomeActivity extends AppCompatActivity {
 
 
 
+            }else if (position==3){
+                TextView header=(TextView)view.findViewById(R.id.tv_welc_header);
+                TextView desc=(TextView)view.findViewById(R.id.tv_welc_desc);
+                if(!timetable_load){
+                header.setText("Not Finished!");
+                desc.setText("Please go back to import your timetable");
+                }else{
+                    header.setText("Finished!");
+                    desc.setText("You have finished your configuration!");
+                }
             }
 
             return view;
@@ -475,9 +506,10 @@ public class WelcomeActivity extends AppCompatActivity {
                 model.close();
 
                 input.close();
-
+                timetable_load=true;
 
             } catch (Exception e) {
+                timetable_load=false;
                 Log.e("Error: ", e.getMessage());
             }
 
@@ -504,14 +536,15 @@ public class WelcomeActivity extends AppCompatActivity {
                 dialog.dismiss();
             }
             SharedPreferences.Editor editor = sharedpreferences.edit();
-            editor.putBoolean("Calendar",true);
+            editor.putBoolean("Calendar", true);
             editor.commit();
             model.load_today_lectures();
-
+            if(timetable_load)
             Toast.makeText(WelcomeActivity.this,"You have successfully imported your timetable!",Toast.LENGTH_SHORT).show();
-            btnNext.setEnabled(true);
-            btnNext.setTextColor(Color.WHITE);
-            timetable_load=true;
+            else
+                Toast.makeText(WelcomeActivity.this,"Failed!Check your internet connection.",Toast.LENGTH_SHORT).show();
+           
+
         }
 
     }
@@ -604,4 +637,7 @@ public class WelcomeActivity extends AppCompatActivity {
         callbackManager.onActivityResult(requestCode, resultCode, data);
 
     }
+
+
+
 }

@@ -20,11 +20,19 @@
         android:layout_weight="3"
         android:gravity="left" />
 
-    <TextView
+    <!--<TextView-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="New Text"-->
+        <!--android:id="@+id/tv_valid_attendance"-->
+        <!--android:layout_weight="1"-->
+        <!--android:gravity="left" />-->
+
+    <CheckBox
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/tv_valid_attendance"
+        android:text="New CheckBox"
         android:layout_weight="1"
-        android:gravity="left" />
+        android:gravity="left"
+        android:id="@+id/ch_validate_att" />
 </LinearLayout>

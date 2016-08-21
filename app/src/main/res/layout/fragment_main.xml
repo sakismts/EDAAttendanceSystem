@@ -119,10 +119,10 @@
 
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="fill_parent"
                             android:layout_height="fill_parent"
                             android:id="@+id/editText"
-                            android:text="Search and Sign in for your class"
+                            android:text="Sign in to your class"
                             android:layout_gravity="center_vertical"
                             android:textSize="15sp"
                             android:textColor="#fff"
@@ -149,10 +149,10 @@
                             android:layout_weight="1" />
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="fill_parent"
                             android:layout_height="fill_parent"
                             android:id="@+id/editText9"
-                            android:text="Send your feedback for your attendances"
+                            android:text="Send a Feedback"
                             android:layout_gravity="center_vertical"
                             android:textSize="15sp"
                             android:textColor="#fff"
@@ -225,9 +225,9 @@
                             android:layout_weight="1" />
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="fill_parent"
                             android:layout_height="fill_parent"
-                            android:text="Check your Lectures and WorkShops"
+                            android:text="Your Timetable"
                             android:textSize="15sp"
                             android:textColor="#fff"
                             android:id="@+id/textView5"

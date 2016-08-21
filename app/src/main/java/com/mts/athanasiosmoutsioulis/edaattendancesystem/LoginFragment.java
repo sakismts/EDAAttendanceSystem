@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -148,17 +149,22 @@ public class LoginFragment extends Fragment implements AttendanceModel.OnSignInU
     }
 
     @Override
-    public void onSignInUpdateListener(boolean login, String name) {
+    public void onSignInUpdateListener(boolean login, String name,String email) {
         if (login==true){
             Log.i("Signin", "success");
+            SharedPreferences defauloref= PreferenceManager.getDefaultSharedPreferences(getActivity());
+            SharedPreferences.Editor editor2 = defauloref.edit();
             SharedPreferences.Editor editor = sharedpreferences.edit();
             //put the user info to the shared preferences
             editor.putString("id", id.getText().toString());
             editor.putString("pass", pass.getText().toString());
             editor.putBoolean("logged", true);
+            editor.putString("email", email);
+            editor2.putString("email", email);
             editor.putString("role",role);
             editor.putString("fullName",name);
             editor.commit();
+            editor2.commit();
             Toast.makeText(getActivity(),"The Login was successful",Toast.LENGTH_SHORT).show();
             if (mListener!=null){
                 mListener.onLoginClicked();

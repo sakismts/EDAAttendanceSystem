@@ -207,6 +207,10 @@ public class AttendanceModel {
 
 
 
+    private OnUpdateTeacherSingleAttendance updateTeacherSingleAttendance;
+
+
+
     private OnGetTeacherSingleAttendance getTeacherSingleAttendanceListener;
 
 
@@ -427,6 +431,71 @@ public class AttendanceModel {
 
     /////////////////////////////////////////////////////
 
+    //////////////////////Update Single Attendance///////////
+    public interface  OnUpdateTeacherSingleAttendance{
+        void onUpdateTeacherSingleAttendance(boolean signed);
+
+    }
+    public void setUpdateTeacherSingleAttendance(OnUpdateTeacherSingleAttendance updateTeacherSingleAttendance) {
+        this.updateTeacherSingleAttendance = updateTeacherSingleAttendance;
+    }
+
+    public void updateTeacherAttendaces(String uri){
+
+        Log.i("TeacherAttendaces","Sending request");
+        //  String uri = "http://greek-tour-guides.eu/ioannina/dissertation/insert_user.php?id=2&role=student&pass=1&course=a";
+        JsonObjectRequest request = new JsonObjectRequest(uri, upteacherAttendancesListener,upteacherAttendancesErrorListener);
+
+        MyApplication.getInstance().getRequestQueue().add(request);
+
+    }
+
+    Response.Listener<JSONObject> upteacherAttendancesListener = new Response.Listener<JSONObject>(){
+
+
+        @Override
+        public void onResponse(JSONObject response) {
+            System.out.println(response);
+            int result=-1;
+            try {
+                result= response.getInt("success");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            if (result==1){
+
+
+
+                notifyListenerUpTeacherAttendance(true);
+
+
+
+            }
+            else
+                notifyListenerUpTeacherAttendance(false);
+        }
+    };
+
+    Response.ErrorListener upteacherAttendancesErrorListener = new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+
+        }
+    };
+
+
+    private void notifyListenerUpTeacherAttendance(boolean signed){
+
+
+        if (updateTeacherSingleAttendance != null)
+
+            updateTeacherSingleAttendance.onUpdateTeacherSingleAttendance(signed);
+
+    }
+
+    ///////////////////////////////////////////////////////
+
     ////////////////////Teacher Attendaces/////////////////
     //INTERFACE for signup
 
@@ -621,10 +690,11 @@ public class AttendanceModel {
                         String feedback = objjson.getString("feedback");
                         String fullName = objjson.getString("fullName");
                         String shareID = objjson.getString("shareID");
+                        String sDate = objjson.getString("startDate");
                         System.out.println(StudentId);
-                        getStudents_Attendance_list().add(new Attendance(StudentId,valid,shareID,feedback,fullName));
+                        getStudents_Attendance_list().add(new Attendance(StudentId,valid,shareID,feedback,fullName,sDate));
                         if(!feedback.isEmpty())
-                            getTeacherFeedback().add(new Attendance(StudentId,valid,shareID,feedback,fullName));
+                            getTeacherFeedback().add(new Attendance(StudentId,valid,shareID,feedback,fullName,sDate));
 
                     }
 
@@ -886,18 +956,20 @@ public class AttendanceModel {
                 try {
                     JSONArray tmp_user = response.getJSONArray("user");
                     String name="";
+                    String email="";
                     for (int i=0; i<tmp_user.length();i++){
                         JSONObject objjson = tmp_user.getJSONObject(i);
                         name = objjson.getString("fullName");
+                        email = objjson.getString("email");
                     }
-                    notifyListenerSignIn(true,name);
+                    notifyListenerSignIn(true,name,email);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
             }
             else
-                notifyListenerSignIn(false,"");
+                notifyListenerSignIn(false,"","");
         }
     };
 
@@ -910,7 +982,7 @@ public class AttendanceModel {
 
     //INTERFACE for signin
     public interface  OnSignInUpdateListener{
-        void onSignInUpdateListener(boolean signed, String name);
+        void onSignInUpdateListener(boolean signed, String name,String email);
 
     }
 
@@ -918,12 +990,12 @@ public class AttendanceModel {
         this.signinUpdateListener = signinUpdateListener;
     }
 
-    private void notifyListenerSignIn(boolean login, String name){
+    private void notifyListenerSignIn(boolean login, String name, String email){
 
 
         if (signinUpdateListener != null)
 
-            signinUpdateListener.onSignInUpdateListener(login,name);
+            signinUpdateListener.onSignInUpdateListener(login,name,email);
 
     }
 

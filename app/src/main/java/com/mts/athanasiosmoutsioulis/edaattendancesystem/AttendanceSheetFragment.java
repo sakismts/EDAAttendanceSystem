@@ -210,7 +210,7 @@ public class AttendanceSheetFragment extends Fragment implements AttendanceModel
 
 
 
-        File pdfFolder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "EDA");
+        File pdfFolder = new File(Environment.getExternalStorageDirectory(), "EDA");
         if (!pdfFolder.exists()) {
             pdfFolder.mkdir();
             Log.i("PDF", "Pdf Directory created");

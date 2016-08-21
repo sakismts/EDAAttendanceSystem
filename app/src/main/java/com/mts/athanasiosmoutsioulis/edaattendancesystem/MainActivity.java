@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         if(sharedpreferences.getBoolean("IsFirstTimeLaunch",true)==true){
             Intent welcome=new Intent(this,WelcomeActivity.class);
-            startActivity(welcome);
+            //startActivity(welcome);
 
         }
         System.out.println(sharedpreferences.getString("MyModulesString","empty"));
@@ -169,30 +169,30 @@ public class MainActivity extends AppCompatActivity
                 fragmentTransaction.add(R.id.main_fragment_teacher,fragment).commit();
             }
 
-        }else{
+        }else {
             navigationView.getMenu().clear(); //clear old inflated items.
             navigationView.inflateMenu(R.menu.activity_main_drawer); //inflate new items.
-        if (findViewById(R.id.main_fragment) != null) {
+            if (findViewById(R.id.main_fragment) != null) {
 
-            // However, if we're being restored from a previous state,
-            // then we don't need to do anything and should return or else
-            // we could end up with overlapping fragments.
-            if (savedInstanceState != null) {
-                return;
+                // However, if we're being restored from a previous state,
+                // then we don't need to do anything and should return or else
+                // we could end up with overlapping fragments.
+                if (savedInstanceState != null) {
+                    return;
+                }
+
+                // Create a new Fragment to be placed in the activity layout
+                Fragment fragment = new MainFragment();
+
+                // In case this activity was started with special instructions from an
+                // Intent, pass the Intent's extras to the fragment as arguments
+
+                // Add the fragment to the 'fragment_container' FrameLayout
+                android.app.FragmentManager fragmentManager = getFragmentManager();
+                android.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+                fragmentTransaction.add(R.id.main_fragment, fragment).commit();
             }
-
-            // Create a new Fragment to be placed in the activity layout
-            Fragment fragment = new MainFragment();
-
-            // In case this activity was started with special instructions from an
-            // Intent, pass the Intent's extras to the fragment as arguments
-
-            // Add the fragment to the 'fragment_container' FrameLayout
-            android.app.FragmentManager fragmentManager = getFragmentManager();
-            android.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
-            fragmentTransaction.add(R.id.main_fragment,fragment).commit();
-        }
 
 //            Profile profile = Profile.getCurrentProfile();
 //            if (profile==null){
@@ -223,8 +223,6 @@ public class MainActivity extends AppCompatActivity
 
 
 
-
-
     }
 
     @Override
@@ -242,39 +240,6 @@ public class MainActivity extends AppCompatActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         if (sharedpreferences.getString("role","nothing").equals("Teacher")){
             getMenuInflater().inflate(R.menu.main, menu);
-           // getMenuInflater().inflate(R.menu.android_action_bar_spinner_menu, menu);
-//            final String[] state= model.getMyModules().toArray(new String[model.getMyModules().size()]);
-//
-//            MenuItem item = menu.findItem(R.id.spinner);
-//            spinner = (Spinner) MenuItemCompat.getActionView(item);
-//            //spinner.setPopupBackgroundResource(R.drawable.spinner);
-//
-//            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//                @Override
-//                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//                    System.out.println("menu"+state[position]);
-//                     MainFragmentTeacher teacherFrag = (MainFragmentTeacher)
-//                            getFragmentManager().findFragmentById(R.id.main_fragment_teacher);
-//                    if(teacherFrag!=null)
-//                    teacherFrag.updateModule(state[position]);
-//
-//
-//                }
-//
-//                @Override
-//                public void onNothingSelected(AdapterView<?> parent) {
-//
-//                }
-//            });
-
-
-//        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-//                R.array.spinner_list_item_array, android.R.layout.simple_spinner_item);
-//            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,  android.R.layout.simple_spinner_item, state);
-//
-//            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//
-//            spinner.setAdapter(adapter);
         } else{
         getMenuInflater().inflate(R.menu.main, menu);
         }
@@ -291,7 +256,15 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            showDialog_CalendarImport();
+           // showDialog_CalendarImport();
+            if (sharedpreferences.getString("role","nothing").equals("Teacher")){
+                Intent setting=new Intent(this,TeacherPreferences.class);
+                startActivity(setting);
+            }else{
+
+                Intent setting=new Intent(this,PreferencesActivity.class);
+                startActivity(setting);
+            }
 
             return true;
         }
@@ -348,13 +321,21 @@ public class MainActivity extends AppCompatActivity
 
 
 
-        } /*else if (id == R.id.nav_manage) {
+        } else if (id == R.id.map) {
+            Intent mapIntent = new Intent(this, MapsActivity.class);
+            startActivity(mapIntent);
+            overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 
-        } else if (id == R.id.nav_share) {
+        } else if (id == R.id.about) {
+            Intent aboutIntent =  new Intent(this, AboutActivity.class);
+            startActivity(aboutIntent);
+            overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 
-        } else if (id == R.id.nav_send) {
-
-        }*/
+        } else if (id == R.id.telephones) {
+            Intent telephonesIntent =  new Intent(this, TelephonesActivity.class);
+            startActivity(telephonesIntent);
+            overridePendingTransition(R.anim.fadein, R.anim.fadeout);
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -387,49 +368,7 @@ public class MainActivity extends AppCompatActivity
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // Check which request we're responding to
-//        if (requestCode == LOGIN_REQUEST) {
-//            // Make sure the request was successful
-//            if (resultCode == RESULT_OK) {
-//                Log.i("Request","ok");
-//                Boolean result=data.getBooleanExtra("result", false);
-//                if (result == true){
-//                    //if the user logged in the update the ui with his info
-//
-//                    Profile profile = Profile.getCurrentProfile();
-//                    if (profile==null){
-//                        new AlertDialog.Builder(MainActivity.this)
-//                                .setTitle("Facebook Login")
-//                                .setMessage("Do you also want to login with Facebook")
-//                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-//                                    public void onClick(DialogInterface dialog, int which) {
-//                                        Intent facebookLogin = new Intent(MainActivity.this, FacebookActivity.class);
-//                                        startActivityForResult(facebookLogin, FBLOGIN_REQUEST);
-//                                    }
-//                                })
-//                                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-//                                    public void onClick(DialogInterface dialog, int which) {
-//                                        // do nothing
-//                                    }
-//                                })
-//                                .setIcon(android.R.drawable.ic_dialog_alert)
-//                                .show();
-//
-//                    }
-//                    update_header_details();
-//                    FragmentManager fragmentManager = getFragmentManager();
-//                    MainFragment fragment = (MainFragment) fragmentManager.findFragmentById(R.id.main_fragment);
-//                    fragment.update_login();
-//
-//                }
-//
-//            }
-//            // if the user wasn't logged in the close the application
-//            if (resultCode == Activity.RESULT_CANCELED) {
-//                Log.i("Request","cancel");
-//                finish();
-//            }
-//        }else
+
         if (requestCode == FBLOGIN_REQUEST) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
@@ -448,15 +387,17 @@ public class MainActivity extends AppCompatActivity
         }
     }
     public void update_header_details(){
+        System.out.println("the Name is "+sharedpreferences.getString("fullName", " "));
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         View hView =  navigationView.getHeaderView(0);
+       // navigationView.setItemIconTintList(null);
 
         ImageView nav_img= (ImageView)hView.findViewById(R.id.nav_img);
         TextView student_id=(TextView)hView.findViewById(R.id.header_id);
         TextView fbname=(TextView)hView.findViewById(R.id.header_fbName);
         student_id.setText(sharedpreferences.getString("id", "User"));
         if (sharedpreferences.getString("role","nothing").equals("Teacher")){
-            fbname.setText(sharedpreferences.getString("FName", " "));
+            fbname.setText(sharedpreferences.getString("fullName", " "));
             fbname.setVisibility(View.VISIBLE);
             LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,90);
             nav_img.setLayoutParams(lp);
@@ -475,6 +416,7 @@ public class MainActivity extends AppCompatActivity
                     roundedBitmapDrawable.setCornerRadius(25);
                     nav_img.setImageDrawable(roundedBitmapDrawable);
                 }
+
                 fbname.setText(profile.getName().toString());
                 fbname.setVisibility(View.VISIBLE);
             } else {
@@ -482,7 +424,8 @@ public class MainActivity extends AppCompatActivity
                 RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), imageBitmap);
                 roundedBitmapDrawable.setCornerRadius(25);
                 nav_img.setImageDrawable(roundedBitmapDrawable);
-                fbname.setVisibility(View.GONE);
+                fbname.setText(sharedpreferences.getString("fullName", " "));
+                fbname.setVisibility(View.VISIBLE);
             }
         }
 
@@ -495,7 +438,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onLoadCalendarFeeds() {
-        showDialog_CalendarImport();
+        //showDialog_CalendarImport();
 
     }
 
@@ -504,147 +447,7 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    /**
-     * Background Async Task to download file
-     * */
-    class DownloadFileFromURL extends AsyncTask<String, String, String> {
-        private ProgressDialog dialog;
-        /**
-         * Before starting background thread
-         * Show Progress Bar Dialog
-         * */
-        public DownloadFileFromURL() {
-            dialog = new ProgressDialog(MainActivity.this);
-        }
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
 
-            dialog.setMessage("Loading your calendar info...");
-            dialog.show();
-        }
-
-        /**
-         * Downloading file in background thread
-         * */
-        @Override
-        protected String doInBackground(String... f_url) {
-            int count;
-            try {
-                URL url = new URL(f_url[0]);
-                URLConnection conection = url.openConnection();
-                String redirect = conection.getHeaderField("Location");
-                if (redirect != null){
-                    conection = new URL(redirect).openConnection();
-                }
-
-                //  conection.connect();
-                InputStream input = conection.getInputStream();
-                Calendar calendar = null;
-                try {
-                    calendar = builder.build(input);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (ParserException e) {
-                    e.printStackTrace();
-                }
-                System.out.println(calendar);
-                SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'");
-                try {
-                    model.open();
-                    if(!model.isEmpty()){
-                        model.deleteAllFromDB();
-                    }
-
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-
-                for (Iterator i = calendar.getComponents().iterator(); i.hasNext();) {
-                    Component component = (Component) i.next();
-                    //System.out.println("Component [" + component.getName() + "]");
-
-                    String title="";
-                    String module="";
-                    String type="";
-                    String start="";
-                    String  end="";
-                    String location="";
-                    String description="";
-
-
-                    for (Iterator j = component.getProperties().iterator(); j.hasNext();) {
-                        Property property = (Property) j.next();
-                        switch (property.getName()){
-                            case "LOCATION":
-                                location = property.getValue();
-                                break;
-                            case "DTSTART":
-                                    start= property.getValue();
-                                break;
-                            case "DTEND":
-                                    end= property.getValue();
-                                break;
-                            case "SUMMARY":
-                                String[] parts = property.getValue().split(" ");
-                                type= parts[0];
-                                module=parts[1];
-                                for (int k=2; k<parts.length;k++)
-                                {title=title+" "+parts[k];}
-                                break;
-                            case "DESCRIPTION":
-                                description=property.getValue();
-                                break;
-
-                        }
-
-                    }
-
-                    //model.getLectures_list().add(new Lecture(title, module, type, start, end, location, description));
-                    model.addLectureDBRecord(title, module, type, start, end, location, description, "false");
-
-
-                }
-                model.close();
-
-                input.close();
-
-
-            } catch (Exception e) {
-                Log.e("Error: ", e.getMessage());
-            }
-
-            return null;
-        }
-
-        /**
-         * Updating progress bar
-         * */
-        protected void onProgressUpdate(String... progress) {
-            // setting progress percentage
-
-        }
-
-        /**
-         * After completing background task
-         * Dismiss the progress dialog
-         * **/
-        @Override
-        protected void onPostExecute(String file_url) {
-            // dismiss the dialog after the file was downloaded
-
-            if (dialog.isShowing()) {
-                dialog.dismiss();
-            }
-            SharedPreferences.Editor editor = sharedpreferences.edit();
-            editor.putBoolean("Calendar",true);
-            editor.commit();
-            model.load_today_lectures();
-            scheduleAlarm();
-
-        }
-
-    }
 
     public String readStringFromFile(File file){
         String response="";
@@ -672,66 +475,9 @@ public class MainActivity extends AppCompatActivity
         return response;
     }
 
-    public void showDialog_CalendarImport(){
-        AlertDialog.Builder builder_calendar = new AlertDialog.Builder(MainActivity.this);
-        LayoutInflater inflater = this.getLayoutInflater();
-        View dialog_view=inflater.inflate(R.layout.import_calendar_dialog, null);
-        builder_calendar.setView(dialog_view);
-        final EditText feed_url= (EditText)dialog_view.findViewById(R.id.edt_calendar_url);
 
-        builder_calendar.setMessage("Paste the url for the caledanr feed")
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // FIRE ZE MISSILES!
-                        String calendar_url= feed_url.getText().toString();
-                        calendar_url=calendar_url.replace("webcal","http");
-                        Log.i("calendar",calendar_url);
-                        model.deleteAllItems();
-                        new DownloadFileFromURL().execute(calendar_url);
-                    }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // User cancelled the dialog
-                    }
-                });
 
-        builder_calendar.create().show();
 
-    }
-
-    public void scheduleAlarm()
-    {
-
-        // Set the alarm to start at approximately 8:00 p.m.
-        java.util.Calendar calendar = java.util.Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(java.util.Calendar.HOUR_OF_DAY, 8);
-        calendar.set(java.util.Calendar.MINUTE, 01);
-
-        // Intent intentAlarm = new Intent(getActivity(), AlarmReciever.class);
-
-        // create the object
-        //  AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
-        AlarmManager alarmManager = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(this, AlarmReciever.class);
-        PendingIntent alarmIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
-        // constants--in this case, AlarmManager.INTERVAL_DAY.
-
-        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-                AlarmManager.INTERVAL_DAY, alarmIntent);
-
-        SharedPreferences.Editor prefsEditor = sharedpreferences.edit();
-        prefsEditor.putString("BeaconList","empty");
-        prefsEditor.commit();
-
-        //set the alarm for particular time
-//        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-//                AlarmManager.INTERVAL_DAY, PendingIntent.getBroadcast(getActivity(),1,  intentAlarm, PendingIntent.FLAG_UPDATE_CURRENT));
-//
-        Toast.makeText(this, "Alarm Scheduled for 08:01", Toast.LENGTH_SHORT).show();
-
-    }
 
 
 }
