@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         if(sharedpreferences.getBoolean("IsFirstTimeLaunch",true)==true){
             Intent welcome=new Intent(this,WelcomeActivity.class);
-            //startActivity(welcome);
+            startActivity(welcome);
 
         }
         System.out.println(sharedpreferences.getString("MyModulesString","empty"));

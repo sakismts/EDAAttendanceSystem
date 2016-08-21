@@ -99,7 +99,7 @@
                     <Button
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:text="Attendance"
+                        android:text="Sign in"
                         android:id="@+id/btn_attendance"
                         android:textSize="20sp"
                         style="@style/Widget.AppCompat.Button"

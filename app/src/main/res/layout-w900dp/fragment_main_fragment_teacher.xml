@@ -18,15 +18,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/analogClock"
-                android:layout_centerVertical="true" />
+                android:layout_centerInParent="true" />
 
             <LinearLayout
                 android:orientation="vertical"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_alignTop="@+id/analogClock"
-                android:layout_toRightOf="@+id/analogClock"
-                android:padding="10dp">
+                android:padding="10dp"
+                android:layout_alignParentLeft="true">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -48,6 +47,32 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/ll_module"
+                android:padding="10dp"
+                android:elevation="2dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:background="@color/colorAccent"
+                android:layout_marginRight="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Select Your Module:"
+                    android:id="@+id/textView4"
+                    android:textColor="#fff" />
+
+                <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/spinner_module" />
+            </LinearLayout>
+
         </RelativeLayout>
 
         <LinearLayout
@@ -58,7 +83,8 @@
             android:layout_marginTop="10dp"
             android:clipToPadding="false"
             android:background="#fff"
-            android:layout_below="@+id/ll_module">
+            android:layout_below="@+id/rl_header"
+            android:padding="20dp">
 
 
             <LinearLayout
@@ -77,7 +103,9 @@
                     android:layout_height="0dp"
                     android:id="@+id/imageView2"
                     android:src="@drawable/classes_icon"
-                    android:layout_weight="8" />
+                    android:layout_weight="8"
+                    android:layout_gravity="center_horizontal"
+                    android:padding="40dp" />
 
                 <TextView
                     android:layout_width="fill_parent"
@@ -103,12 +131,13 @@
                 android:layout_margin="5dp">
 
                 <ImageView
-                    android:layout_width="200dp"
+                    android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:id="@+id/imageView3"
                     android:src="@drawable/chart"
                     android:layout_gravity="center_horizontal"
-                    android:layout_weight="8" />
+                    android:layout_weight="8"
+                    android:padding="40dp" />
 
                 <TextView
                     android:layout_width="fill_parent"
@@ -133,11 +162,13 @@
                 android:layout_margin="5dp">
 
                 <ImageView
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:id="@+id/imageView4"
                     android:src="@drawable/feedback_teacher"
-                    android:layout_weight="8" />
+                    android:layout_weight="8"
+                    android:layout_gravity="center_horizontal"
+                    android:padding="40dp" />
 
                 <TextView
                     android:layout_width="fill_parent"
@@ -150,29 +181,6 @@
                     android:layout_weight="2"
                     android:gravity="center_horizontal" />
             </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/ll_module"
-            android:layout_below="@+id/rl_header"
-            android:padding="10dp"
-            android:background="#fff"
-            android:elevation="2dp"
-            android:layout_alignParentRight="true">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Select Your Module:"
-                android:id="@+id/textView4" />
-
-            <Spinner
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/spinner_module" />
         </LinearLayout>
 
         <!--<android.support.design.widget.FloatingActionButton-->
@@ -189,3 +197,4 @@
 
 
 </RelativeLayout>
+
