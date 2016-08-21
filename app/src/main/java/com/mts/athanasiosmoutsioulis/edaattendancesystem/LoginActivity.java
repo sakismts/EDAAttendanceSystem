@@ -28,17 +28,7 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.On
         if (model==null)
             model = new AttendanceModel(this);
 
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        if (savedInstanceState == null) {
-//            Fragment fragment = new LoginFragment();
-//
-//            android.app.FragmentManager fragmentManager = getFragmentManager();
-//            android.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//            fragmentTransaction.replace(R.id.login_fragment, fragment);
-//            //fragmentTransaction.addToBackStack(null);
-//
-//            fragmentTransaction.commit();
-//        }
+
         if (findViewById(R.id.login_fragment) != null) {
 
             // However, if we're being restored from a previous state,
