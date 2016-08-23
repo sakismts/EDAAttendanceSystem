@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -271,6 +272,7 @@ public class AttendanceModel {
     Response.ErrorListener signupErrorListener = new Response.ErrorListener() {
         @Override
         public void onErrorResponse(VolleyError error) {
+            Toast.makeText(MyApplication.getInstance(),"Check your connection and try again",Toast.LENGTH_SHORT).show();
 
         }
     };
@@ -363,7 +365,7 @@ public class AttendanceModel {
     Response.ErrorListener modulesListenerErrorListener = new Response.ErrorListener() {
         @Override
         public void onErrorResponse(VolleyError error) {
-
+            Toast.makeText(MyApplication.getInstance(),"Check your connection and try again",Toast.LENGTH_SHORT).show();
         }
     };
 
@@ -404,7 +406,7 @@ public class AttendanceModel {
     Response.ErrorListener signAttendanceErrorListener = new Response.ErrorListener() {
         @Override
         public void onErrorResponse(VolleyError error) {
-
+            Toast.makeText(MyApplication.getInstance(),"Check your connection and try again",Toast.LENGTH_SHORT).show();
         }
     };
 
@@ -480,7 +482,7 @@ public class AttendanceModel {
     Response.ErrorListener upteacherAttendancesErrorListener = new Response.ErrorListener() {
         @Override
         public void onErrorResponse(VolleyError error) {
-
+            Toast.makeText(MyApplication.getInstance(),"Check your connection and try again",Toast.LENGTH_SHORT).show();
         }
     };
 
@@ -529,6 +531,7 @@ public class AttendanceModel {
 
                         int count=0;
                         int feedback_count=0;
+                        ArrayList<Lecture> tmpList=new ArrayList<Lecture>();
                         for (int i=0; i<tmp_attendances.length();i++){
 
                             JSONObject objjson = tmp_attendances.getJSONObject(i);
@@ -566,7 +569,8 @@ public class AttendanceModel {
                                         e.printStackTrace();
                                     }
                                     Lecture tmp= new Lecture(moduleID,LectureType,tmpt_start,tmpt_end,location,count,feedback_count);
-                                    getTeacherAttendances().add(tmp);
+                                    //getTeacherAttendances().add(tmp);
+                                    tmpList.add(tmp);
                                     System.out.println(count);
                                     count=0;
                                     feedback_count=0;
@@ -586,20 +590,18 @@ public class AttendanceModel {
                                 }
 
                                 Lecture tmp= new Lecture(moduleID,LectureType,tmpt_start,tmpt_end,location,count,feedback_count);
-                                getTeacherAttendances().add(tmp);
+                                //getTeacherAttendances().add(tmp);
+                                tmpList.add(tmp);
 
                             }
-                            //date=startDate;
 
-//                            System.out.println("start date :"+startDate);
-//                            System.out.println("end date :"+endDate);
-//                            System.out.println(count);
-
-
-                            //
 
                         }
 
+
+                        Collections.sort(tmpList);
+
+                        setTeacherAttendances(tmpList);
                         notifyListenerTeacherAttendance(true);
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -615,7 +617,7 @@ public class AttendanceModel {
     Response.ErrorListener teacherAttendancesErrorListener = new Response.ErrorListener() {
         @Override
         public void onErrorResponse(VolleyError error) {
-
+            Toast.makeText(MyApplication.getInstance(),"Check your connection and try again",Toast.LENGTH_SHORT).show();
         }
     };
 
@@ -713,7 +715,7 @@ public class AttendanceModel {
     Response.ErrorListener teacherAttendancesSingleErrorListener = new Response.ErrorListener() {
         @Override
         public void onErrorResponse(VolleyError error) {
-
+            Toast.makeText(MyApplication.getInstance(),"Check your connection and try again",Toast.LENGTH_SHORT).show();
         }
     };
 
@@ -788,7 +790,7 @@ public class AttendanceModel {
     Response.ErrorListener getfbinfoErrorListener = new Response.ErrorListener() {
         @Override
         public void onErrorResponse(VolleyError error) {
-
+            Toast.makeText(MyApplication.getInstance(),"Check your connection and try again",Toast.LENGTH_SHORT).show();
         }
     };
 
@@ -976,7 +978,7 @@ public class AttendanceModel {
     Response.ErrorListener signinErrorListener = new Response.ErrorListener() {
         @Override
         public void onErrorResponse(VolleyError error) {
-
+            Toast.makeText(MyApplication.getInstance(),"Check your connection and try again",Toast.LENGTH_SHORT).show();
         }
     };
 

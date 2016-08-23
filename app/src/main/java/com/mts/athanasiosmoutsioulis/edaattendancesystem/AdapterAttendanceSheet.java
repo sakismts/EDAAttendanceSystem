@@ -113,14 +113,12 @@ public class AdapterAttendanceSheet extends RecyclerView.Adapter<AdapterAttendan
                         validate.setText("YES");
                         String uri = "http://greek-tour-guides.eu/ioannina/dissertation/updateTeacherSingleAttendances.php?startDate=" + item.getsDate() + "&studentID=" + item.getStudentId() + "&valid=true";
                         model.updateTeacherAttendaces(uri);
-                        //item.setValid("true");
                         tmp_item=item;
                         mydialog.show();
                     } else {
                         validate.setText("NO");
                         String uri = "http://greek-tour-guides.eu/ioannina/dissertation/updateTeacherSingleAttendances.php?startDate=" + item.getsDate() + "&studentID=" + item.getStudentId() + "&valid=false";
                         model.updateTeacherAttendaces(uri);
-                       // item.setValid("false");
                         tmp_item=item;
                         mydialog.show();
                     }
@@ -175,7 +173,6 @@ public class AdapterAttendanceSheet extends RecyclerView.Adapter<AdapterAttendan
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-
 
         return model.getStudents_Attendance_list().size();
     }

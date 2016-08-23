@@ -59,6 +59,7 @@ public class AttendanceSheetFragment extends Fragment implements AttendanceModel
     private Animation fab_open,fab_close;
     private Boolean isFabOpen = false;
     ProgressDialog progress;
+    RecyclerView attendRecycler;
     String moduleID,SDate,EDate;
     public AttendanceSheetFragment() {
         // Required empty public constructor
@@ -77,7 +78,7 @@ public class AttendanceSheetFragment extends Fragment implements AttendanceModel
         cover_view=(View)view.findViewById(R.id.cover_view);
         fab_open = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_open);
         fab_close = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_close);
-        RecyclerView attendRecycler = (RecyclerView) view.findViewById(R.id.sheet_recycler_view);
+         attendRecycler = (RecyclerView) view.findViewById(R.id.sheet_recycler_view);
         progress = ProgressDialog.show(getActivity(), "Attendacnes",
                 "Loading Student's Attendances", true);
         attendRecycler.setHasFixedSize(true);
@@ -169,14 +170,20 @@ public class AttendanceSheetFragment extends Fragment implements AttendanceModel
         this.EDate=endDate;
         String uri = "http://greek-tour-guides.eu/ioannina/dissertation/getTeacherSingleAttendances.php?module_id="+ moduleId+"&startDate="+startDate+"&endDate="+endDate;
         Log.i("URI", uri.toString());
+
+
         model.getStudents_Attendance_list().clear();
+
         model.getTeacherSingleAttendace(uri);
+
+
     }
 
 
     @Override
     public void onGetTeacherSingleAttendance(boolean signed) {
-        mAdapter.notifyDataSetChanged();
+        mAdapter = new AdapterAttendanceSheet(getActivity());
+        attendRecycler.setAdapter(mAdapter);
         progress.dismiss();
     }
 

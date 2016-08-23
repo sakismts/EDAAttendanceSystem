@@ -119,11 +119,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-        if(sharedpreferences.getBoolean("IsFirstTimeLaunch",true)==true){
-            Intent welcome=new Intent(this,WelcomeActivity.class);
-            startActivity(welcome);
 
-        }
         System.out.println(sharedpreferences.getString("MyModulesString","empty"));
         String tmp_modules=sharedpreferences.getString("MyModulesString","empty");
         if(!tmp_modules.equals("empty")){
@@ -149,6 +145,11 @@ public class MainActivity extends AppCompatActivity
             //System.out.println("the size in main Activity of my modules is "+myModules.size());
             if (findViewById(R.id.main_fragment_teacher) != null) {
 
+                if(sharedpreferences.getBoolean("IsFirstTimeLaunch",true)==true){
+                    Intent welcome=new Intent(this,TeacherWelcomeActivity.class);
+                    startActivity(welcome);
+
+                }
                 // However, if we're being restored from a previous state,
                 // then we don't need to do anything and should return or else
                 // we could end up with overlapping fragments.
@@ -170,6 +171,12 @@ public class MainActivity extends AppCompatActivity
             }
 
         }else {
+
+            if(sharedpreferences.getBoolean("IsFirstTimeLaunch",true)==true){
+                Intent welcome=new Intent(this,WelcomeActivity.class);
+                startActivity(welcome);
+
+            }
             navigationView.getMenu().clear(); //clear old inflated items.
             navigationView.inflateMenu(R.menu.activity_main_drawer); //inflate new items.
             if (findViewById(R.id.main_fragment) != null) {

@@ -35,17 +35,18 @@ public class AdapterAvailableModules extends RecyclerView.Adapter<AdapterAvailab
 
     private Context context;
 
+    private boolean welcome;
     private final static int TYPE_1 = 1;
 
     private AttendanceModel model = AttendanceModel.getOurInstance();
 
 
-    public AdapterAvailableModules(Context context) {
+    public AdapterAvailableModules(Context context,boolean welcome) {
         super();
         this.context = context;
         sharedpreferences = context.getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         myModules=model.getMyModules();
-
+        this.welcome=welcome;
     }
 
     @Override
@@ -115,6 +116,9 @@ public class AdapterAvailableModules extends RecyclerView.Adapter<AdapterAvailab
         View v = null;
         // create a new view
         if (viewType == 1) {
+            if(welcome)
+                v = LayoutInflater.from(parent.getContext()).inflate(R.layout.avalaible_module_item_teacher, parent, false);
+                else
             v = LayoutInflater.from(parent.getContext()).inflate(R.layout.available_module_item, parent, false);
         }
         // set the view's size, margins, paddings and layout parameters

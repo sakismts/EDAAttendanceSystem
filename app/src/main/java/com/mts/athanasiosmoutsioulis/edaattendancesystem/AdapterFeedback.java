@@ -1,5 +1,6 @@
 package com.mts.athanasiosmoutsioulis.edaattendancesystem;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -145,6 +146,7 @@ public class AdapterFeedback  extends RecyclerView.Adapter<AdapterFeedback.ViewH
                     time.setText(start_hour + ":" + start_minutes + " - " + end_hour + ":" + end_minutes);
                     final AlertDialog ad = dialog.show();
 
+
                     Button dialogButton = (Button) view.findViewById(R.id.btn_send);
                     // if button is clicked, close the custom dialog
                     dialogButton.setOnClickListener(new View.OnClickListener() {
@@ -154,6 +156,9 @@ public class AdapterFeedback  extends RecyclerView.Adapter<AdapterFeedback.ViewH
                             if (OnupdateFeedbackListener != null) {
                                 ////preparing the URI
                                 final EditText et_feedback = (EditText) view.findViewById(R.id.et_feedback);
+
+
+                                
                                 feedback_text = et_feedback.getText().toString();
 
 //                                et_feedback.addTextChangedListener(new TextWatcher() {

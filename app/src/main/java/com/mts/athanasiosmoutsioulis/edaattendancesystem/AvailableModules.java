@@ -39,7 +39,7 @@ public class AvailableModules extends AppCompatActivity implements AttendanceMod
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mLayoutManager.scrollToPosition(0);
         modulesRecycler.setLayoutManager(mLayoutManager);
-        mAdapter = new AdapterAvailableModules(this);
+        mAdapter = new AdapterAvailableModules(this,false);
         modulesRecycler.setAdapter(mAdapter);
         String uri = "http://greek-tour-guides.eu/ioannina/dissertation/getModules.php";
         Log.i("URI", uri.toString());
