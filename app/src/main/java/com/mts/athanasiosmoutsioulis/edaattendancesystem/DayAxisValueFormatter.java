@@ -22,22 +22,18 @@ public class DayAxisValueFormatter implements AxisValueFormatter {
 
     @Override
     public String getFormattedValue(float value, AxisBase axis) {
-        System.out.println("the value is :"+value);
+
 
 
         String str_return=" ";
        if(value==0){
             str_return=" ";
-            System.out.println("the value is:" +value);
         }
         else if((int)value==model.getTeacherAttendances().size()+1){
             str_return=" ";
-           System.out.println("the value is:" +value);
         }
         else {
 
-           System.out.println("the value is:" +value);
-//
            final String intMonth = (String) android.text.format.DateFormat.format("MM", model.getTeacherAttendances().get((int)value-1).getStart()); //06
            final String year = (String) android.text.format.DateFormat.format("yyyy",model.getTeacherAttendances().get((int)value-1).getStart()); //2013
            final String day = (String) android.text.format.DateFormat.format("dd", model.getTeacherAttendances().get((int)value-1).getStart()); //20

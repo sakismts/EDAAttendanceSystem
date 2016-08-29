@@ -96,6 +96,28 @@
                             android:layout_gravity="center_vertical" />
 
                     </LinearLayout>
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Attendance"
+                            android:id="@+id/tv_attendance"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginRight="10dp"
+                            android:layout_marginLeft="10dp" />
+
+                        <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:id="@+id/img_attendance"
+                            android:src="@drawable/attendance_no" />
+
+
+
+                    </LinearLayout>
                     <Button
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"

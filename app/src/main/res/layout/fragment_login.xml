@@ -4,102 +4,120 @@
     android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:fitsSystemWindows="true"
     android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".LoginActivity">
 
-    <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageView"
-        android:src="@drawable/kent_logo"
-        android:layout_alignParentTop="true"
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/scrollView"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:scaleType="centerCrop" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentTop="false">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Please insert your credentials"
-        android:id="@+id/textView"
-        android:layout_below="@+id/imageView"
-        android:layout_centerHorizontal="true"
-        android:textColor="@color/primary_text" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageView"
+                android:src="@drawable/kent_logo"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true"
+                android:scaleType="centerCrop" />
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/edt_id"
-        android:hint="Id"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/textView"
-        android:layout_alignEnd="@+id/imageView"
-        android:imeOptions="actionNext"
-        android:text=""
-        android:inputType="text" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Please insert your credentials"
+                android:id="@+id/textView"
+                android:layout_below="@+id/imageView"
+                android:layout_centerHorizontal="true"
+                android:textColor="@color/primary_text" />
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPassword"
-        android:ems="10"
-        android:id="@+id/edt_pass"
-        android:layout_below="@+id/edt_id"
-        android:hint="Password"
-        android:layout_alignParentStart="true"
-        android:layout_alignEnd="@+id/edt_id"
-        android:text="" />
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/edt_id"
+                android:hint="Id"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/textView"
+                android:layout_alignEnd="@+id/imageView"
+                android:imeOptions="actionNext"
+                android:text=""
+                android:inputType="text" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Login"
-        android:id="@+id/btn_login"
-        android:textSize="20sp"
-        android:layout_below="@+id/radioGroup"
-        style="@style/Widget.AppCompat.Button"
-        android:layout_alignParentStart="true"
-        android:layout_alignEnd="@+id/edt_pass"
-        android:background="#80CBC4"
-        android:textAllCaps="false"
-        android:textColor="#fff"
-        android:capitalize="none"
-        android:layout_marginTop="20dp" />
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:ems="10"
+                android:id="@+id/edt_pass"
+                android:layout_below="@+id/edt_id"
+                android:hint="Password"
+                android:layout_alignParentStart="true"
+                android:layout_alignEnd="@+id/edt_id"
+                android:text="" />
 
-    <Button
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Login"
+                android:id="@+id/btn_login"
+                android:textSize="20sp"
+                android:layout_below="@+id/radioGroup"
+                style="@style/Widget.AppCompat.Button"
+                android:layout_alignParentStart="true"
+                android:layout_alignEnd="@+id/edt_pass"
+                android:background="#80CBC4"
+                android:textAllCaps="false"
+                android:textColor="#fff"
+                android:capitalize="none"
+                android:layout_marginTop="20dp" />
 
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Not account yet? create one"
-        android:id="@+id/btn_signup"
-        android:textColor="@color/colorAccent"
-        android:textAllCaps="false"
-        android:layout_centerHorizontal="true"
-        style="@style/Widget.AppCompat.Button.Borderless"
-        android:layout_below="@+id/btn_login"
-        android:layout_alignParentEnd="false"
-        android:layout_alignParentBottom="true" />
+            <Button
 
-    <RadioGroup
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Not account yet? create one"
+                android:id="@+id/btn_signup"
+                android:textColor="@color/colorAccent"
+                android:textAllCaps="false"
+                android:layout_centerHorizontal="true"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_below="@+id/btn_login"
+                android:layout_alignParentEnd="false"
+                android:layout_alignParentBottom="true" />
 
-        android:orientation="horizontal"
-        android:id="@+id/radioGroup"
-        android:layout_below="@+id/edt_pass"
-        android:layout_alignParentStart="true">
+            <RadioGroup
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
 
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Student"
-            android:checked="true"
-            android:id="@+id/rb_student" />
+                android:orientation="horizontal"
+                android:id="@+id/radioGroup"
+                android:layout_below="@+id/edt_pass"
+                android:layout_alignParentStart="true">
 
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Teacher"
-            android:id="@+id/rb_teacher" />
-    </RadioGroup>
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Student"
+                    android:checked="true"
+                    android:id="@+id/rb_student" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Teacher"
+                    android:id="@+id/rb_teacher" />
+            </RadioGroup>
+
+
+        </RelativeLayout>
+    </ScrollView>
+
 
 
 

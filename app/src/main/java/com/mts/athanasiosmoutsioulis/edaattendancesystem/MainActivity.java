@@ -38,6 +38,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -89,7 +90,7 @@ public class MainActivity extends AppCompatActivity
     static final int FBLOGIN_REQUEST = 2;  // The request code
     CalendarBuilder builder;
     Spinner spinner;
-
+    final static String MY_ACTION = "MY_ACTION";
 
 
     @Override
@@ -107,6 +108,7 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        Log.i("Create", "Activity created");
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -201,26 +203,7 @@ public class MainActivity extends AppCompatActivity
                 fragmentTransaction.add(R.id.main_fragment, fragment).commit();
             }
 
-//            Profile profile = Profile.getCurrentProfile();
-//            if (profile==null){
-//                new AlertDialog.Builder(MainActivity.this)
-//                        .setTitle("Facebook Login")
-//                        .setMessage("Do you also want to login with Facebook")
-//                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-//                            public void onClick(DialogInterface dialog, int which) {
-//                                Intent facebookLogin = new Intent(MainActivity.this, FacebookActivity.class);
-//                                startActivityForResult(facebookLogin, FBLOGIN_REQUEST);
-//                            }
-//                        })
-//                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-//                            public void onClick(DialogInterface dialog, int which) {
-//                                // do nothing
-//                            }
-//                        })
-//                        .setIcon(android.R.drawable.ic_dialog_alert)
-//                        .show();
-//
-//            }
+
 
         }
 
@@ -229,8 +212,9 @@ public class MainActivity extends AppCompatActivity
 
 
 
-
     }
+
+
 
     @Override
     public void onBackPressed() {
@@ -294,7 +278,12 @@ public class MainActivity extends AppCompatActivity
                             //clear the shared preferences
                             SharedPreferences.Editor editor = sharedpreferences.edit();
                             editor.putString("id", "");
+                            editor.putBoolean("IsFirstTimeLaunch", true);
+                            editor.putString("MyModulesString", "");
+                            editor.putString("fullName", "");
+                            editor.putString("FBname", "");
                             editor.putString("pass", "");
+                            editor.putString("role", "");
                             editor.putBoolean("logged", false);
                             editor.putString("photo_profile", "");
                             editor.commit();

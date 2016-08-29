@@ -53,6 +53,7 @@ public class ManualAttendance extends AppCompatActivity implements AttendanceMod
     public TextView txtHeader, txtDate, txtTime, txtLocation;
     public ImageView type;
     Button btn_attendance;
+    ImageView attendance_conf;
     private final static int FADE_DURATION = 800; // in milliseconds
     private ProgressDialog Attendanceprogressdialog;
     final static String MY_ACTION = "MY_ACTION";
@@ -301,6 +302,7 @@ public class ManualAttendance extends AppCompatActivity implements AttendanceMod
             txtLocation = (TextView)findViewById(R.id.tv_location);
             type = (ImageView)findViewById(R.id.lecture_icon);
             btn_attendance=(Button)findViewById(R.id.btn_attendance);
+        attendance_conf=(ImageView)findViewById(R.id.img_attendance);
                 noLectures.setVisibility(View.GONE);
 
 
@@ -359,6 +361,7 @@ public class ManualAttendance extends AppCompatActivity implements AttendanceMod
             Toast.makeText(this, "You have already signed", Toast.LENGTH_SHORT).show();
             btn_attendance.setEnabled(false);
             btn_attendance.setBackgroundColor(Color.GRAY);
+            attendance_conf.setImageResource(R.drawable.attendance_check);
             if(tmp_attendance_class.getAttendance().equals("false")){
                 String dateStart = DateFormat.format("yyyyMMdd'T'HHmmss'Z'", tmp_attendance_class.getStart()).toString();
                 String dateEnd = DateFormat.format("yyyyMMdd'T'HHmmss'Z'", tmp_attendance_class.getEnd()).toString();
@@ -424,6 +427,7 @@ public class ManualAttendance extends AppCompatActivity implements AttendanceMod
                 e.printStackTrace();
             }
             btn_attendance.setEnabled(false);
+            attendance_conf.setImageResource(R.drawable.attendance_check);
             btn_attendance.setBackgroundColor(Color.GRAY);
             final Dialog okDialog = new Dialog(this);
             okDialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);

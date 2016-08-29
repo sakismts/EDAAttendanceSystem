@@ -1,6 +1,7 @@
 package com.mts.athanasiosmoutsioulis.edaattendancesystem;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -70,6 +71,7 @@ public class ChartActivity extends AppCompatActivity implements SeekBar.OnSeekBa
     private AttendanceModel model=AttendanceModel.getOurInstance();
     String filePath;
     String module;
+    ProgressDialog mydialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,9 +85,12 @@ public class ChartActivity extends AppCompatActivity implements SeekBar.OnSeekBa
         model.setGetTeacherAttendancesListener(this);
         model.getTeacherAttendances().clear();
         Intent intent = getIntent();
+        mydialog=new ProgressDialog(this);
+        mydialog.setMessage("Loading data...");
          module=intent.getStringExtra("module");
         String uri = "http://greek-tour-guides.eu/ioannina/dissertation/getTeacherAttendances.php?module_id="+ module;
         Log.i("URI", uri.toString());
+        mydialog.show();
         model.getTeacherAttendaces(uri);
         mSeekBarX = (SeekBar) findViewById(R.id.seekBar1);
         fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -201,12 +206,11 @@ public class ChartActivity extends AppCompatActivity implements SeekBar.OnSeekBa
 
         mChart.setMarkerView(new XYMarkerView(this, xAxisFormatter));
 
-        //setData(1, 50);
 
 
         // setting data
 
-        mSeekBarX.setProgress(1);
+
         tvX.setText("" + (mSeekBarX.getProgress()+1));
 
         mSeekBarX.setOnSeekBarChangeListener(this);
@@ -257,76 +261,7 @@ public class ChartActivity extends AppCompatActivity implements SeekBar.OnSeekBa
 
     }
 
-    /*@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.bar, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-            case R.id.actionToggleValues: {
-                for (IDataSet set : mChart.getData().getDataSets())
-                    set.setDrawValues(!set.isDrawValuesEnabled());
-
-                mChart.invalidate();
-                break;
-            }
-            case R.id.actionToggleHighlight: {
-                if (mChart.getData() != null) {
-                    mChart.getData().setHighlightEnabled(!mChart.getData().isHighlightEnabled());
-                    mChart.invalidate();
-                }
-                break;
-            }
-            case R.id.actionTogglePinch: {
-                if (mChart.isPinchZoomEnabled())
-                    mChart.setPinchZoom(false);
-                else
-                    mChart.setPinchZoom(true);
-
-                mChart.invalidate();
-                break;
-            }
-            case R.id.actionToggleAutoScaleMinMax: {
-                mChart.setAutoScaleMinMaxEnabled(!mChart.isAutoScaleMinMaxEnabled());
-                mChart.notifyDataSetChanged();
-                break;
-            }
-            case R.id.actionToggleBarBorders: {
-                for (IBarDataSet set : mChart.getData().getDataSets())
-                    ((BarDataSet) set).setBarBorderWidth(set.getBarBorderWidth() == 1.f ? 0.f : 1.f);
-
-                mChart.invalidate();
-                break;
-            }
-            case R.id.animateX: {
-                mChart.animateX(3000);
-                break;
-            }
-            case R.id.animateY: {
-                mChart.animateY(3000);
-                break;
-            }
-            case R.id.animateXY: {
-
-                mChart.animateXY(3000, 3000);
-                break;
-            }
-            case R.id.actionSave: {
-                if (mChart.saveToGallery("title" + System.currentTimeMillis(), 50)) {
-                    Toast.makeText(getApplicationContext(), "Saving SUCCESSFUL!",
-                            Toast.LENGTH_SHORT).show();
-                } else
-                    Toast.makeText(getApplicationContext(), "Saving FAILED!", Toast.LENGTH_SHORT)
-                            .show();
-                break;
-            }
-        }
-        return true;
-    }*/
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -334,7 +269,7 @@ public class ChartActivity extends AppCompatActivity implements SeekBar.OnSeekBa
         tvX.setText("" + (mSeekBarX.getProgress()+1));
 
 
-        setData(mSeekBarX.getProgress());
+       setData(mSeekBarX.getProgress());
         mChart.invalidate();
     }
 
@@ -419,8 +354,11 @@ public class ChartActivity extends AppCompatActivity implements SeekBar.OnSeekBa
     @Override
     public void onGetTeacherAttendances(boolean signed) {
         //System.out.println("the number is:"+model.getTeacherAttendances().size()-1);
+        mydialog.dismiss();
         mSeekBarX.setMax(model.getTeacherAttendances().size()-1);
-        setData(1);
+        mSeekBarX.setProgress(model.getTeacherAttendances().size());
+       // setData(model.getTeacherAttendances().size()-1);
+        System.out.println("received");
         File pdfFolder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "EDA");
         if (!pdfFolder.exists()) {
             pdfFolder.mkdir();

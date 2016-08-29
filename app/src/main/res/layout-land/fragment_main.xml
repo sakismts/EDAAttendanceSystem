@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    tools:context="com.mts.athanasiosmoutsioulis.edaattendancesystem.MainFragment">
+    <!--<android.support.v7.widget.Toolbar android:id="@+id/toolbar"-->
+    <!--android:layout_width="match_parent" android:layout_height="?attr/actionBarSize"-->
+    <!--android:background="?attr/colorPrimary"  />-->
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="horizontal"
+        >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/rl_header"
+            android:layout_weight="2"
+            android:background="@drawable/material_design_wallpaper"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:id="@+id/img_fbPhoto"
+                android:src="@drawable/photo_profile"
+                android:layout_marginLeft="10dp"
+                android:scaleType="fitCenter"
+                android:layout_marginTop="10dp" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignTop="@+id/img_fbPhoto"
+                android:layout_toRightOf="@+id/img_fbPhoto"
+                android:padding="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Facebook Name"
+                    android:id="@+id/tv_fbName"
+                    android:textColor="#fff"
+                    android:padding="5dp"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Student ID"
+                    android:id="@+id/tv_id"
+                    android:textColor="#fff"
+                    android:padding="5dp"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="New Text"
+                    android:id="@+id/tv_status"
+                    android:textColor="#fff"
+                    android:padding="5dp"
+                    android:layout_gravity="bottom"
+                    android:layout_marginTop="10dp"
+                    android:ellipsize="end"
+                    android:maxLines="2" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="New Text"
+                    android:id="@+id/tv_status_signed"
+                    android:textColor="#fff"
+                    android:paddingLeft="5dp" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/rl_header"
+            android:weightSum="2"
+            android:paddingBottom="5dp">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+
+                android:layout_marginTop="10dp"
+                android:padding="5dp"
+                android:clipToPadding="false"
+                android:elevation="2dp"
+                android:background="#fff"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1">
+
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#ff8989"
+                    android:id="@+id/ll_search_beacon"
+                    android:layout_weight="1"
+                    android:layout_marginRight="1dp">
+
+                    <ImageView
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:id="@+id/imageView2"
+                        android:src="@drawable/classes_icon"
+                        android:layout_weight="1"
+                        android:padding="5dp" />
+
+
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:id="@+id/editText"
+                        android:text="Sign in to your class"
+                        android:layout_gravity="center"
+                        android:textColor="#fff"
+                        android:layout_weight="2"
+                        android:padding="5dp"
+                        android:gravity="center" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#b0aac2"
+                    android:id="@+id/ll_feedbackList"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="1dp">
+
+                    <ImageView
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:id="@+id/imageView10"
+                        android:src="@drawable/ic_feedback_note"
+                        android:tint="#bcd5d1"
+                        android:layout_weight="1"
+                        android:padding="5dp" />
+
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:id="@+id/editText9"
+                        android:text="Send a Feedback"
+                        android:layout_gravity="center"
+                        android:textColor="#fff"
+                        android:layout_weight="2"
+                        android:padding="5dp"
+                        android:gravity="center" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/rl_header"
+                android:weightSum="2"
+                android:layout_marginTop="10dp"
+                android:padding="5dp"
+                android:clipToPadding="false"
+                android:elevation="2dp"
+                android:background="#fff"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1">
+
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#3B5894"
+                    android:id="@+id/ll_facebookList"
+                    android:layout_weight="1"
+                    android:layout_marginRight="1dp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:id="@+id/imageView3"
+                        android:src="@drawable/facebook"
+                        android:layout_weight="1"
+                        android:layout_gravity="center"
+                        android:padding="5dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:id="@+id/editText1"
+                        android:text="Attended FB Classmates"
+                        android:layout_gravity="center"
+                        android:textColor="#fff"
+                        android:layout_weight="2"
+                        android:padding="5dp"
+                        android:gravity="center" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#f69051"
+                    android:id="@+id/ll_lectures"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="1dp">
+
+                    <ImageView
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:src="@drawable/calendar"
+                        android:id="@+id/imageView9"
+                        android:layout_weight="1"
+                        android:padding="5dp" />
+
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:text="Your Timetable"
+                        android:textColor="#fff"
+                        android:id="@+id/textView5"
+                        android:layout_weight="2"
+                        android:padding="5dp"
+                        android:gravity="center"
+                        android:layout_gravity="center" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <!--<android.support.design.widget.FloatingActionButton-->
+        <!--android:id="@+id/fab"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="bottom|end"-->
+        <!--style="@style/floating_action_button"-->
+        <!--android:src="@drawable/ic_feedback_note"-->
+        <!--android:layout_marginRight="@dimen/fab_margin"-->
+        <!--android:layout_alignRight="@+id/rl_header"-->
+        <!--android:layout_below="@+id/rl_header" />-->
+    </LinearLayout>
+
+</RelativeLayout>
+

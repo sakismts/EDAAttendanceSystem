@@ -22,11 +22,11 @@
     <string name="slide_1_title">Welcome</string>
     <string name="slide_1_desc">In order to start you should first configure the application.\nClick next to continue.</string>
 
-    <string name="slide_2_title">Available Modules</string>
-    <string name="slide_2_desc">Please Select your modules. </string>
+    <string name="slide_2_title_teacher">Available Modules</string>
+    <string name="slide_2_desc_teacher">Please Select your modules. </string>
 
-    <string name="slide_2_title_teacher">Import your Timetable</string>
-    <string name="slide_2_desc_teacher">Please go the website:\n https://www.kent.ac.uk/student/my-study \n Copy the Calendar feed and paste it to the field bellow and click Import. </string>
+    <string name="slide_2_title">Import your Timetable</string>
+    <string name="slide_2_desc">Please go the website:\n https://www.kent.ac.uk/student/my-study \n Copy the Calendar feed and paste it to the field bellow and click Import. </string>
 
 
     <string name="slide_3_title">Great Discounts</string>

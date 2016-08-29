@@ -338,6 +338,7 @@ public class AttendanceModel {
                     for (int i=0; i<tmp_modules.length();i++){
                         JSONObject objjson = tmp_modules.getJSONObject(i);
                         id = objjson.getString("moduleID");
+                        if(!id.toString().trim().isEmpty())
                         getModules_list().add(id);
 
                     }
@@ -618,6 +619,7 @@ public class AttendanceModel {
         @Override
         public void onErrorResponse(VolleyError error) {
             Toast.makeText(MyApplication.getInstance(),"Check your connection and try again",Toast.LENGTH_SHORT).show();
+            notifyListenerTeacherAttendance(false);
         }
     };
 

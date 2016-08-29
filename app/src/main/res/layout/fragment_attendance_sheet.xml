@@ -30,6 +30,13 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:text="Valid"
+            android:id="@+id/txtheader3"
+            android:layout_weight="1"
+            android:gravity="left" />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:text="Student ID"
             android:gravity="left"
             android:id="@+id/txtheader1"
@@ -42,13 +49,7 @@
             android:id="@+id/txtheader2"
             android:layout_weight="3" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Valid"
-            android:id="@+id/txtheader3"
-            android:layout_weight="1"
-            android:gravity="left" />
+
 
     </LinearLayout>
 

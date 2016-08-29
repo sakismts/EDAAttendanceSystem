@@ -269,7 +269,7 @@ public class DownloadBeaconIdsService extends Service implements AttendanceModel
                     Log.i("Lecture", "Current lecture is at :" + tmp.getLocation());
                     Intent intent = new Intent();
                     intent.setAction(MY_ACTION);
-                    intent.putExtra("Detected_Lecture",true);
+                    intent.putExtra("Detected_Lecture", true);
                     sendBroadcast(intent);
                     return tmp.getLocation();
                 }
@@ -307,8 +307,9 @@ public class DownloadBeaconIdsService extends Service implements AttendanceModel
             Intent intent = new Intent();
             intent.setAction(MY_ACTION);
             intent.putExtra("Lecture", "Do you want to sign for the " + tmp_attendance_class.getType() + " of " + tmp_attendance_class.getModule() + " at " + tmp_attendance_class.getLocation());
-            if(!notificationsend){
             sendBroadcast(intent);
+            if(!notificationsend){
+
             showNotification();
             notificationsend=true;
             }

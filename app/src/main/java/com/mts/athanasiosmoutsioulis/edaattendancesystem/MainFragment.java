@@ -35,6 +35,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
@@ -68,6 +69,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 
@@ -90,6 +92,8 @@ public class MainFragment extends Fragment implements AttendanceModel.OnSignAtte
     MyReceiver myReceiver;
     private ProgressDialog Attendanceprogressdialog;
     private final static int FADE_DURATION = 800; // in milliseconds
+    boolean isAttendanceDialog=false;
+
 
     ArrayList<com.mts.athanasiosmoutsioulis.edaattendancesystem.Beacon> tmpBeaconList = new ArrayList<com.mts.athanasiosmoutsioulis.edaattendancesystem.Beacon>();
 
@@ -103,6 +107,7 @@ public class MainFragment extends Fragment implements AttendanceModel.OnSignAtte
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =inflater.inflate(R.layout.fragment_main, container, false);
+getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         sharedpreferences = getActivity().getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         photo_profile = (ImageView)view.findViewById(R.id.img_fbPhoto);
         id = (TextView)view.findViewById(R.id.tv_id);
@@ -112,13 +117,7 @@ public class MainFragment extends Fragment implements AttendanceModel.OnSignAtte
         model.setSignAttendanceListener(this);
         status=(TextView)view.findViewById(R.id.tv_status);
         status_sign=(TextView)view.findViewById(R.id.tv_status_signed);
-//        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//
-//            }
-//        });
+        Log.i("Create","fragment created");
 
 
         //read lectures for today
@@ -190,8 +189,6 @@ public class MainFragment extends Fragment implements AttendanceModel.OnSignAtte
         Intent msgIntent = new Intent(getActivity(), DownloadBeaconIdsService.class);
         getActivity().startService(msgIntent);
 
-        Log.i("StudentId", sharedpreferences.getString("id", "User"));
-        Log.i("StudentName",sharedpreferences.getString("fullName", "User"));
         //
         return view;
     }
@@ -324,25 +321,38 @@ public class MainFragment extends Fragment implements AttendanceModel.OnSignAtte
         @Override
         public void onReceive(Context arg0, Intent arg1) {
             // TODO Auto-generated method stub
+            Bundle bundle = arg1.getExtras();
+            if (bundle != null) {
+                Set<String> keys = bundle.keySet();
+                Iterator<String> it = keys.iterator();
+                Log.e("extras","Dumping Intent start");
+                while (it.hasNext()) {
+                    String key = it.next();
+                    Log.e("extras","[" + key + "=" + bundle.get(key)+"]");
+                }
+                Log.e("extras","Dumping Intent end");
+            }
 
-            Log.i("Broadcast","resceiver");
+            Log.i("Broadcast","reseiver");
             if(arg1.getBooleanExtra("Detected_Lecture",false)==true){
                updateStatus();
             }else{
                 Log.i("Broadcast","send");
             String datapassed = arg1.getStringExtra("Lecture");
+                if(isAttendanceDialog==false){
             displayAttendanceDialog(datapassed);
+                    isAttendanceDialog=true;}
             }
 
         }
 
     }
 
-    private void displayAttendanceDialog(String data)
+    public void displayAttendanceDialog(String data)
     {
-        System.out.println("the current lecture is : "+model);
+        System.out.println("the current lecture is : " + model);
 
-        System.out.println("the current lecture is : "+model.getCurrentLecture());
+        System.out.println("the current lecture is : " + model.getCurrentLecture());
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Attendance");
@@ -376,6 +386,13 @@ public class MainFragment extends Fragment implements AttendanceModel.OnSignAtte
                     }
                 });
         AlertDialog alert = builder.create();
+        alert.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                isAttendanceDialog=false;
+
+            }
+        });
         alert.show();
     }
 

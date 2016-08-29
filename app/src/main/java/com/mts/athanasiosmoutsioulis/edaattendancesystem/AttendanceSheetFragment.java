@@ -5,11 +5,13 @@ import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -122,9 +124,12 @@ public class AttendanceSheetFragment extends Fragment implements AttendanceModel
             public void onClick(View v) {
                 try {
                     create_pdf();
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                    System.out.println("the email is: " + prefs.getString("email", "empty"));
                     Intent email = new Intent(Intent.ACTION_SEND);
-                    email.putExtra(Intent.EXTRA_SUBJECT,"Attendances for "+moduleID+"_"+SDate+" - "+EDate);
-
+                    email.putExtra(Intent.EXTRA_SUBJECT, "Attendances for " + moduleID + "_" + SDate + " - " + EDate);
+                    String[]to={prefs.getString("email", "empty")};
+                    email.putExtra(Intent.EXTRA_EMAIL, to);
                     Uri uri = Uri.fromFile(myFile);
                     email.putExtra(Intent.EXTRA_STREAM, uri);
                     email.setType("message/rfc822");
