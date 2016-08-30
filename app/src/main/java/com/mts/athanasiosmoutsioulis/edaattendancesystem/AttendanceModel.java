@@ -545,6 +545,9 @@ public class AttendanceModel {
                             String valid = objjson.getString("valid");
                             String feedback = objjson.getString("feedback");
                             String shareID = objjson.getString("shareID");
+                            String stars="";
+                            if(objjson.has("stars"))
+                             stars=objjson.getString("stars");
                             SimpleDateFormat format = new SimpleDateFormat("dd'/'MM'/'yyyy'T'HH':'mm");
                             System.out.println(startDate);
 
@@ -553,12 +556,12 @@ public class AttendanceModel {
                             {
                                 JSONObject tmpt_objjson = tmp_attendances.getJSONObject(i+1);
                                 if (startDate.equals(tmpt_objjson.getString("startDate"))){
-                                    if(!feedback.isEmpty())
+                                    if(!feedback.isEmpty() || !stars.isEmpty() )
                                         feedback_count++;
                                  count++;
                                 }else{
                                     count++;
-                                    if(!feedback.isEmpty())
+                                    if(!feedback.isEmpty()|| !stars.isEmpty() )
                                         feedback_count++;
                                     Date tmpt_start=null;
                                     Date tmpt_end=null;
@@ -578,7 +581,7 @@ public class AttendanceModel {
                                 }
                             }else{
                                 count++;
-                                if(!feedback.isEmpty())
+                                if(!feedback.isEmpty()|| !stars.isEmpty() )
                                     feedback_count++;
                                 Date tmpt_start=null;
                                 Date tmpt_end=null;
@@ -695,10 +698,17 @@ public class AttendanceModel {
                         String fullName = objjson.getString("fullName");
                         String shareID = objjson.getString("shareID");
                         String sDate = objjson.getString("startDate");
+                        String stars="";
+                        if(objjson.has("stars"))
+                         stars = objjson.getString("stars");
                         System.out.println(StudentId);
-                        getStudents_Attendance_list().add(new Attendance(StudentId,valid,shareID,feedback,fullName,sDate));
-                        if(!feedback.isEmpty())
-                            getTeacherFeedback().add(new Attendance(StudentId,valid,shareID,feedback,fullName,sDate));
+                        getStudents_Attendance_list().add(new Attendance(StudentId,valid,shareID,feedback,fullName,sDate,stars));
+                        if(!feedback.isEmpty() && !stars.isEmpty())
+                            getTeacherFeedback().add(new Attendance(StudentId,valid,shareID,feedback,fullName,sDate,stars));
+                        else if (!feedback.isEmpty())
+                            getTeacherFeedback().add(new Attendance(StudentId,valid,shareID,feedback,fullName,sDate,stars));
+                        else if (!stars.isEmpty())
+                            getTeacherFeedback().add(new Attendance(StudentId,valid,shareID,feedback,fullName,sDate,stars));
 
                     }
 
@@ -718,6 +728,7 @@ public class AttendanceModel {
         @Override
         public void onErrorResponse(VolleyError error) {
             Toast.makeText(MyApplication.getInstance(),"Check your connection and try again",Toast.LENGTH_SHORT).show();
+            notifyListenerSingleTeacherAttendance(false);
         }
     };
 
@@ -1208,6 +1219,7 @@ public class AttendanceModel {
         @Override
         public void onErrorResponse(VolleyError error) {
             Log.i("BeaconError",error.toString());
+
 
         }
     };

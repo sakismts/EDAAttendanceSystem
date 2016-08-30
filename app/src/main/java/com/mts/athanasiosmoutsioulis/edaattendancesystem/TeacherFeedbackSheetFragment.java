@@ -301,7 +301,10 @@ public class TeacherFeedbackSheetFragment extends Fragment implements Attendance
             }else{
                 name=tmp.getStudentId()+" - "+tmp.getFullName();
             }
-            insertCell(table,name, Element.ALIGN_CENTER, 1, bf12);
+            if(!tmp.getStars().isEmpty())
+            insertCell(table,name +Chunk.NEWLINE+Chunk.NEWLINE+"Stars: "+tmp.getStars()+"/5", Element.ALIGN_CENTER, 1, bf12);
+            else
+                insertCell(table,name, Element.ALIGN_CENTER, 1, bf12);
             insertCell(table, tmp.getFeedback(), Element.ALIGN_LEFT, 1, bf12);
 
 

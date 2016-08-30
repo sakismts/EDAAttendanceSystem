@@ -84,7 +84,7 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.On
         super.onResume();
         SystemRequirementsChecker.checkWithDefaultDialogs(this);
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-        if (sharedpreferences.getBoolean("logged", false)== true){
+        if (sharedpreferences.getBoolean("logged", false)== true && sharedpreferences.getBoolean("IsFirstTimeLaunch",false)==false){
             Intent mainActivity= new Intent(this,MainActivity.class);
             mainActivity.putExtra("logged",true);
             startActivity(mainActivity);

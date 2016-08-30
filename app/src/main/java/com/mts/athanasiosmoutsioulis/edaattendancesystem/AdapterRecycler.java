@@ -66,6 +66,7 @@ public class AdapterRecycler extends RecyclerView.Adapter<AdapterRecycler.ViewHo
         public TextView txtHeader, txtDate, txtTime, txtLocation;
         public ImageView type, attendance;
         public Button more;
+        public LinearLayout ll_item;
 
 
         public ViewHolder(View v) {
@@ -77,6 +78,7 @@ public class AdapterRecycler extends RecyclerView.Adapter<AdapterRecycler.ViewHo
             type = (ImageView) v.findViewById(R.id.lecture_icon);
             attendance = (ImageView) v.findViewById(R.id.img_attendance);
             more=(Button)v.findViewById(R.id.btn_more);
+            ll_item=(LinearLayout)v.findViewById(R.id.ll_timetable_lecture);
 
         }
 
@@ -113,6 +115,15 @@ public class AdapterRecycler extends RecyclerView.Adapter<AdapterRecycler.ViewHo
                 type.setImageResource(R.drawable.computer_lab);
             else
                 type.setImageResource(R.drawable.lecture_icon);
+            ll_item.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(context, LectureDetails.class);
+                    i.putExtra("LectureDetails", Lectureitems);
+                    context.startActivity(i);
+
+                }
+            });
 
             more.setOnClickListener(new View.OnClickListener() {
                 @Override

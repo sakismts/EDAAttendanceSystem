@@ -35,6 +35,7 @@ import java.util.UUID;
 
 public class DownloadBeaconIdsService extends Service implements AttendanceModel.OnCheckAttendanceListener {
     HandlerThread mythread;
+    Handler myHandler;
     AttendanceModel  model;
     private BeaconManager beaconManager;
     private Region region;
@@ -45,6 +46,7 @@ public class DownloadBeaconIdsService extends Service implements AttendanceModel
     final static String MY_ACTION = "MY_ACTION";
     private int lecture_hour;
     private boolean notificationsend=false;
+    int startid;
 
 
 
@@ -177,8 +179,9 @@ public class DownloadBeaconIdsService extends Service implements AttendanceModel
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        this.startid = startId;
         Log.i("Service","Start");
-        Handler myHandler= new Handler(mythread.getLooper());
+         myHandler= new Handler(mythread.getLooper());
 
         myHandler.post(new Runnable() {
             @Override
@@ -203,7 +206,7 @@ public class DownloadBeaconIdsService extends Service implements AttendanceModel
     public void waitToRestartBeaconSearch(){
         int delay = 5000; // delay for 5 sec.
                 int period = 1000; // repeat every sec.
-        final Timer[] timer = {new Timer()};
+       final Timer[] timer = {new Timer()};
                 timer[0].scheduleAtFixedRate(new TimerTask() {
                     public void run() {
                         // Your code
@@ -279,6 +282,8 @@ public class DownloadBeaconIdsService extends Service implements AttendanceModel
 
     }
 
+
+
     @Override
     public void onTaskRemoved(Intent rootIntent) {
         super.onTaskRemoved(rootIntent);
@@ -297,6 +302,10 @@ public class DownloadBeaconIdsService extends Service implements AttendanceModel
     public void onDestroy() {
 
         super.onDestroy();
+        Log.v("SERVICE", "Service killed");
+       beaconManager.stopRanging(region);
+
+
     }
 
 

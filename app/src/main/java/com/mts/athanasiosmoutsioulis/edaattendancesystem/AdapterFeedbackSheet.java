@@ -51,7 +51,7 @@ public class AdapterFeedbackSheet extends RecyclerView.Adapter<AdapterFeedbackSh
     // you provide access to all the views for a data item in a view holder
     public class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        public TextView txtStudentID, txtfeedback;
+        public TextView txtStudentID, txtfeedback,stars;
 
 
 
@@ -60,6 +60,7 @@ public class AdapterFeedbackSheet extends RecyclerView.Adapter<AdapterFeedbackSh
             super(v);
             txtStudentID = (TextView) v.findViewById(R.id.tv_fd_sheet_studentID);
             txtfeedback = (TextView) v.findViewById(R.id.tv_fd_sheet_feedback);
+            stars = (TextView) v.findViewById(R.id.tv_stars);
 
         }
 
@@ -70,6 +71,11 @@ public class AdapterFeedbackSheet extends RecyclerView.Adapter<AdapterFeedbackSh
                 txtStudentID.setText(item.getStudentId()+" - "+item.getFullName());
             }
 
+
+            if(!item.getStars().isEmpty()){
+                stars.setText("Stars: "+item.getStars()+"/5");
+            }else
+            stars.setVisibility(View.GONE);
                 txtfeedback.setText(item.getFeedback());
 
 

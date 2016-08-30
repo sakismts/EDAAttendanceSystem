@@ -19,6 +19,8 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +37,7 @@ public class AdapterFeedback  extends RecyclerView.Adapter<AdapterFeedback.ViewH
     SharedPreferences sharedpreferences;
     public static final String MyPREFERENCES = "MyPrefs" ;
     String feedback_text = "";
+    String stars="";
     @Override
     public void onViewDetachedFromWindow(ViewHolder holder) {
         super.onViewDetachedFromWindow(holder);
@@ -77,6 +80,7 @@ public class AdapterFeedback  extends RecyclerView.Adapter<AdapterFeedback.ViewH
 
 
 
+
         public ViewHolder(View v) {
             super(v);
             txtHeader = (TextView) v.findViewById(R.id.tv_title);
@@ -84,6 +88,7 @@ public class AdapterFeedback  extends RecyclerView.Adapter<AdapterFeedback.ViewH
             txtTime = (TextView) v.findViewById(R.id.tv_time);
             txtLocation = (TextView) v.findViewById(R.id.tv_location);
             btn_feedback= (Button)v.findViewById(R.id.btn_feedback);
+
 
 
 
@@ -113,19 +118,20 @@ public class AdapterFeedback  extends RecyclerView.Adapter<AdapterFeedback.ViewH
             final String end_minutes = (String) android.text.format.DateFormat.format("mm", Lectureitems.getEnd());
             txtTime.setText(start_hour + ":" + start_minutes + " - " + end_hour + ":" + end_minutes);
 
+
             btn_feedback.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     System.out.println(Lectureitems.getStart());
                     // custom dialog
-                   // final Dialog dialog = new Dialog(context);
-                   // dialog.setContentView(R.layout.feedback_dialog);
+                    // final Dialog dialog = new Dialog(context);
+                    // dialog.setContentView(R.layout.feedback_dialog);
 
-                    final AlertDialog.Builder dialog = new AlertDialog.Builder(context,R.style.AppCompatAlertDialogStyle);
+                    final AlertDialog.Builder dialog = new AlertDialog.Builder(context, R.style.AppCompatAlertDialogStyle);
 
                     // Get the layout inflater
-                    LayoutInflater inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
-                    final View view = inflater.inflate(R.layout.feedback_dialog, null );
+                    LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    final View view = inflater.inflate(R.layout.feedback_dialog, null);
                     // Inflate and set the layout for the dialog
                     // Pass null as the parent view because its going in the dialog layout
                     dialog.setView(view);
@@ -135,6 +141,41 @@ public class AdapterFeedback  extends RecyclerView.Adapter<AdapterFeedback.ViewH
 
 
                     // set the custom dialog components - text, image and button
+
+                    LinearLayout ll_item = (LinearLayout) view.findViewById(R.id.ll_dialog);
+
+                    final TextView rate_desc = (TextView) view.findViewById(R.id.rate_desc);
+                    RatingBar ratingbar=(RatingBar) view.findViewById(R.id.ratingBar);
+                    ratingbar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+                        public void onRatingChanged(RatingBar ratingBar, float rating,
+                                                    boolean fromUser) {
+
+                           stars=String.valueOf(rating);
+                            int rate= (int)rating;
+                            switch (rate){
+                                case 1:
+                                    rate_desc.setText("Very bored");
+                                    break;
+                                case 2:
+                                    rate_desc.setText("Bored");
+                                    break;
+                                case 3:
+                                    rate_desc.setText("Neutral");
+                                    break;
+                                case 4:
+                                    rate_desc.setText("Interested");
+                                    break;
+                                case 5:
+                                    rate_desc.setText("Very interested");
+                                    break;
+
+
+                            }
+
+                        }
+                    });
+
+
                     TextView title = (TextView) view.findViewById(R.id.tv_title);
                     title.setText(Lectureitems.getType() + " " + Lectureitems.getTitle() + " " + Lectureitems.getModule());
                     System.out.println(Lectureitems.getType() + " " + Lectureitems.getTitle() + " " + Lectureitems.getModule());
@@ -145,7 +186,17 @@ public class AdapterFeedback  extends RecyclerView.Adapter<AdapterFeedback.ViewH
                     TextView time = (TextView) view.findViewById(R.id.tv_time);
                     time.setText(start_hour + ":" + start_minutes + " - " + end_hour + ":" + end_minutes);
                     final AlertDialog ad = dialog.show();
+                    final EditText et_feedback = (EditText) view.findViewById(R.id.et_feedback);
 
+
+                    et_feedback.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                        @Override
+                        public void onFocusChange(View v, boolean hasFocus) {
+                            if (!hasFocus) {
+                                hideKeyboard(v);
+                            }
+                        }
+                    });
 
                     Button dialogButton = (Button) view.findViewById(R.id.btn_send);
                     // if button is clicked, close the custom dialog
@@ -155,10 +206,9 @@ public class AdapterFeedback  extends RecyclerView.Adapter<AdapterFeedback.ViewH
 
                             if (OnupdateFeedbackListener != null) {
                                 ////preparing the URI
-                                final EditText et_feedback = (EditText) view.findViewById(R.id.et_feedback);
 
 
-                                
+
                                 feedback_text = et_feedback.getText().toString();
 
 //                                et_feedback.addTextChangedListener(new TextWatcher() {
@@ -193,7 +243,7 @@ public class AdapterFeedback  extends RecyclerView.Adapter<AdapterFeedback.ViewH
                                 c_end.setTime(Lectureitems.getEnd());
                                 String endDate = c_end.get(Calendar.DAY_OF_MONTH) + "/" + String.valueOf(c_end.get(Calendar.MONTH) + 1) + "/" + c_end.get(Calendar.YEAR) + "T" + c_end.get(Calendar.HOUR_OF_DAY) + ":" + c_end.get(Calendar.MINUTE);
 
-                                final String uri = "http://greek-tour-guides.eu/ioannina/dissertation/updateFeedback.php?student_id=" + user_id + "&module_id=" + module_id + "&lectureType=" + lecture_type + "&location=" + mylocation + "&startDate=" + startDate + "&endDate=" + endDate + "&feedback=" + feedback_text + "&shareid=" + share_ID;
+                                final String uri = "http://greek-tour-guides.eu/ioannina/dissertation/updateFeedback.php?student_id=" + user_id + "&module_id=" + module_id + "&lectureType=" + lecture_type + "&location=" + mylocation + "&startDate=" + startDate + "&endDate=" + endDate + "&feedback=" + feedback_text + "&shareid=" + share_ID+"&stars="+stars;
 
                                 Log.i("URI", uri.toString());
                                 OnupdateFeedbackListener.onupdateFeedback(uri, Lectureitems);
@@ -219,6 +269,10 @@ public class AdapterFeedback  extends RecyclerView.Adapter<AdapterFeedback.ViewH
     }
 
 
+    public void hideKeyboard(View view) {
+        InputMethodManager inputMethodManager =(InputMethodManager)context.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
 
     // Create new views (invoked by the layout manager)
     @Override

@@ -74,6 +74,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="20dp"
+            app:layout_behavior="com.mts.athanasiosmoutsioulis.edaattendancesystem.FAB_Hide_on_Scroll"
             android:layout_marginRight="20dp" />
     </RelativeLayout>
 

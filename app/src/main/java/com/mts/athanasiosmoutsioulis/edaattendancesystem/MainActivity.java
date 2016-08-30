@@ -149,7 +149,7 @@ public class MainActivity extends AppCompatActivity
 
                 if(sharedpreferences.getBoolean("IsFirstTimeLaunch",true)==true){
                     Intent welcome=new Intent(this,TeacherWelcomeActivity.class);
-                    startActivity(welcome);
+                    startActivityForResult(welcome,1);
 
                 }
                 // However, if we're being restored from a previous state,
@@ -176,7 +176,8 @@ public class MainActivity extends AppCompatActivity
 
             if(sharedpreferences.getBoolean("IsFirstTimeLaunch",true)==true){
                 Intent welcome=new Intent(this,WelcomeActivity.class);
-                startActivity(welcome);
+                //startActivity(welcome);
+                startActivityForResult(welcome,1);
 
             }
             navigationView.getMenu().clear(); //clear old inflated items.
@@ -213,6 +214,8 @@ public class MainActivity extends AppCompatActivity
 
 
     }
+
+
 
 
 
@@ -288,6 +291,8 @@ public class MainActivity extends AppCompatActivity
                             editor.putString("photo_profile", "");
                             editor.commit();
                             LoginManager.getInstance().logOut();
+                            Intent mserviceIntent = new Intent(MainActivity.this, DownloadBeaconIdsService.class);
+                            stopService(mserviceIntent);
 //                            FragmentManager fragmentManager = getFragmentManager();
 //                            MainFragment fragment = (MainFragment) fragmentManager.findFragmentById(R.id.main_fragment);
 //                            fragment.update_logout();
@@ -380,6 +385,12 @@ public class MainActivity extends AppCompatActivity
 
             }
 
+        }else if (requestCode == 1) {
+
+            if (resultCode == Activity.RESULT_CANCELED) {
+                //Write your code if there's no result
+                finish();
+            }
         }
     }
     public void update_header_details(){

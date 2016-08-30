@@ -4,13 +4,14 @@ package com.mts.athanasiosmoutsioulis.edaattendancesystem;
  * Created by AthanasiosMoutsioulis on 25/07/16.
  */
 public class Attendance {
-    public Attendance(String studentId, String valid, String anonymous, String feedback, String fullName,String sDate) {
+    public Attendance(String studentId, String valid, String anonymous, String feedback, String fullName,String sDate, String stars) {
         StudentId = studentId;
         this.valid = valid;
         this.anonymous = anonymous;
         this.fullName=fullName;
         this.feedback = feedback;
         this.sDate=sDate;
+        this.stars=stars;
 
     }
 
@@ -71,4 +72,14 @@ public class Attendance {
     }
 
     String fullName;
+
+    public void setStars(String stars) {
+        this.stars = stars;
+    }
+
+    public String getStars() {
+        return stars;
+    }
+
+    String stars;
 }

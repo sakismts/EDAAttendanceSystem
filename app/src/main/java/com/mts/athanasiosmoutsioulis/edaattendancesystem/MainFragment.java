@@ -458,7 +458,7 @@ getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT
         else{
                 status.setText("Attend:" + tmp.getType() + " " + tmp.getTitle() +" "+ tmp.getLocation() + "\n");
                 status_sign.setText("Status:Signed");
-                status_sign.setTextColor(Color.RED);
+                status_sign.setTextColor(Color.BLUE);
 
             }
         }else{

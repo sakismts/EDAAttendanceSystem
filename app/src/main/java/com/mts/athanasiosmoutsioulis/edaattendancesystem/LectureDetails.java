@@ -2,6 +2,7 @@ package com.mts.athanasiosmoutsioulis.edaattendancesystem;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -12,7 +13,6 @@ import java.util.Calendar;
 
 public class LectureDetails extends AppCompatActivity {
     TextView title,time,location,date,description;
-    ImageView img_location;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +25,9 @@ public class LectureDetails extends AppCompatActivity {
         location=(TextView)findViewById(R.id.tv_details_location);
         date=(TextView)findViewById(R.id.tv_details_date);
         description=(TextView)findViewById(R.id.tv_detail_description);
-        img_location=(ImageView)findViewById(R.id.img_location);
+
+        FloatingActionButton fab=(FloatingActionButton)findViewById(R.id.fab);
+
 
         title.setText(lecture.getType() + " " + lecture.getTitle() + " " + lecture.getModule());
         location.setText(lecture.getLocation());
@@ -65,7 +67,8 @@ public class LectureDetails extends AppCompatActivity {
             }
         }
         final String finalMap = map;
-        img_location.setOnClickListener(new View.OnClickListener() {
+
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent link_map= new Intent(Intent.ACTION_VIEW, Uri.parse(finalMap));

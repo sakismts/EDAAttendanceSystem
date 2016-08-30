@@ -1,5 +1,6 @@
 package com.mts.athanasiosmoutsioulis.edaattendancesystem;
 
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
@@ -185,6 +186,8 @@ public class TeacherWelcomeActivity extends AppCompatActivity {
         System.out.println(getJSONArray(model.getMyModules()));
         editor.putString("MyModulesString", getJSONArray(model.getMyModules()).toString());
         editor.commit();
+        Intent returnIntent = new Intent();
+        setResult(Activity.RESULT_OK, returnIntent);
         finish();
     }
 
@@ -361,6 +364,13 @@ public class TeacherWelcomeActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onBackPressed(){
+        // do something here and don't write super.onBackPressed()
+        Intent returnIntent = new Intent();
+        setResult(Activity.RESULT_CANCELED, returnIntent);
+        finish();
+    }
 
 
 

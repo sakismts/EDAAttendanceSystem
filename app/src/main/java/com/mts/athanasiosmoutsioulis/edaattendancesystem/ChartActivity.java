@@ -269,6 +269,7 @@ public class ChartActivity extends AppCompatActivity implements SeekBar.OnSeekBa
         tvX.setText("" + (mSeekBarX.getProgress()+1));
 
 
+        if(!model.getTeacherAttendances().isEmpty())
        setData(mSeekBarX.getProgress());
         mChart.invalidate();
     }
@@ -355,8 +356,9 @@ public class ChartActivity extends AppCompatActivity implements SeekBar.OnSeekBa
     public void onGetTeacherAttendances(boolean signed) {
         //System.out.println("the number is:"+model.getTeacherAttendances().size()-1);
         mydialog.dismiss();
+        if(!model.getTeacherAttendances().isEmpty()){
         mSeekBarX.setMax(model.getTeacherAttendances().size()-1);
-        mSeekBarX.setProgress(model.getTeacherAttendances().size());
+        mSeekBarX.setProgress(model.getTeacherAttendances().size());}
        // setData(model.getTeacherAttendances().size()-1);
         System.out.println("received");
         File pdfFolder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "EDA");

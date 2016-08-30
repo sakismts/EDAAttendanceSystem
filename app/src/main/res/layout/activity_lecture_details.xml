@@ -56,14 +56,6 @@
             android:textSize="20sp"
             android:textColor="#fff" />
 
-        <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:id="@+id/img_location"
-            android:src="@drawable/place_icon"
-            android:layout_alignParentEnd="false"
-            android:layout_toLeftOf="@+id/tv_details_location"
-            android:layout_alignBottom="@+id/tv_details_location" />
     </RelativeLayout>
 
     <ScrollView
@@ -93,5 +85,13 @@
         </LinearLayout>
 
     </ScrollView>
+
+    <android.support.design.widget.FloatingActionButton android:id="@+id/fab"
+        android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end" android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/place_icon"
+        android:tint="@android:color/white"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true" />
 
 </RelativeLayout>

@@ -123,29 +123,34 @@
         <activity
             android:name=".AttendancesList"
             android:launchMode="singleTop"
+            android:label="Attendances"
             android:configChanges="orientation|screenSize"
             android:parentActivityName=".MyModules" >
         </activity>
         <activity
             android:name=".TeacherAttendanceSheet"
             android:configChanges="orientation|screenSize"
+            android:label="Attendances"
             android:parentActivityName=".AttendancesList" >
         </activity>
         <activity
             android:name=".TeacherFeedBackActivity"
             android:launchMode="singleTop"
+            android:label="Feedbacks"
             android:configChanges="orientation|screenSize"
             android:parentActivityName=".MainActivity" >
         </activity>
         <activity
             android:name=".TeacherFeedbackSheetActivity"
             android:launchMode="singleTop"
+            android:label="Feedbacks"
             android:configChanges="orientation|screenSize"
             android:parentActivityName=".TeacherFeedBackActivity" >
         </activity>
         <activity
             android:name=".ChartActivity"
             android:launchMode="singleTop"
+            android:label="Chart"
             android:configChanges="orientation|screenSize"
             android:parentActivityName=".MainActivity" >
         </activity>
