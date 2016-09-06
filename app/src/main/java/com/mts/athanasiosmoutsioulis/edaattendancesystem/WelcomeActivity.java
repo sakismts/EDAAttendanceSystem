@@ -552,7 +552,7 @@ public class WelcomeActivity extends AppCompatActivity {
             if(timetable_load)
             Toast.makeText(WelcomeActivity.this,"You have successfully imported your timetable!",Toast.LENGTH_SHORT).show();
             else
-                Toast.makeText(WelcomeActivity.this,"Failed!Check your internet connection.",Toast.LENGTH_SHORT).show();
+                Toast.makeText(WelcomeActivity.this,"Failed!Check your internet connection or your url.",Toast.LENGTH_SHORT).show();
            
 
         }

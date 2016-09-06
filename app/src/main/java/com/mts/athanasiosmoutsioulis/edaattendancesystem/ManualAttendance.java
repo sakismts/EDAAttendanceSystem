@@ -358,7 +358,8 @@ public class ManualAttendance extends AppCompatActivity implements AttendanceMod
                 type.setImageResource(R.drawable.lecture_icon);
 
         if(attendace==true) {
-            Toast.makeText(this, "You have already signed", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "You have already signed in", Toast.LENGTH_SHORT).show();
+            btn_attendance.setText("Signed in");
             btn_attendance.setEnabled(false);
             btn_attendance.setBackgroundColor(Color.GRAY);
             attendance_conf.setImageResource(R.drawable.attendance_check);
@@ -427,6 +428,7 @@ public class ManualAttendance extends AppCompatActivity implements AttendanceMod
                 e.printStackTrace();
             }
             btn_attendance.setEnabled(false);
+            btn_attendance.setText("Signed in");
             attendance_conf.setImageResource(R.drawable.attendance_check);
             btn_attendance.setBackgroundColor(Color.GRAY);
             final Dialog okDialog = new Dialog(this);

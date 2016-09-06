@@ -452,12 +452,12 @@ getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT
             if (tmp.getAttendance().equals("false")){
         System.out.println();
         status.setText("Attend:" + tmp.getType() + " " + tmp.getTitle() + " " + tmp.getLocation() + "\n ");
-                status_sign.setText("Status:Not Signed");
+                status_sign.setText("Status:Not Signed in");
                 status_sign.setTextColor(Color.RED);
         }
         else{
                 status.setText("Attend:" + tmp.getType() + " " + tmp.getTitle() +" "+ tmp.getLocation() + "\n");
-                status_sign.setText("Status:Signed");
+                status_sign.setText("Status:Signed in");
                 status_sign.setTextColor(Color.BLUE);
 
             }

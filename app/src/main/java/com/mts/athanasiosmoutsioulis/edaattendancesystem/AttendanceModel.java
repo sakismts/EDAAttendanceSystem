@@ -916,6 +916,8 @@ public class AttendanceModel {
     Response.ErrorListener getUsersErrorListener = new Response.ErrorListener() {
         @Override
         public void onErrorResponse(VolleyError error) {
+            Toast.makeText(MyApplication.getInstance(),"Check your connection and try again",Toast.LENGTH_SHORT).show();
+
 
         }
     };
@@ -1062,7 +1064,8 @@ public class AttendanceModel {
     Response.ErrorListener fdb_ErrorListener = new Response.ErrorListener() {
         @Override
         public void onErrorResponse(VolleyError error) {
-
+            Log.i("FeedBack",error.toString());
+            Toast.makeText(MyApplication.getInstance(),"Pleace check your internet connection",Toast.LENGTH_SHORT).show();
         }
     };
 

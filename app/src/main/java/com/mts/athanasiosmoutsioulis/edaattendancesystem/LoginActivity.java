@@ -23,7 +23,7 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-       getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE|WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+
 
         if (model==null)
             model = new AttendanceModel(this);
@@ -83,8 +83,11 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.On
     public void onResume() {
         super.onResume();
         SystemRequirementsChecker.checkWithDefaultDialogs(this);
+
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-        if (sharedpreferences.getBoolean("logged", false)== true && sharedpreferences.getBoolean("IsFirstTimeLaunch",false)==false){
+        System.out.println(sharedpreferences.getBoolean("logged", false));
+        System.out.println(sharedpreferences.getBoolean("IsFirstTimeLaunch",true));
+        if (sharedpreferences.getBoolean("logged", false)== true && sharedpreferences.getBoolean("IsFirstTimeLaunch",true)==false){
             Intent mainActivity= new Intent(this,MainActivity.class);
             mainActivity.putExtra("logged",true);
             startActivity(mainActivity);
