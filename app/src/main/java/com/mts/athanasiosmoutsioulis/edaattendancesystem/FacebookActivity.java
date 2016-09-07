@@ -74,6 +74,9 @@ public class FacebookActivity extends AppCompatActivity {
                     ImageView img = (ImageView)findViewById(R.id.imageView);
                     img.setImageResource(R.drawable.photo_profile);
                     model.setFbName("");
+                    SharedPreferences.Editor editor = sharedpreferences.edit();
+                    editor.putString("FBname", "");
+                    editor.commit();
                     info.setText("You are not logged in to Facebook");
                 }
             }

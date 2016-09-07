@@ -300,7 +300,7 @@ getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT
             RoundedBitmapDrawable roundedBitmapDrawable= RoundedBitmapDrawableFactory.create(getResources(), imageBitmap);
             roundedBitmapDrawable.setCornerRadius(25);
               photo_profile.setImageDrawable(roundedBitmapDrawable);
-
+            fbName.setText(sharedpreferences.getString("fullName", " "));
 
         }
 
