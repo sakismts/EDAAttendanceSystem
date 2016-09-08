@@ -46,7 +46,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:id="@+id/edt_calendar_url"
-            android:text="webcal://www.kent.ac.uk/timetabling/ical/118152.ics"
+            android:text=""
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp" />
 
